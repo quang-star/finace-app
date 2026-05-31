@@ -34,6 +34,15 @@ finance-backend/.idea/
 finance-backend/target/
 finance-backend/*.iml
 
+# --- Local agent/planning files ---
+.clinerules
+.cursorrules
+AGENT_RULES.md
+PROJECT_CONTEXT.md
+PROJECT_GRAPH.md
+TASKS.md
+implementation_plan*.md
+
 # --- Python & ML Patterns ---
 venv/
 .venv/
