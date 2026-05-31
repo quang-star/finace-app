@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="64dp"
+    android:paddingHorizontal="12dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="?attr/selectableItemBackground">
+
+    <!-- Category color indicator circle -->
+    <View
+        android:id="@+id/viewCategoryColor"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/bg_button_rounded"
+        android:backgroundTint="#3B82F6" />
+
+    <!-- Category Icon centered inside the circle -->
+    <ImageView
+        android:id="@+id/ivCategoryIcon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignStart="@id/viewCategoryColor"
+        android:layout_alignEnd="@id/viewCategoryColor"
+        android:layout_alignTop="@id/viewCategoryColor"
+        android:layout_alignBottom="@id/viewCategoryColor"
+        android:layout_margin="10dp"
+        android:src="@drawable/ic_transaction"
+        app:tint="@color/white" />
+
+    <!-- Category Name -->
+    <TextView
+        android:id="@+id/tvCategoryName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/viewCategoryColor"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="14dp"
+        android:text="Ăn uống"
+        android:textColor="@color/text_primary"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+
+    <!-- Right Side Actions: Drag Handle or Edit Button -->
+    <ImageView
+        android:id="@+id/btnDragHandle"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_edit_pencil"
+        android:padding="6dp"
+        app:tint="@color/text_secondary"
+        android:clickable="true"
+        android:focusable="true"
+        android:contentDescription="Edit" />
+
+</RelativeLayout>

@@ -1,0 +1,35 @@
+# Roo Code & Cline Rules: Memory Bank Integration
+
+Bạn là một AI coding assistant thông thái được tích hợp vào dự án **Personal Finance App** (Android Java + Spring Boot Backend). Hãy luôn tuân thủ các quy tắc sau để giữ vững tính nhất quán và duy trì bộ nhớ dài hạn của dự án.
+
+---
+
+## 💾 Quy tắc Quản lý Bộ nhớ (Memory Bank Rules)
+
+Dự án này sử dụng mô hình **Memory Bank (Hộp ký ức)** đặt tại thư mục `/memory-bank/` để duy trì ngữ cảnh giữa các phiên làm việc độc lập.
+
+1.  **ĐỌC trước khi hành động**:
+    *   Vào đầu phiên làm việc hoặc khi bắt đầu một tác vụ mới, bạn **BẮT BUỘC** phải đọc hai tệp: `/memory-bank/activeContext.md` và `/memory-bank/progress.md` để nắm bắt trạng thái dự án hiện tại, tiêu điểm công việc và lịch sử phát triển.
+2.  **CẬP NHẬT sau khi hoàn thành**:
+    *   Khi bạn hoàn thành một tác vụ lớn hoặc thay đổi mã nguồn quan trọng, bạn **BẮT BUỘC** phải cập nhật lại hai tệp `/memory-bank/activeContext.md` và `/memory-bank/progress.md`.
+    *   Nếu bạn đưa ra một quyết định kiến trúc lớn (thay đổi thư viện, thay đổi luồng nghiệp vụ hoặc cấu trúc bảng dữ liệu), hãy ghi lại quyết định đó vào `/memory-bank/decisionLog.md`.
+
+---
+
+## 🏛️ Quy tắc Kiến trúc Dự án (Architecture Constraints)
+
+### 1. 📱 Android App (Java)
+*   **Mô hình MVVM bắt buộc**:
+    *   **View** (Activity/Fragment): Chỉ vẽ giao diện, xử lý sự kiện click. Không gọi mạng, không tính toán nghiệp vụ. Đăng ký nhận dữ liệu thông qua `observe` LiveData từ ViewModel.
+    *   **ViewModel**: Lưu trữ state dưới dạng `MutableLiveData` nội bộ và cung cấp `LiveData` ra ngoài. Gọi Repository để thay đổi dữ liệu.
+    *   **Repository**: Điểm giao tiếp dữ liệu duy nhất (gọi API Retrofit, lưu SharedPrefs, cache dữ liệu).
+*   **Phiên bản tương thích**: Java 17.
+
+### 2. ☕ Spring Boot Backend
+*   **Mô hình 3 lớp chuẩn**: Controller -> Service -> Repository -> MySQL DB.
+*   **Xác thực**: Kiểm tra Firebase ID Token thông qua `FirebaseAuthFilter` sử dụng Firebase Admin SDK. Không triển khai hệ thống tạo khóa JWT riêng.
+*   **Phiên bản**: Java 21.
+
+### 3. 🤖 Nhánh xử lý AI
+*   **Client (Android)**: ML Kit OCR cục bộ quét văn bản hóa đơn, YOLO TFLite cục bộ vẽ bounding box sản phẩm.
+*   **Server (Spring Boot)**: Sử dụng thư viện `Smile` (Smile Random Forest Classifier) để phân nhóm chi tiêu tự động. Đồng bộ feedback loop qua API để học máy tự động cải thiện.
