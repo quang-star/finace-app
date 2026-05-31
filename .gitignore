@@ -42,6 +42,7 @@ PROJECT_CONTEXT.md
 PROJECT_GRAPH.md
 TASKS.md
 implementation_plan*.md
+memory-bank/
 
 # --- Python & ML Patterns ---
 venv/
