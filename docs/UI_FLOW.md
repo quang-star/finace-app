@@ -68,5 +68,6 @@ graph TD
 
 ---
 
-### 2.4. Luồng quét AI (Tạm hoãn)
-- Luồng quét hóa đơn AI (Camera -> OCR -> gợi ý) và quét sản phẩm AI (Camera -> YOLO -> nhập giá -> gợi ý) hiện được tạm hoãn trong phiên bản này, chưa xuất hiện trên giao diện ứng dụng để tối ưu hóa trải nghiệm tính năng cốt lõi.
+### 2.4. Luồng quét AI
+- Quét hóa đơn: Camera/Thư viện -> ML Kit OCR -> backend Gemini -> form thêm giao dịch.
+- Quét sản phẩm: Camera/Thư viện -> YOLO/TFLite -> Random Forest local -> form thêm giao dịch.

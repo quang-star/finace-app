@@ -12,6 +12,8 @@ Ung dung quan ly tai chinh ca nhan su dung Android Java, Firebase Authentication
 - RecyclerView
 - Firebase Authentication
 - Google ML Kit OCR
+- YOLO/TFLite
+- Random Forest local trên Android
 
 ### Backend
 
@@ -103,11 +105,10 @@ Schema SQL nam trong file [database/schema.sql](database/schema.sql).
 - `accounts`: quan ly vi va tai khoan tien.
 - `categories`: danh muc thu chi.
 - `transactions`: giao dich tai chinh.
-- `transfer_groups`: nhom chuyen tien giua cac vi.
 - `budgets`: ngan sach chi tieu.
 - `transaction_images`: anh hoa don cua giao dich.
 - `ai_scan_logs`: log OCR va AI classification.
-- `notifications`: thong bao nguoi dung.
+- `recurring_transactions`: giao dich dinh ky.
 
 ## 6. Firebase Authentication
 
@@ -164,8 +165,9 @@ public ResponseEntity<?> createTransaction(@RequestBody Transaction transaction)
 - Transaction: them, sua, xoa giao dich.
 - Budget: tao ngan sach, theo doi vuot ngan sach.
 - Report: thong ke ngay, thong ke thang, bieu do chi tieu.
-- Wallet: quan ly vi, chuyen tien giua vi.
+- Wallet: quan ly vi va so du.
 - AI Scan Bill: scan hoa don, OCR text, AI phan loai chi tieu.
+- AI Product Scan: YOLO va Random Forest chay local tren Android.
 
 ## 11. Muc Tieu Do An
 

@@ -27,9 +27,9 @@ import com.example.personalfinance.models.AiScanResult;
 import com.example.personalfinance.models.ApiResponse;
 import com.example.personalfinance.models.OcrRequest;
 import com.example.personalfinance.models.User;
-import com.example.personalfinance.utils.CurrencyFormatter;
 import com.example.personalfinance.utils.DateUtils;
 import com.example.personalfinance.utils.SharedPrefManager;
+import com.google.gson.Gson;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.text.TextRecognition;
@@ -77,8 +77,6 @@ public class ScanBillActivity extends AppCompatActivity {
         binding.btnCapture.setOnClickListener(v -> captureImage());
         binding.btnGallery.setOnClickListener(v -> openGallery());
 
-        binding.btnConfirmResult.setOnClickListener(v -> confirmAndOpenAddSheet());
-
         // Check and request camera permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             startCamera();
@@ -123,7 +121,6 @@ public class ScanBillActivity extends AppCompatActivity {
 
         binding.progressBar.setVisibility(View.VISIBLE);
         binding.btnCapture.setEnabled(false);
-        binding.cardResult.setVisibility(View.GONE);
 
         imageCapture.takePicture(ContextCompat.getMainExecutor(this), new ImageCapture.OnImageCapturedCallback() {
             @Override
@@ -219,7 +216,7 @@ public class ScanBillActivity extends AppCompatActivity {
                         resetCameraAndPreview();
                     }
                 } else {
-                    String msg = response.body() != null ? response.body().getMessage() : "Lỗi phân tích hóa đơn";
+                    String msg = getErrorMessage(response);
                     Log.w(TAG, "OCR classify failed. code=" + response.code() + ", message=" + msg);
                     Toast.makeText(ScanBillActivity.this, msg, Toast.LENGTH_SHORT).show();
                     resetCameraAndPreview();
@@ -237,16 +234,21 @@ public class ScanBillActivity extends AppCompatActivity {
         });
     }
 
-    private void displayResult(AiScanResult result) {
-        binding.tvDetectedAmount.setText(CurrencyFormatter.formatVND(result.getDetectedAmount()));
-
-        String details = "Cửa hàng: " + (result.getDetectedMerchant() != null ? result.getDetectedMerchant() : "Không rõ")
-                + "\nNgày hóa đơn: " + DateUtils.formatDateForDisplay(result.getDetectedDate())
-                + "\nDanh mục gợi ý: " + (result.getSuggestedCategoryName() != null ? result.getSuggestedCategoryName() : "Không có")
-                + "\nĐộ tin cậy: " + (int) (result.getConfidenceScore() * 100) + "%";
-
-        binding.tvOcrText.setText(details);
-        binding.cardResult.setVisibility(View.VISIBLE);
+    private String getErrorMessage(Response<ApiResponse<AiScanResult>> response) {
+        if (response.body() != null && response.body().getMessage() != null) {
+            return response.body().getMessage();
+        }
+        if (response.errorBody() != null) {
+            try {
+                ApiResponse<?> error = new Gson().fromJson(response.errorBody().string(), ApiResponse.class);
+                if (error != null && error.getMessage() != null && !error.getMessage().isBlank()) {
+                    return error.getMessage();
+                }
+            } catch (Exception e) {
+                Log.w(TAG, "Could not parse OCR error response", e);
+            }
+        }
+        return "Lỗi phân tích hóa đơn (HTTP " + response.code() + ")";
     }
 
     private void confirmAndOpenAddSheet() {
@@ -293,7 +295,6 @@ public class ScanBillActivity extends AppCompatActivity {
                 InputImage image = InputImage.fromFilePath(this, imageUri);
                 binding.progressBar.setVisibility(View.VISIBLE);
                 binding.btnCapture.setEnabled(false);
-                binding.cardResult.setVisibility(View.GONE);
 
                 TextRecognizer recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
                 recognizer.process(image)
@@ -378,7 +379,6 @@ public class ScanBillActivity extends AppCompatActivity {
             binding.btnCapture.setEnabled(true);
             binding.btnGallery.setVisibility(View.VISIBLE);
             binding.progressBar.setVisibility(View.GONE);
-            binding.cardResult.setVisibility(View.GONE);
 
             startCamera();
         });

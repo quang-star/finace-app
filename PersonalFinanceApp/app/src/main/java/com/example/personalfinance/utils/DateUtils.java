@@ -1,7 +1,6 @@
 package com.example.personalfinance.utils;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -75,31 +74,4 @@ public class DateUtils {
         return serverDate;
     }
 
-    public static String getFirstDayOfMonth() {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.DAY_OF_MONTH, 1);
-        return formatApiDate(cal.getTime());
-    }
-
-    public static String getLastDayOfMonth() {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-        return formatApiDate(cal.getTime());
-    }
-
-    public static String getFirstDayOfYear(int year) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.YEAR, year);
-        cal.set(Calendar.MONTH, Calendar.JANUARY);
-        cal.set(Calendar.DAY_OF_MONTH, 1);
-        return formatApiDate(cal.getTime());
-    }
-
-    public static String getLastDayOfYear(int year) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.YEAR, year);
-        cal.set(Calendar.MONTH, Calendar.DECEMBER);
-        cal.set(Calendar.DAY_OF_MONTH, 31);
-        return formatApiDate(cal.getTime());
-    }
 }

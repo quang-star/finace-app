@@ -85,7 +85,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="Sangrich"
+                    android:text="@string/ui_sangrich"
                     android:textColor="@color/text_primary"
                     android:textSize="22sp"
                     android:textStyle="bold"
@@ -99,7 +99,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="email@example.com"
+                    android:text="@string/ui_email_example_com"
                     android:textColor="@color/text_secondary"
                     android:textSize="14sp"
                     app:layout_constraintTop_toBottomOf="@id/tvUserName"
@@ -126,7 +126,7 @@
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="12dp"
                         android:paddingVertical="4dp"
-                        android:text="📅 thg 3 2026"
+                        android:text="@string/ui_thg_3_2026"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
                 </com.google.android.material.card.MaterialCardView>
@@ -142,7 +142,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Tổng quan"
+            android:text="@string/ui_tong_quan"
             android:textColor="@color/text_primary"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -190,7 +190,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="Giao dịch"
+                        android:text="@string/nav_transactions"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
 
@@ -199,7 +199,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="0"
+                        android:text="@string/ui_0"
                         android:textColor="@color/text_primary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -235,7 +235,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="Tổng thu nhập"
+                        android:text="@string/ui_tong_thu_nhap"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
 
@@ -244,7 +244,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="0đ"
+                        android:text="@string/ui_0d"
                         android:textColor="@color/income_green"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -280,7 +280,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="Tổng chi tiêu"
+                        android:text="@string/ui_tong_chi_tieu"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
 
@@ -289,7 +289,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="0đ"
+                        android:text="@string/ui_0d"
                         android:textColor="@color/expense_red"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -325,7 +325,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="Số dư"
+                        android:text="@string/ui_so_du"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
 
@@ -334,7 +334,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="0đ"
+                        android:text="@string/ui_0d"
                         android:textColor="@color/warning_yellow"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -388,7 +388,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="14dp"
-                        android:text="Đổi mật khẩu"
+                        android:text="@string/ui_doi_mat_khau"
                         android:textColor="@color/text_primary"
                         android:textSize="15sp"
                         android:textStyle="bold"
@@ -441,7 +441,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="14dp"
-                        android:text="Đăng xuất"
+                        android:text="@string/btn_logout"
                         android:textColor="@color/expense_red"
                         android:textSize="15sp"
                         android:textStyle="bold"
@@ -473,7 +473,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="16dp"
-            android:text="CapMoney\nPhiên bản 2.2.0"
+            android:text="@string/ui_capmoneynphien_ban_2_2_0"
             android:textColor="@color/text_hint"
             android:textSize="12sp"
             android:gravity="center"

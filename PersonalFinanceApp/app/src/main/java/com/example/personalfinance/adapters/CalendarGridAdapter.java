@@ -255,11 +255,11 @@ public class CalendarGridAdapter extends RecyclerView.Adapter<CalendarGridAdapte
                     if (firstTx.getCategoryName() != null
                             && firstTx.getCategoryName().toLowerCase(Locale.ROOT).contains("ăn uống")) {
                         binding.imgThumbnail.setImageResource(R.drawable.ic_transaction);
-                        binding.imgThumbnail.setBackgroundColor(context.getColor(R.color.income_green));
+                        binding.imgThumbnail.setBackgroundColor(context.getColor(R.color.expense_red));
                     } else if (firstTx.getCategoryName() != null
                             && (firstTx.getCategoryName().toLowerCase(Locale.ROOT).contains("sức khỏe")
                             || firstTx.getCategoryName().toLowerCase(Locale.ROOT).contains("y tế"))) {
-                        binding.imgThumbnail.setImageResource(R.drawable.ic_profile);
+                        binding.imgThumbnail.setImageResource(R.drawable.ic_transaction);
                         binding.imgThumbnail.setBackgroundColor(context.getColor(R.color.expense_red));
                     } else {
                         binding.imgThumbnail.setImageResource(R.drawable.ic_budget);

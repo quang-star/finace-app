@@ -16,7 +16,6 @@ public class TransactionDTO {
     private String accountName;
     private Integer categoryId;
     private String categoryName;
-    private Integer transferGroupId;
     private String title;
     private BigDecimal amount;
     private String transactionType;

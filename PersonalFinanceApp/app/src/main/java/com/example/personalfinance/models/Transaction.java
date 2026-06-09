@@ -7,7 +7,6 @@ public class Transaction implements java.io.Serializable {
     private String accountName;
     private Integer categoryId;
     private String categoryName;
-    private Integer transferGroupId;
     private String title;
     private double amount;
     private String transactionType;
@@ -20,14 +19,13 @@ public class Transaction implements java.io.Serializable {
 
     public Transaction() {}
 
-    public Transaction(Integer transactionId, Integer userId, Integer accountId, String accountName, Integer categoryId, String categoryName, Integer transferGroupId, String title, double amount, String transactionType, String transactionDate, String note, String status, String createdAt, String updatedAt) {
+    public Transaction(Integer transactionId, Integer userId, Integer accountId, String accountName, Integer categoryId, String categoryName, String title, double amount, String transactionType, String transactionDate, String note, String status, String createdAt, String updatedAt) {
         this.transactionId = transactionId;
         this.userId = userId;
         this.accountId = accountId;
         this.accountName = accountName;
         this.categoryId = categoryId;
         this.categoryName = categoryName;
-        this.transferGroupId = transferGroupId;
         this.title = title;
         this.amount = amount;
         this.transactionType = transactionType;
@@ -84,14 +82,6 @@ public class Transaction implements java.io.Serializable {
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
-    }
-
-    public Integer getTransferGroupId() {
-        return transferGroupId;
-    }
-
-    public void setTransferGroupId(Integer transferGroupId) {
-        this.transferGroupId = transferGroupId;
     }
 
     public String getTitle() {

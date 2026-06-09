@@ -181,6 +181,7 @@ public class ScanProductActivity extends AppCompatActivity {
                 String imageUri = saveBitmapToCache(rotatedBitmap);
                 binding.ivFrozenPhoto.setImageBitmap(rotatedBitmap);
                 binding.ivFrozenPhoto.setVisibility(View.VISIBLE);
+                binding.overlayView.setIsFitCenter(true);
                 runYoloDetection(rotatedBitmap, imageUri);
             }
 
@@ -238,12 +239,7 @@ public class ScanProductActivity extends AppCompatActivity {
         if (safeDetections.isEmpty()) {
             detectedProductName = "";
             detectedConfidence = 0.0;
-            binding.cardProductInfo.setVisibility(View.GONE);
-            ProductRandomForestClassifier.Prediction prediction = productClassifier != null
-                    ? productClassifier.classify(safeDetections)
-                    : null;
-            int categoryId = prediction != null ? prediction.getCategoryId() : 0;
-            openTransactionForm(categoryId, "", imageUri);
+            openTransactionForm(0, "", imageUri);
             return;
         }
 
@@ -327,8 +323,6 @@ public class ScanProductActivity extends AppCompatActivity {
         binding.progressBar.setVisibility(View.GONE);
         binding.btnCapture.setEnabled(true);
         isCapturing = false;
-        binding.cardProductInfo.setVisibility(View.GONE);
-
         AddTransactionFragment addFragment = AddTransactionFragment.newInstance(
                 0,
                 title != null ? title : "",
@@ -356,8 +350,8 @@ public class ScanProductActivity extends AppCompatActivity {
         detectedProductName = "";
         detectedConfidence = 0.0;
         latestDetections = new ArrayList<>();
-        binding.cardProductInfo.setVisibility(View.GONE);
         binding.overlayView.clear();
+        binding.overlayView.setIsFitCenter(false);
     }
 
     private void openGallery() {
@@ -384,11 +378,19 @@ public class ScanProductActivity extends AppCompatActivity {
                     return;
                 }
 
+                int rotationDegrees = getOrientation(imageUri);
+                if (rotationDegrees != 0) {
+                    Bitmap rotated = rotateBitmap(bitmap, rotationDegrees);
+                    bitmap.recycle();
+                    bitmap = rotated;
+                }
+
                 ProcessCameraProvider cameraProvider = ProcessCameraProvider.getInstance(this).get();
                 cameraProvider.unbindAll();
 
                 binding.ivFrozenPhoto.setImageBitmap(bitmap);
                 binding.ivFrozenPhoto.setVisibility(View.VISIBLE);
+                binding.overlayView.setIsFitCenter(true);
                 runYoloDetection(bitmap, imageUri.toString());
             } catch (Exception e) {
                 binding.progressBar.setVisibility(View.GONE);
@@ -396,6 +398,44 @@ public class ScanProductActivity extends AppCompatActivity {
                 Toast.makeText(this, "Loi doc anh: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private int getOrientation(Uri uri) {
+        try (java.io.InputStream is = getContentResolver().openInputStream(uri)) {
+            if (is != null) {
+                androidx.exifinterface.media.ExifInterface exif =
+                        new androidx.exifinterface.media.ExifInterface(is);
+                int orientation = exif.getAttributeInt(
+                        androidx.exifinterface.media.ExifInterface.TAG_ORIENTATION,
+                        androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL);
+                switch (orientation) {
+                    case androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_90:
+                        return 90;
+                    case androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180:
+                        return 180;
+                    case androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_270:
+                        return 270;
+                }
+            }
+        } catch (Exception ignored) {}
+
+        try {
+            String[] projection = { android.provider.MediaStore.Images.ImageColumns.ORIENTATION };
+            android.database.Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    int colIndex = cursor.getColumnIndex(android.provider.MediaStore.Images.ImageColumns.ORIENTATION);
+                    if (colIndex != -1) {
+                        int rotation = cursor.getInt(colIndex);
+                        cursor.close();
+                        return rotation;
+                    }
+                }
+                cursor.close();
+            }
+        } catch (Exception ignored) {}
+
+        return 0;
     }
 
     @Override

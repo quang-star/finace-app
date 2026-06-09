@@ -31,7 +31,7 @@
                 android:id="@+id/tvFormTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Thêm giao dịch định kỳ"
+                android:text="@string/ui_them_giao_dich_dinh_ky"
                 android:textColor="@color/text_primary"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -69,7 +69,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:paddingVertical="10dp"
-                android:text="Chi"
+                android:text="@string/home_expense"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:textStyle="bold"
@@ -85,7 +85,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:paddingVertical="10dp"
-                android:text="Thu"
+                android:text="@string/home_income"
                 android:textColor="@color/text_secondary"
                 android:textSize="14sp"
                 android:textStyle="bold"
@@ -97,7 +97,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Danh mục"
+            android:text="@string/title_categories"
             android:textColor="@color/text_secondary"
             android:textSize="12sp"
             android:layout_marginBottom="6dp" />
@@ -133,7 +133,7 @@
                     android:id="@+id/tvCategoryName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Chọn danh mục"
+                    android:text="@string/title_select_category"
                     android:textColor="@color/text_primary"
                     android:textSize="14sp"
                     android:layout_centerVertical="true"
@@ -155,7 +155,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Số tiền *"
+            android:text="@string/ui_so_tien"
             android:textColor="@color/text_secondary"
             android:textSize="12sp"
             android:layout_marginBottom="6dp" />
@@ -170,7 +170,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/bg_input_field"
-                android:hint="500.000"
+                android:hint="@string/ui_500_000"
                 android:textColor="@color/white"
                 android:textColorHint="@color/text_hint"
                 android:textSize="15sp"
@@ -182,7 +182,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="đ"
+                android:text="@string/ui_d"
                 android:textColor="@color/text_secondary"
                 android:textSize="16sp"
                 android:layout_gravity="end|center_vertical"
@@ -193,7 +193,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tần suất lặp"
+            android:text="@string/ui_tan_suat_lap"
             android:textColor="@color/text_secondary"
             android:textSize="12sp"
             android:layout_marginBottom="6dp" />
@@ -215,7 +215,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:paddingVertical="8dp"
-                android:text="Ngày"
+                android:text="@string/home_day"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp"
                 android:textStyle="bold"
@@ -229,7 +229,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:paddingVertical="8dp"
-                android:text="Tuần"
+                android:text="@string/ui_tuan"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp"
                 android:textStyle="bold"
@@ -243,7 +243,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:paddingVertical="8dp"
-                android:text="Tháng"
+                android:text="@string/home_month"
                 android:textColor="@color/white"
                 android:textSize="12sp"
                 android:textStyle="bold"
@@ -259,7 +259,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:paddingVertical="8dp"
-                android:text="Năm"
+                android:text="@string/ui_nam"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp"
                 android:textStyle="bold"
@@ -272,7 +272,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lặp lại mỗi"
+            android:text="@string/ui_lap_lai_moi"
             android:textColor="@color/text_secondary"
             android:textSize="12sp"
             android:layout_marginBottom="6dp" />
@@ -287,7 +287,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/bg_input_field"
-                android:hint="1"
+                android:hint="@string/ui_1"
                 android:textColor="@color/white"
                 android:textColorHint="@color/text_hint"
                 android:textSize="15sp"
@@ -300,7 +300,7 @@
                 android:id="@+id/tvIntervalSuffix"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="tháng"
+                android:text="@string/ui_thang"
                 android:textColor="@color/text_secondary"
                 android:textSize="15sp"
                 android:layout_gravity="end|center_vertical"
@@ -312,7 +312,7 @@
             android:id="@+id/tvDayLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ngày thực hiện"
+            android:text="@string/ui_ngay_thuc_hien"
             android:textColor="@color/text_secondary"
             android:textSize="12sp"
             android:layout_marginBottom="6dp" />
@@ -339,7 +339,7 @@
                     android:id="@+id/tvDayOfMonth"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Mỗi ngày 20"
+                    android:text="@string/ui_moi_ngay_20"
                     android:textColor="@color/text_primary"
                     android:textSize="14sp"
                     android:layout_centerVertical="true" />
@@ -359,7 +359,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ngày bắt đầu"
+            android:text="@string/ui_ngay_bat_dau"
             android:textColor="@color/text_secondary"
             android:textSize="12sp"
             android:layout_marginBottom="6dp" />
@@ -386,7 +386,7 @@
                     android:id="@+id/tvStartDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="20/05/2026"
+                    android:text="@string/ui_20_05_2026"
                     android:textColor="@color/text_primary"
                     android:textSize="14sp"
                     android:layout_centerVertical="true" />
@@ -417,7 +417,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tự động tạo giao dịch"
+                    android:text="@string/ui_tu_dong_tao_giao_dich"
                     android:textColor="@color/text_primary"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -426,7 +426,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="Tự động ghi nhận khi đến ngày thực hiện"
+                    android:text="@string/ui_tu_dong_ghi_nhan_khi_den_ngay_thuc_hien"
                     android:textColor="@color/text_secondary"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -444,7 +444,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ghi chú (tùy chọn)"
+            android:text="@string/ui_ghi_chu_tuy_chon"
             android:textColor="@color/text_secondary"
             android:textSize="12sp"
             android:layout_marginBottom="6dp" />
@@ -454,7 +454,7 @@
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:background="@drawable/bg_input_field"
-            android:hint="Thanh toán hóa đơn tiền điện..."
+            android:hint="@string/ui_thanh_toan_hoa_don_tien_dien"
             android:textColor="@color/white"
             android:textColorHint="@color/text_hint"
             android:textSize="14sp"
@@ -470,7 +470,7 @@
             android:layout_height="52dp"
             android:background="@drawable/bg_button_rounded"
             android:backgroundTint="@color/primary"
-            android:text="Lưu giao dịch"
+            android:text="@string/ui_luu_giao_dich"
             android:textColor="@color/white"
             android:textSize="15sp"
             android:textStyle="bold"
@@ -497,7 +497,7 @@
             android:layout_height="48dp"
             android:background="@drawable/bg_button_rounded"
             android:backgroundTint="@color/primary"
-            android:text="Lưu giao dịch"
+            android:text="@string/ui_luu_giao_dich"
             android:textColor="@color/white"
             android:textSize="14sp"
             android:textStyle="bold"

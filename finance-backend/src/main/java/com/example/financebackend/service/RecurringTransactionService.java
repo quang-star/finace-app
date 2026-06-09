@@ -1,5 +1,6 @@
 package com.example.financebackend.service;
 
+import com.example.financebackend.config.AppTime;
 import com.example.financebackend.dto.RecurringTransactionDTO;
 import com.example.financebackend.dto.TransactionDTO;
 import com.example.financebackend.model.*;
@@ -114,10 +115,10 @@ public class RecurringTransactionService {
     }
 
     // Cron job running daily at midnight (12:05 AM) to automatically generate due transactions!
-    @Scheduled(cron = "0 5 0 * * ?")
+    @Scheduled(cron = "0 5 0 * * ?", zone = AppTime.TIME_ZONE)
     @Transactional
     public void processRecurringTransactions() {
-        LocalDate today = LocalDate.now();
+        LocalDate today = AppTime.today();
         List<RecurringTransaction> dueList = recurringTransactionRepository
                 .findByIsActiveTrueAndNextRunDateLessThanEqual(today);
 

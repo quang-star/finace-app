@@ -18,7 +18,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Thêm ảnh đính kèm"
+        android:text="@string/ui_them_anh_dinh_kem"
         android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="@color/text_primary"
@@ -29,7 +29,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:baselineAligned="false" android:orientation="horizontal"
         android:gravity="center"
         android:weightSum="2"
         android:layout_marginBottom="12dp">
@@ -78,7 +78,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="Chụp ảnh"
+                        android:text="@string/btn_capture"
                         android:textSize="13sp"
                         android:textStyle="bold"
                         android:textColor="@color/text_primary"
@@ -131,7 +131,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="Chọn từ thư viện"
+                        android:text="@string/ui_chon_tu_thu_vien"
                         android:textSize="13sp"
                         android:textStyle="bold"
                         android:textColor="@color/text_primary"

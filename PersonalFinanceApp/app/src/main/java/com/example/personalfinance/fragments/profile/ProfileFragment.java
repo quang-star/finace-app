@@ -88,7 +88,7 @@ public class ProfileFragment extends Fragment {
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
         int month = cal.get(Calendar.MONTH) + 1;
-        binding.tvUserDate.setText("📅 thg " + month + " " + year);
+        binding.tvUserDate.setText(getString(R.string.format_profile_month_year, month, year));
 
         // Setup Option Click Listeners
         // Avatar edit triggers

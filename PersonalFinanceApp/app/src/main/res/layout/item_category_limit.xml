@@ -92,7 +92,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            android:orientation="horizontal">
+            android:baselineAligned="false" android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -103,7 +103,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ngân sách"
+                    android:text="@string/nav_budget"
                     android:textColor="@color/text_secondary"
                     android:textSize="11sp" />
 
@@ -130,7 +130,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Đã chi"
+                    android:text="@string/budget_warning_label_spent"
                     android:textColor="@color/text_secondary"
                     android:textSize="11sp" />
 
@@ -157,7 +157,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Còn lại"
+                    android:text="@string/ui_con_lai"
                     android:textColor="@color/text_secondary"
                     android:textSize="11sp" />
 

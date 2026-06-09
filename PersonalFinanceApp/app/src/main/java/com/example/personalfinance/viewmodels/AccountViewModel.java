@@ -17,8 +17,6 @@ public class AccountViewModel extends ViewModel {
     private final MutableLiveData<List<Account>> accounts = new MutableLiveData<>();
     private final MutableLiveData<List<Category>> categories = new MutableLiveData<>();
     private final MutableLiveData<Account> accountCreated = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> accountDeleted = new MutableLiveData<>();
-    private final MutableLiveData<Category> categoryCreated = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
 
@@ -36,14 +34,6 @@ public class AccountViewModel extends ViewModel {
 
     public LiveData<Account> getAccountCreated() {
         return accountCreated;
-    }
-
-    public LiveData<Boolean> getAccountDeleted() {
-        return accountDeleted;
-    }
-
-    public LiveData<Category> getCategoryCreated() {
-        return categoryCreated;
     }
 
     public LiveData<Boolean> getIsLoading() {
@@ -83,41 +73,6 @@ public class AccountViewModel extends ViewModel {
             @Override
             public void onError(String error) {
                 errorMessage.postValue("Lỗi tạo ví: " + error);
-                isLoading.postValue(false);
-            }
-        });
-    }
-
-    public void deleteAccount(int id) {
-        isLoading.setValue(true);
-        repository.deleteAccount(id, new AccountRepository.ApiCallback<Void>() {
-            @Override
-            public void onSuccess(Void result) {
-                accountDeleted.postValue(true);
-                isLoading.postValue(false);
-            }
-
-            @Override
-            public void onError(String error) {
-                errorMessage.postValue("Lỗi xóa ví: " + error);
-                accountDeleted.postValue(false);
-                isLoading.postValue(false);
-            }
-        });
-    }
-
-    public void createCategory(Category category) {
-        isLoading.setValue(true);
-        repository.createCategory(category, new AccountRepository.ApiCallback<Category>() {
-            @Override
-            public void onSuccess(Category result) {
-                categoryCreated.postValue(result);
-                isLoading.postValue(false);
-            }
-
-            @Override
-            public void onError(String error) {
-                errorMessage.postValue("Lỗi tạo danh mục: " + error);
                 isLoading.postValue(false);
             }
         });

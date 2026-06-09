@@ -42,7 +42,7 @@
                 app:tint="@color/text_primary"
                 android:clickable="true"
                 android:focusable="true"
-                android:contentDescription="Close" />
+                android:contentDescription="@string/ui_close" />
 
             <TextView
                 android:id="@+id/tvDayTitle"
@@ -52,7 +52,7 @@
                 android:layout_toEndOf="@id/btnClose"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="40dp"
-                android:text="Thứ Sáu, ngày 3 thg 4, 2026"
+                android:text="@string/ui_thu_sau_ngay_3_thg_4_2026"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
@@ -72,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:text="2/2"
+                android:text="@string/ui_2_2"
                 android:textSize="12sp"
                 android:textColor="@color/text_secondary" />
 
@@ -90,7 +90,7 @@
                     android:id="@+id/tvDayIncome"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Thu 500,000đ"
+                    android:text="@string/ui_thu_500_000d"
                     android:textColor="#22C55E"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -105,7 +105,7 @@
                     android:id="@+id/tvDayExpense"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Chi 207,000đ"
+                    android:text="@string/ui_chi_207_000d"
                     android:textColor="#F85149"
                     android:textSize="13sp"
                     android:textStyle="bold"

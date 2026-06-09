@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/ai-scan")
@@ -82,8 +81,6 @@ public class AiScanController {
         result.setSuggestedCategoryId(categoryId);
         result.setSuggestedCategoryName(categoryName);
         result.setConfidenceScore(confidenceScore);
-        result.setFeatureVector(null);
-
         return ResponseEntity.ok(ApiResponse.success("Bill scanned successfully", result));
     }
 
@@ -122,6 +119,5 @@ public class AiScanController {
         private Integer suggestedCategoryId;
         private String suggestedCategoryName;
         private BigDecimal confidenceScore;
-        private List<Double> featureVector;
     }
 }

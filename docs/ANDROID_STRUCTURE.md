@@ -92,7 +92,6 @@ com.example.personalfinanceapp/
 │   ├── TransactionRepository.java
 │   ├── BudgetRepository.java
 │   ├── ReportRepository.java
-│   └── NotificationRepository.java
 │
 ├── models/                       # Các thực thể dữ liệu (Data Models / POJOs / DTOs)
 │   ├── User.java
@@ -100,14 +99,11 @@ com.example.personalfinanceapp/
 │   ├── Category.java
 │   ├── Transaction.java
 │   ├── Budget.java
-│   └── Notification.java
 │
 ├── adapters/                     # Bộ điều phối hiển thị dữ liệu lên RecyclerView
 │   ├── TransactionAdapter.java
-│   ├── AccountAdapter.java
 │   ├── CategoryAdapter.java
-│   ├── BudgetAdapter.java
-│   └── NotificationAdapter.java
+│   └── HorizontalAccountAdapter.java
 │
 ├── api/                          # Cấu hình mạng kết nối HTTP REST
 │   ├── RetrofitClient.java       # Khởi tạo Retrofit instance (Singleton)

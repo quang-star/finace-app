@@ -41,7 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="Quản lý tài chính thông minh trong tầm tay bạn"
+        android:text="@string/ui_quan_ly_tai_chinh_thong_minh_trong_tam_tay_ban"
         android:textColor="@color/text_secondary"
         android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@id/progressIndicator"

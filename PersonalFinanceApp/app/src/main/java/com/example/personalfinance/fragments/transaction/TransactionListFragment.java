@@ -102,9 +102,6 @@ public class TransactionListFragment extends Fragment {
         binding.tabExpense.setOnClickListener(v -> selectTypeTab("EXPENSE", binding.tabExpense));
         binding.tabIncome.setOnClickListener(v -> selectTypeTab("INCOME", binding.tabIncome));
         
-        // Hide transfer tab since it is single wallet mode
-        binding.tabTransfer.setVisibility(View.GONE);
-
         binding.btnSearch.setOnClickListener(v -> {
             if (binding.searchBarContainer.getVisibility() == View.VISIBLE) {
                 binding.searchBarContainer.setVisibility(View.GONE);
@@ -166,7 +163,7 @@ public class TransactionListFragment extends Fragment {
         Runnable updateDialogUI = new Runnable() {
             @Override
             public void run() {
-                tvYear.setText("Năm " + tempYear[0]);
+                tvYear.setText(getString(R.string.format_year, tempYear[0]));
                 for (int i = 0; i < 12; i++) {
                     TextView btn = monthButtons[i];
                     if (tempYear[0] == activeYear && i == activeMonth) {
@@ -222,9 +219,6 @@ public class TransactionListFragment extends Fragment {
         binding.tabIncome.setBackground(null);
         binding.tabIncome.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary));
 
-        binding.tabTransfer.setBackground(null);
-        binding.tabTransfer.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary));
-
         tabView.setBackgroundResource(R.drawable.bg_button_rounded);
         tabView.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#2E2E33")));
         tabView.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
@@ -251,7 +245,7 @@ public class TransactionListFragment extends Fragment {
     private void updateMonthHeader() {
         int month = currentCalendar.get(Calendar.MONTH) + 1;
         int year = currentCalendar.get(Calendar.YEAR);
-        binding.tvMonthTitle.setText("Tháng " + month + " " + year);
+        binding.tvMonthTitle.setText(getString(R.string.format_month_year, month, year));
     }
 
     private void loadTransactions() {
@@ -310,11 +304,9 @@ public class TransactionListFragment extends Fragment {
             if ("ALL".equals(selectedTypeTab)) {
                 matchType = true;
             } else if ("EXPENSE".equals(selectedTypeTab)) {
-                matchType = Constants.TYPE_EXPENSE.equalsIgnoreCase(t.getTransactionType()) && t.getTransferGroupId() == null;
+                matchType = Constants.TYPE_EXPENSE.equalsIgnoreCase(t.getTransactionType());
             } else if ("INCOME".equals(selectedTypeTab)) {
-                matchType = Constants.TYPE_INCOME.equalsIgnoreCase(t.getTransactionType()) && t.getTransferGroupId() == null;
-            } else if ("TRANSFER".equals(selectedTypeTab)) {
-                matchType = t.getTransferGroupId() != null;
+                matchType = Constants.TYPE_INCOME.equalsIgnoreCase(t.getTransactionType());
             }
 
             if (!matchType) continue;

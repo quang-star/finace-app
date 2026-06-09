@@ -1,5 +1,6 @@
 package com.example.financebackend.service.ocr;
 
+import com.example.financebackend.config.AppTime;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -149,7 +150,7 @@ public class ReceiptParser {
             }
         }
 
-        return LocalDate.now();
+        return AppTime.today();
     }
 
     private LocalDate buildDate(String year, String month, String day) {

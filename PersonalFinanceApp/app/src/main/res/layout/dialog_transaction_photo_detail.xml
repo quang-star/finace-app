@@ -49,7 +49,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="lúc 18:38 ngày 3 tháng 4, 2026"
+            android:text="@string/ui_luc_18_38_ngay_3_thang_4_2026"
             android:textColor="@color/text_secondary"
             android:textSize="12sp"
             android:background="@drawable/bg_button_rounded"
@@ -71,7 +71,7 @@
             app:tint="@color/white"
             android:clickable="true"
             android:focusable="true"
-            android:contentDescription="Close" />
+            android:contentDescription="@string/ui_close" />
     </RelativeLayout>
 
     <!-- Center Photo Card Container -->
@@ -134,7 +134,7 @@
                         android:id="@+id/tvCategoryTag"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Ăn uống"
+                        android:text="@string/ui_an_uong"
                         android:textColor="@color/white"
                         android:textSize="11sp"
                         android:textStyle="bold" />
@@ -164,7 +164,7 @@
                         android:id="@+id/tvWalletTag"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Wallet"
+                        android:text="@string/ui_wallet"
                         android:textColor="@color/white"
                         android:textSize="11sp"
                         android:textStyle="bold" />
@@ -188,7 +188,7 @@
                     android:id="@+id/tvDetailAmount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="- 87,000đ"
+                    android:text="@string/ui_87_000d"
                     android:textColor="@color/white"
                     android:textSize="26sp"
                     android:textStyle="bold" />
@@ -199,7 +199,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:text="Ăn bánh tráng nhá"
+                    android:text="@string/ui_an_banh_trang_nha"
                     android:textColor="#E4E4E7"
                     android:textSize="13sp" />
             </LinearLayout>
@@ -215,7 +215,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="24dp"
-        android:text="12 / 14"
+        android:text="@string/ui_12_14"
         android:textColor="@color/text_secondary"
         android:textSize="12sp"
         android:background="@drawable/bg_button_rounded"

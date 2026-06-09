@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_alignParentStart="true"
-            android:text="Giao dịch"
+            android:text="@string/nav_transactions"
             android:textColor="@color/text_primary"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -42,7 +42,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:focusable="true"
-                android:contentDescription="Tìm kiếm" />
+                android:contentDescription="@string/ui_tim_kiem" />
 
             <ImageView
                 android:id="@+id/btnFilter"
@@ -55,7 +55,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:focusable="true"
-                android:contentDescription="Bộ lọc" />
+                android:contentDescription="@string/ui_bo_loc" />
         </LinearLayout>
     </RelativeLayout>
 
@@ -76,7 +76,7 @@
             android:layout_height="44dp"
             android:layout_weight="1"
             android:background="@drawable/bg_input_field"
-            android:hint="Tìm kiếm ghi chú, danh mục..."
+            android:hint="@string/ui_tim_kiem_ghi_chu_danh_muc"
             android:textColor="@color/white"
             android:textColorHint="@color/text_hint"
             android:textSize="14sp"
@@ -106,7 +106,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:paddingVertical="8dp"
-            android:text="Tất cả"
+            android:text="@string/ui_tat_ca"
             android:textColor="@color/white"
             android:textSize="13sp"
             android:textStyle="bold"
@@ -122,7 +122,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:paddingVertical="8dp"
-            android:text="Chi"
+            android:text="@string/home_expense"
             android:textColor="@color/text_secondary"
             android:textSize="13sp"
             android:textStyle="bold"
@@ -136,26 +136,13 @@
             android:layout_weight="1"
             android:gravity="center"
             android:paddingVertical="8dp"
-            android:text="Thu"
+            android:text="@string/home_income"
             android:textColor="@color/text_secondary"
             android:textSize="13sp"
             android:textStyle="bold"
             android:clickable="true"
             android:focusable="true" />
 
-        <TextView
-            android:id="@+id/tabTransfer"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:paddingVertical="8dp"
-            android:text="Chuyển khoản"
-            android:textColor="@color/text_secondary"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:clickable="true"
-            android:focusable="true" />
     </LinearLayout>
 
     <!-- Month Dropdown Selector Header -->
@@ -178,7 +165,7 @@
             android:id="@+id/tvMonthTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tháng 5 2026"
+            android:text="@string/ui_thang_5_2026"
             android:textColor="@color/text_primary"
             android:textSize="15sp"
             android:textStyle="bold" />
@@ -223,7 +210,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Chi"
+                    android:text="@string/home_expense"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
 
@@ -232,7 +219,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="1.890.000đ"
+                    android:text="@string/ui_1_890_000d"
                     android:textColor="@color/expense_red"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -256,7 +243,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Thu"
+                    android:text="@string/home_income"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
 
@@ -265,7 +252,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="4.200.000đ"
+                    android:text="@string/ui_4_200_000d"
                     android:textColor="@color/income_green"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -296,7 +283,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Chưa có giao dịch"
+            android:text="@string/ui_chua_co_giao_dich"
             android:textColor="@color/text_primary"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -305,7 +292,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="Thêm giao dịch để quản lý tài chính hiệu quả hơn"
+            android:text="@string/ui_them_giao_dich_de_quan_ly_tai_chinh_hieu_qua_hon"
             android:textColor="@color/text_secondary"
             android:textSize="12sp" />
     </LinearLayout>
@@ -362,7 +349,7 @@
             app:fabSize="normal"
             app:maxImageSize="28dp"
             app:elevation="6dp"
-            android:contentDescription="Thêm nhanh" />
+            android:contentDescription="@string/home_quick_add" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

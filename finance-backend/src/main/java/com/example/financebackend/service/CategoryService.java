@@ -30,12 +30,6 @@ public class CategoryService {
                 .collect(Collectors.toList());
     }
 
-    public CategoryDTO getCategoryById(Integer categoryId) {
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + categoryId));
-        return toDTO(category);
-    }
-
     public Category findCategoryByKeyword(Integer userId, String keyword) {
         List<Category> categories = categoryRepository.findByUserUserIdOrIsDefaultTrue(userId);
         String normalizedKeyword = keyword != null ? keyword.toLowerCase(Locale.ROOT) : "";

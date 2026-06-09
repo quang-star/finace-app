@@ -125,13 +125,6 @@ public class BudgetService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public boolean checkBudgetExceeded(Integer budgetId) {
-        Budget budget = budgetRepository.findById(budgetId)
-                .orElseThrow(() -> new RuntimeException("Budget not found with id: " + budgetId));
-        BigDecimal spent = calculateSpentAmount(budget);
-        return spent.compareTo(budget.getAmountLimit()) > 0;
-    }
-
     public BudgetDTO toDTO(Budget budget) {
         BigDecimal spent = calculateSpentAmount(budget);
         BigDecimal remaining = budget.getAmountLimit().subtract(spent);

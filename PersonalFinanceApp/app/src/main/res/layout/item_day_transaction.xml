@@ -52,7 +52,7 @@
                 android:id="@+id/tvTransactionTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ăn uống"
+                android:text="@string/ui_an_uong"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary" />
@@ -62,7 +62,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="Ghi chú"
+                android:text="@string/hint_note"
                 android:textSize="11sp"
                 android:textColor="@color/text_secondary"
                 android:visibility="gone" />
@@ -83,7 +83,7 @@
                 android:id="@+id/ivThumbnail"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
+                android:scaleType="fitCenter"
                 android:src="@drawable/ic_credit_card" />
         </com.google.android.material.card.MaterialCardView>
 
@@ -92,7 +92,7 @@
             android:id="@+id/tvTransactionAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="-87,000đ"
+            android:text="@string/ui_87_000d_2"
             android:textSize="14sp"
             android:textStyle="bold"
             android:textColor="@color/expense_red"

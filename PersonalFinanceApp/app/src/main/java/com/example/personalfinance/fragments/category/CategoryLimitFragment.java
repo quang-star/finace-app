@@ -193,9 +193,9 @@ public class CategoryLimitFragment extends Fragment {
         binding.btnMonth.setVisibility(selectedMode == PeriodMode.MONTH ? View.VISIBLE : View.GONE);
 
         if (selectedMode == PeriodMode.ALL) {
-            binding.tvPeriodTitle.setText("Tất cả ngân sách");
+            binding.tvPeriodTitle.setText(R.string.label_all_budgets);
         } else if (selectedMode == PeriodMode.YEAR) {
-            binding.tvPeriodTitle.setText("Năm " + selectedYear);
+            binding.tvPeriodTitle.setText(getString(R.string.format_year, selectedYear));
         } else {
             Calendar selectedDate = Calendar.getInstance();
             selectedDate.set(selectedYear, selectedMonth, 1);
@@ -215,11 +215,11 @@ public class CategoryLimitFragment extends Fragment {
 
     private void updateSectionHeader() {
         if (selectedMode == PeriodMode.ALL) {
-            binding.tvSectionHeader.setText("Tất cả danh mục");
+            binding.tvSectionHeader.setText(R.string.label_all_categories);
         } else if (selectedMode == PeriodMode.YEAR) {
-            binding.tvSectionHeader.setText("Danh mục trong năm");
+            binding.tvSectionHeader.setText(R.string.label_categories_in_year);
         } else {
-            binding.tvSectionHeader.setText("Danh mục trong tháng");
+            binding.tvSectionHeader.setText(R.string.label_categories_in_month);
         }
     }
 
@@ -231,7 +231,7 @@ public class CategoryLimitFragment extends Fragment {
 
     private void updateBudgetActionText() {
         boolean hasSelectedMonthBudget = !getBudgetsForSelectedMonth().isEmpty();
-        binding.btnAddCategory.setText(hasSelectedMonthBudget ? "Cập nhật ngân sách" : "+ Thêm ngân sách");
+        binding.btnAddCategory.setText(hasSelectedMonthBudget ? R.string.label_update_budget : R.string.ui_them_ngan_sach);
     }
 
     private void calculateOverallOverview() {
@@ -253,7 +253,7 @@ public class CategoryLimitFragment extends Fragment {
                 requireContext(),
                 remaining < 0 ? R.color.expense_red : R.color.income_green
         ));
-        binding.tvOverallPercent.setText(percent + "% sử dụng");
+        binding.tvOverallPercent.setText(getString(R.string.format_percent_used, percent));
         binding.progressOverall.setProgress(progress);
         binding.progressOverall.setIndicatorColor(getProgressColor(percent));
     }
@@ -408,7 +408,7 @@ public class CategoryLimitFragment extends Fragment {
                     context,
                     remaining < 0 ? R.color.expense_red : R.color.income_green
             ));
-            holder.binding.tvPercentage.setText(percent + "%");
+            holder.binding.tvPercentage.setText(context.getString(R.string.percentage_format, percent));
             holder.binding.tvPercentage.setTextColor(progressColor);
             holder.binding.progressLimit.setProgress(progress);
             holder.binding.progressLimit.setIndicatorColor(progressColor);

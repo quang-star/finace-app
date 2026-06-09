@@ -43,7 +43,7 @@
                     android:backgroundTint="@color/primary"
                     android:gravity="center"
                     android:paddingVertical="10dp"
-                    android:text="Tháng"
+                    android:text="@string/home_month"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
 
@@ -54,7 +54,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:paddingVertical="10dp"
-                    android:text="Năm"
+                    android:text="@string/ui_nam"
                     android:textColor="@color/text_secondary"
                     android:textStyle="bold" />
 
@@ -65,7 +65,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:paddingVertical="10dp"
-                    android:text="Tất cả"
+                    android:text="@string/ui_tat_ca"
                     android:textColor="@color/text_secondary"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -107,7 +107,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Thu nhập"
+                            android:text="@string/title_income"
                             android:textColor="@color/text_secondary"
                             android:textSize="11sp" />
 
@@ -116,7 +116,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="0đ"
+                            android:text="@string/ui_0d"
                             android:textColor="@color/text_primary"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -153,7 +153,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Chi tiêu"
+                            android:text="@string/title_expense"
                             android:textColor="@color/text_secondary"
                             android:textSize="11sp" />
 
@@ -162,7 +162,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="0đ"
+                            android:text="@string/ui_0d"
                             android:textColor="@color/expense_red"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -184,7 +184,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Số dư"
+                    android:text="@string/ui_so_du"
                     android:textColor="@color/text_secondary"
                     android:textSize="14sp" />
 
@@ -192,7 +192,7 @@
                     android:id="@+id/tvNetBalance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0đ"
+                    android:text="@string/ui_0d"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -218,7 +218,7 @@
                     android:backgroundTint="@color/expense_red"
                     android:gravity="center"
                     android:paddingVertical="10dp"
-                    android:text="Chi tiêu"
+                    android:text="@string/title_expense"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
 
@@ -229,7 +229,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:paddingVertical="10dp"
-                    android:text="Thu nhập"
+                    android:text="@string/title_income"
                     android:textColor="@color/text_secondary"
                     android:textStyle="bold" />
             </LinearLayout>

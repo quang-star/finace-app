@@ -8,7 +8,6 @@ import com.example.personalfinance.models.Account;
 import com.example.personalfinance.models.Category;
 import com.example.personalfinance.models.ScanFeedbackRequest;
 import com.example.personalfinance.models.Transaction;
-import com.example.personalfinance.models.TransferRequest;
 import com.example.personalfinance.repositories.AccountRepository;
 import com.example.personalfinance.repositories.TransactionRepository;
 
@@ -23,7 +22,6 @@ public class TransactionViewModel extends ViewModel {
     private final MutableLiveData<List<Account>> accounts = new MutableLiveData<>();
     private final MutableLiveData<List<Category>> categories = new MutableLiveData<>();
     private final MutableLiveData<Transaction> transactionCreated = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> transferSuccess = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
 
@@ -46,10 +44,6 @@ public class TransactionViewModel extends ViewModel {
 
     public LiveData<Transaction> getTransactionCreated() {
         return transactionCreated;
-    }
-
-    public LiveData<Boolean> getTransferSuccess() {
-        return transferSuccess;
     }
 
     public LiveData<Boolean> getIsLoading() {
@@ -158,21 +152,4 @@ public class TransactionViewModel extends ViewModel {
         });
     }
 
-    public void transferFunds(TransferRequest request) {
-        isLoading.setValue(true);
-        transactionRepository.transferFunds(request, new TransactionRepository.ApiCallback<Void>() {
-            @Override
-            public void onSuccess(Void result) {
-                transferSuccess.postValue(true);
-                isLoading.postValue(false);
-            }
-
-            @Override
-            public void onError(String error) {
-                errorMessage.postValue("Lỗi chuyển tiền: " + error);
-                transferSuccess.postValue(false);
-                isLoading.postValue(false);
-            }
-        });
-    }
 }

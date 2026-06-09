@@ -9,7 +9,6 @@ import com.example.personalfinance.models.Transaction;
 import com.example.personalfinance.repositories.TransactionRepository;
 import com.example.personalfinance.utils.DateUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class HomeViewModel extends ViewModel {
@@ -18,7 +17,6 @@ public class HomeViewModel extends ViewModel {
 
     private final MutableLiveData<ReportDTO> monthlyReport = new MutableLiveData<>();
     private final MutableLiveData<ReportDTO> dailyReport = new MutableLiveData<>();
-    private final MutableLiveData<List<Transaction>> recentTransactions = new MutableLiveData<>();
     private final MutableLiveData<List<Transaction>> monthlyTransactions = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
@@ -33,10 +31,6 @@ public class HomeViewModel extends ViewModel {
 
     public LiveData<ReportDTO> getDailyReport() {
         return dailyReport;
-    }
-
-    public LiveData<List<Transaction>> getRecentTransactions() {
-        return recentTransactions;
     }
 
     public LiveData<List<Transaction>> getMonthlyTransactions() {
@@ -100,13 +94,6 @@ public class HomeViewModel extends ViewModel {
             @Override
             public void onSuccess(List<Transaction> result) {
                 monthlyTransactions.postValue(result);
-                List<Transaction> limitedList = new ArrayList<>();
-                if (result != null) {
-                    for (int i = 0; i < Math.min(10, result.size()); i++) {
-                        limitedList.add(result.get(i));
-                    }
-                }
-                recentTransactions.postValue(limitedList);
             }
 
             @Override

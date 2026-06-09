@@ -27,13 +27,13 @@
             app:tint="@color/text_primary"
             android:clickable="true"
             android:focusable="true"
-            android:contentDescription="Quay lại" />
+            android:contentDescription="@string/ui_quay_lai" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Chi tiết ngày"
+            android:text="@string/ui_chi_tiet_ngay"
             android:textColor="@color/text_primary"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -51,7 +51,7 @@
             app:tint="@color/text_primary"
             android:clickable="true"
             android:focusable="true"
-            android:contentDescription="Lịch tháng" />
+            android:contentDescription="@string/ui_lich_thang" />
     </RelativeLayout>
 
     <!-- Content -->
@@ -73,7 +73,7 @@
                 android:id="@+id/tvDayDetailDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Thứ Ba, 21/04/2026"
+                android:text="@string/ui_thu_ba_21_04_2026"
                 android:textColor="@color/text_primary"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -118,7 +118,7 @@
                             android:id="@+id/tvExpenseAmount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="236.000đ"
+                            android:text="@string/ui_236_000d"
                             android:textColor="@color/expense_red"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -127,7 +127,7 @@
                             android:id="@+id/tvExpensePercent"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="-12% so với T4"
+                            android:text="@string/ui_12_so_voi_t4"
                             android:textColor="#10B981"
                             android:textSize="10sp"
                             android:layout_marginTop="1dp"
@@ -166,7 +166,7 @@
                             android:id="@+id/tvIncomeAmount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0đ"
+                            android:text="@string/ui_0d"
                             android:textColor="@color/income_green"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -175,7 +175,7 @@
                             android:id="@+id/tvIncomePercent"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0% so với T4"
+                            android:text="@string/ui_0_so_voi_t4"
                             android:textColor="@color/text_secondary"
                             android:textSize="10sp"
                             android:layout_marginTop="1dp" />
@@ -198,7 +198,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Tất cả"
+                    android:text="@string/ui_tat_ca"
                     android:textColor="@color/white"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -214,7 +214,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Chi"
+                    android:text="@string/home_expense"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -230,7 +230,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Thu"
+                    android:text="@string/home_income"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -246,7 +246,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="GIAO DỊCH TRONG NGÀY"
+                android:text="@string/ui_giao_dich_trong_ngay"
                 android:textColor="@color/text_secondary"
                 android:textSize="11sp"
                 android:textStyle="bold"
@@ -273,7 +273,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Chưa có giao dịch"
+                    android:text="@string/ui_chua_co_giao_dich"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -282,7 +282,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Hãy thêm giao dịch để quản lý\nthu chi hiệu quả hơn."
+                    android:text="@string/ui_hay_them_giao_dich_de_quan_lynthu_chi_hieu_qua_h"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp"
                     android:gravity="center"
@@ -293,7 +293,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="Thêm giao dịch"
+                    android:text="@string/btn_add_transaction"
                     android:textColor="@color/white"
                     android:textSize="12sp"
                     android:textStyle="bold"
@@ -327,6 +327,6 @@
         app:elevation="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="Thêm giao dịch" />
+        android:contentDescription="@string/btn_add_transaction" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

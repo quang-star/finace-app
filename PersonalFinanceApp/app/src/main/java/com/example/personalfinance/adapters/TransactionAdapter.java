@@ -205,20 +205,23 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                     int month = cal.get(Calendar.MONTH) + 1;
                     int year = cal.get(Calendar.YEAR);
-                    tvMonthYear.setText("tháng " + String.format(java.util.Locale.getDefault(), "%02d", month) + " " + year);
+                    tvMonthYear.setText(itemView.getContext().getString(
+                            R.string.format_month_year_lowercase,
+                            String.format(java.util.Locale.getDefault(), "%02d", month),
+                            year));
                 }
             } catch (Exception e) {
                 tvDay.setText("--");
-                tvDayOfWeek.setText("Ngày");
+                tvDayOfWeek.setText(R.string.label_day);
                 tvMonthYear.setText(dateStr);
             }
 
             double amount = item.netAmount;
             if (amount > 0) {
-                tvNetAmount.setText("+" + CurrencyFormatter.formatVND(amount));
+                tvNetAmount.setText(itemView.getContext().getString(R.string.format_positive_amount, CurrencyFormatter.formatVND(amount)));
                 tvNetAmount.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.income_green));
             } else if (amount < 0) {
-                tvNetAmount.setText("-" + CurrencyFormatter.formatVND(Math.abs(amount)));
+                tvNetAmount.setText(itemView.getContext().getString(R.string.format_negative_amount, CurrencyFormatter.formatVND(Math.abs(amount))));
                 tvNetAmount.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.expense_red));
             } else {
                 tvNetAmount.setText(CurrencyFormatter.formatVND(0));
@@ -244,10 +247,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             // Format Amount & Color based on Type
             if (Constants.TYPE_INCOME.equals(transaction.getTransactionType())) {
-                binding.tvTransactionAmount.setText("+" + CurrencyFormatter.formatVND(transaction.getAmount()));
+                binding.tvTransactionAmount.setText(context.getString(R.string.format_positive_amount, CurrencyFormatter.formatVND(transaction.getAmount())));
                 binding.tvTransactionAmount.setTextColor(ContextCompat.getColor(context, R.color.income_green));
             } else {
-                binding.tvTransactionAmount.setText("-" + CurrencyFormatter.formatVND(transaction.getAmount()));
+                binding.tvTransactionAmount.setText(context.getString(R.string.format_negative_amount, CurrencyFormatter.formatVND(transaction.getAmount())));
                 binding.tvTransactionAmount.setTextColor(ContextCompat.getColor(context, R.color.expense_red));
             }
 

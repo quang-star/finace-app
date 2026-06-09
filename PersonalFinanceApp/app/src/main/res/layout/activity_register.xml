@@ -45,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="Tạo tài khoản mới để tiếp tục"
+            android:text="@string/ui_tao_tai_khoan_moi_de_tiep_tuc"
             android:textColor="@color/text_secondary"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -81,7 +81,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:hint="Email (tùy chọn)"
+            android:hint="@string/ui_email_tuy_chon"
             app:boxStrokeColor="@color/primary"
             app:hintTextColor="@color/primary"
             app:layout_constraintEnd_toEndOf="parent"
@@ -127,7 +127,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:hint="Nhập lại mật khẩu"
+            android:hint="@string/ui_nhap_lai_mat_khau"
             app:boxStrokeColor="@color/primary"
             app:hintTextColor="@color/primary"
             app:endIconMode="password_toggle"
@@ -158,7 +158,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Mật khẩu phải có:"
+                android:text="@string/ui_mat_khau_phai_co"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp"
                 android:layout_marginBottom="4dp" />
@@ -167,7 +167,7 @@
                 android:id="@+id/tvGuidelineLength"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="✓  ít nhất 8 ký tự"
+                android:text="@string/ui_it_nhat_8_ky_tu"
                 android:textColor="@color/accent"
                 android:textSize="12sp" />
 
@@ -175,7 +175,7 @@
                 android:id="@+id/tvGuidelineAlpha"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="✓  bao gồm chữ hoa, chữ thường"
+                android:text="@string/ui_bao_gom_chu_hoa_chu_thuong"
                 android:textColor="@color/accent"
                 android:textSize="12sp" />
 
@@ -183,7 +183,7 @@
                 android:id="@+id/tvGuidelineSymbol"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="✓  bao gồm số hoặc ký tự đặc biệt"
+                android:text="@string/ui_bao_gom_so_hoac_ky_tu_dac_biet"
                 android:textColor="@color/accent"
                 android:textSize="12sp" />
         </LinearLayout>

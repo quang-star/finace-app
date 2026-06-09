@@ -29,13 +29,13 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            android:contentDescription="Back" />
+            android:contentDescription="@string/ui_back" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Định kỳ"
+            android:text="@string/ui_dinh_ky"
             android:textColor="@color/text_primary"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -73,7 +73,7 @@
         android:id="@+id/tvActiveCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Đang hoạt động (0)"
+        android:text="@string/ui_dang_hoat_dong_0"
         android:textColor="@color/text_secondary"
         android:textSize="12sp"
         android:textStyle="bold"
@@ -117,7 +117,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Chưa có giao dịch định kỳ"
+            android:text="@string/ui_chua_co_giao_dich_dinh_ky"
             android:textColor="@color/text_primary"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -126,7 +126,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Tạo các giao dịch lặp lại để quản lý chi tiêu dễ dàng hơn."
+            android:text="@string/ui_tao_cac_giao_dich_lap_lai_de_quan_ly_chi_tieu_de"
             android:textColor="@color/text_secondary"
             android:textSize="13sp"
             android:gravity="center" />
@@ -138,7 +138,7 @@
             android:layout_marginTop="24dp"
             android:background="@drawable/bg_button_rounded"
             android:backgroundTint="@color/primary"
-            android:text="+ Thêm định kỳ"
+            android:text="@string/ui_them_dinh_ky"
             android:textColor="@color/white"
             android:textSize="14sp"
             android:textStyle="bold"

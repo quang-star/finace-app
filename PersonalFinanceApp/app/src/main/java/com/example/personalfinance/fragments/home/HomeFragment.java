@@ -59,6 +59,7 @@ public class HomeFragment extends Fragment {
     private HorizontalAccountAdapter horizontalAccountAdapter;
     private final List<Account> accountList = new ArrayList<>();
     private final List<CalendarDay> calendarDays = new ArrayList<>();
+    private final List<Budget> allBudgets = new ArrayList<>();
     private final Calendar currentCalendar = Calendar.getInstance();
     private boolean isMonthMode = true;
 
@@ -89,7 +90,6 @@ public class HomeFragment extends Fragment {
         loadDataForSelectedMonth();
         updateTabStyles();
         accountViewModel.loadAccounts(currentUser.getUserId());
-        budgetViewModel.loadBudgets(currentUser.getUserId());
     }
 
     private void setupDynamicGreeting() {
@@ -166,7 +166,7 @@ public class HomeFragment extends Fragment {
                     String dayStr = day.getDayNumber() < 10 ? "0" + day.getDayNumber() : String.valueOf(day.getDayNumber());
                     String monthStr = month < 10 ? "0" + month : String.valueOf(month);
 
-                    binding.btnSelectedDayPill.setText("Đã chọn " + dayStr + "/" + monthStr + " ✓");
+                    binding.btnSelectedDayPill.setText(getString(R.string.home_selected_day_format, dayStr, monthStr));
                     binding.btnSelectedDayPill.setVisibility(View.VISIBLE);
 
                     binding.btnSelectedDayPill.setOnClickListener(v -> {
@@ -295,7 +295,7 @@ public class HomeFragment extends Fragment {
         Runnable updateDialogUI = new Runnable() {
             @Override
             public void run() {
-                tvYear.setText("Năm " + tempYear[0]);
+                tvYear.setText(getString(R.string.home_year_format, tempYear[0]));
                 for (int i = 0; i < 12; i++) {
                     TextView btn = monthButtons[i];
                     if (tempYear[0] == activeYear && i == activeMonth) {
@@ -340,7 +340,7 @@ public class HomeFragment extends Fragment {
         int year = currentCalendar.get(Calendar.YEAR);
         
         // Update Title matching CapMoney format exactly: "tháng 4 2026"
-        binding.tvMonthTitle.setText("tháng " + month + " " + year);
+        binding.tvMonthTitle.setText(getString(R.string.home_month_title_format, month, year));
 
         if (calendarAdapter != null) {
             calendarAdapter.clearSelection();
@@ -351,9 +351,11 @@ public class HomeFragment extends Fragment {
 
         // Show a beautiful, empty/placeholder calendar grid first so that it is visible immediately!
         generateCalendarGrid(new ArrayList<>());
+        renderBudgetSummary();
         updateTabStyles();
 
         viewModel.fetchDashboardData(currentUser.getUserId(), month, year);
+        budgetViewModel.loadBudgets(currentUser.getUserId());
         if (!isMonthMode) {
             String dateStr = DateUtils.formatApiDate(currentCalendar.getTime());
             viewModel.fetchDailyReport(currentUser.getUserId(), dateStr);
@@ -366,12 +368,7 @@ public class HomeFragment extends Fragment {
                 binding.tvExpenseAmount.setText(CurrencyFormatter.formatVND(report.getTotalExpense()));
                 binding.tvIncomeAmount.setText(CurrencyFormatter.formatVND(report.getTotalIncome()));
                 
-                // Update green badge "Hôm nay chưa chi tiêu"
-                if (report.getTotalExpense() > 0) {
-                    binding.tvBadgeText.setText("Hôm nay đã tiêu " + CurrencyFormatter.formatVND(report.getTotalExpense()));
-                } else {
-                    binding.tvBadgeText.setText("Hôm nay chưa chi tiêu");
-                }
+                updateExpenseBadge(report.getTotalExpense(), false);
             }
         });
 
@@ -380,11 +377,7 @@ public class HomeFragment extends Fragment {
                 binding.tvExpenseAmount.setText(CurrencyFormatter.formatVND(report.getTotalExpense()));
                 binding.tvIncomeAmount.setText(CurrencyFormatter.formatVND(report.getTotalIncome()));
                 
-                if (report.getTotalExpense() > 0) {
-                    binding.tvBadgeText.setText("Hôm nay đã tiêu " + CurrencyFormatter.formatVND(report.getTotalExpense()));
-                } else {
-                    binding.tvBadgeText.setText("Hôm nay chưa chi tiêu");
-                }
+                updateExpenseBadge(report.getTotalExpense(), true);
             }
         });
 
@@ -407,30 +400,88 @@ public class HomeFragment extends Fragment {
         });
 
         budgetViewModel.getBudgets().observe(getViewLifecycleOwner(), budgets -> {
-            if (budgets != null && !budgets.isEmpty()) {
-                double totalLimit = 0;
-                double totalSpent = 0;
-                for (Budget b : budgets) {
-                    totalLimit += b.getAmountLimit();
-                    totalSpent += b.getSpentAmount();
-                }
-
-                binding.tvBudgetTotal.setText("Hạn mức: " + CurrencyFormatter.formatVND(totalLimit));
-                binding.tvBudgetSpent.setText("Đã dùng: " + CurrencyFormatter.formatVND(totalSpent));
-
-                int percent = 0;
-                if (totalLimit > 0) {
-                    percent = (int) Math.min(100, (totalSpent / totalLimit) * 100);
-                }
-                binding.tvBudPercent.setText(percent + "%");
-                binding.progressBudget.setProgress(percent);
-            } else {
-                binding.tvBudgetTotal.setText("Hạn mức: 0đ");
-                binding.tvBudgetSpent.setText("Đã dùng: 0đ");
-                binding.tvBudPercent.setText("0%");
-                binding.progressBudget.setProgress(0);
+            allBudgets.clear();
+            if (budgets != null) {
+                allBudgets.addAll(budgets);
             }
+            renderBudgetSummary();
         });
+    }
+
+    private void updateExpenseBadge(double totalExpense, boolean dayMode) {
+        if (dayMode) {
+            Calendar today = Calendar.getInstance();
+            boolean isToday = today.get(Calendar.YEAR) == currentCalendar.get(Calendar.YEAR)
+                    && today.get(Calendar.DAY_OF_YEAR) == currentCalendar.get(Calendar.DAY_OF_YEAR);
+            if (isToday) {
+                binding.tvBadgeText.setText(totalExpense > 0
+                        ? getString(R.string.home_today_spent_format, CurrencyFormatter.formatVND(totalExpense))
+                        : getString(R.string.home_today_no_expense));
+            } else {
+                int day = currentCalendar.get(Calendar.DAY_OF_MONTH);
+                int month = currentCalendar.get(Calendar.MONTH) + 1;
+                binding.tvBadgeText.setText(totalExpense > 0
+                        ? getString(R.string.home_day_spent_format, day, month, CurrencyFormatter.formatVND(totalExpense))
+                        : getString(R.string.home_day_no_expense_format, day, month));
+            }
+            return;
+        }
+
+        int month = currentCalendar.get(Calendar.MONTH) + 1;
+        binding.tvBadgeText.setText(totalExpense > 0
+                ? getString(R.string.home_month_spent_format, month, CurrencyFormatter.formatVND(totalExpense))
+                : getString(R.string.home_month_no_expense_format, month));
+    }
+
+    private void renderBudgetSummary() {
+        if (binding == null) return;
+
+        int month = currentCalendar.get(Calendar.MONTH) + 1;
+        int year = currentCalendar.get(Calendar.YEAR);
+        binding.tvBudgetTitle.setText(getString(R.string.home_budget_title_format, month, year));
+
+        double totalLimit = 0;
+        double totalSpent = 0;
+        for (Budget budget : allBudgets) {
+            if (isBudgetInSelectedMonth(budget)) {
+                totalLimit += budget.getAmountLimit();
+                totalSpent += budget.getSpentAmount();
+            }
+        }
+
+        binding.tvBudgetTotal.setText(getString(R.string.home_budget_limit_format, CurrencyFormatter.formatVND(totalLimit)));
+        binding.tvBudgetSpent.setText(getString(R.string.home_budget_spent_format, CurrencyFormatter.formatVND(totalSpent)));
+
+        int actualPercent = totalLimit > 0
+                ? (int) Math.round((totalSpent / totalLimit) * 100)
+                : 0;
+        binding.tvBudPercent.setText(getString(R.string.percentage_format, actualPercent));
+        binding.progressBudget.setProgress(Math.min(100, Math.max(0, actualPercent)));
+    }
+
+    private boolean isBudgetInSelectedMonth(Budget budget) {
+        java.util.Date startDate = DateUtils.parseApiDate(budget.getStartDate());
+        java.util.Date endDate = DateUtils.parseApiDate(budget.getEndDate());
+        if (startDate == null && endDate == null) return false;
+
+        Calendar monthStart = (Calendar) currentCalendar.clone();
+        monthStart.set(Calendar.DAY_OF_MONTH, 1);
+        resetTime(monthStart, 0, 0, 0, 0);
+
+        Calendar monthEnd = (Calendar) monthStart.clone();
+        monthEnd.set(Calendar.DAY_OF_MONTH, monthEnd.getActualMaximum(Calendar.DAY_OF_MONTH));
+        resetTime(monthEnd, 23, 59, 59, 999);
+
+        java.util.Date budgetStart = startDate != null ? startDate : endDate;
+        java.util.Date budgetEnd = endDate != null ? endDate : startDate;
+        return !budgetStart.after(monthEnd.getTime()) && !budgetEnd.before(monthStart.getTime());
+    }
+
+    private void resetTime(Calendar calendar, int hour, int minute, int second, int millisecond) {
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, second);
+        calendar.set(Calendar.MILLISECOND, millisecond);
     }
 
     private void generateCalendarGrid(List<Transaction> transactions) {

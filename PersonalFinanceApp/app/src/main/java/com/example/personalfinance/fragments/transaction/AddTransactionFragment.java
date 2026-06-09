@@ -145,8 +145,8 @@ public class AddTransactionFragment extends DialogFragment {
                 binding.edtTitle.setText(title);
             }
             if (transactionId > 0) {
-                binding.tvScreenTitle.setText("Chi tiết giao dịch");
-                binding.btnSave.setText("Cập nhật giao dịch");
+                binding.tvScreenTitle.setText(R.string.label_transaction_details);
+                binding.btnSave.setText(R.string.label_update_transaction);
             }
             if (existingImageUrl != null && !existingImageUrl.isEmpty()) {
                 String baseUrl = RetrofitClient.getClient().baseUrl().toString();
@@ -821,7 +821,7 @@ public class AddTransactionFragment extends DialogFragment {
                 } else {
                     Toast.makeText(
                             requireContext(),
-                            "Bạn đã dùng " + Math.round(warningBudget.getPercentUsed()) + "% hạn mức " + getBudgetDisplayName(warningBudget),
+                            getString(R.string.budget_approaching_limit_warning, Math.round(warningBudget.getPercentUsed()), getBudgetDisplayName(warningBudget)),
                             Toast.LENGTH_LONG
                     ).show();
                     finishSaveTransaction();
@@ -877,18 +877,16 @@ public class AddTransactionFragment extends DialogFragment {
         }
 
         View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_limit_warning, null, false);
-        android.app.Dialog dialog = new android.app.Dialog(requireContext());
+        BottomSheetDialog dialog = new BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme);
         dialog.setContentView(dialogView);
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        }
 
         double overAmount = Math.max(0, budget.getSpentAmount() - budget.getAmountLimit());
         ((TextView) dialogView.findViewById(R.id.tvCategoryAlertName)).setText(getBudgetDisplayName(budget));
         ((TextView) dialogView.findViewById(R.id.tvLimitVal)).setText(CurrencyFormatter.formatVND(budget.getAmountLimit()));
         ((TextView) dialogView.findViewById(R.id.tvSpentVal)).setText(CurrencyFormatter.formatVND(budget.getSpentAmount()));
         ((TextView) dialogView.findViewById(R.id.tvOverVal)).setText(CurrencyFormatter.formatVND(overAmount));
-        ((TextView) dialogView.findViewById(R.id.tvOverPercentVal)).setText(Math.round(budget.getPercentUsed()) + "%");
+        ((TextView) dialogView.findViewById(R.id.tvOverPercentVal)).setText(
+                getString(R.string.percentage_format, Math.round(budget.getPercentUsed())));
 
         dialogView.findViewById(R.id.btnDismiss).setOnClickListener(v -> {
             dialog.dismiss();
@@ -896,7 +894,13 @@ public class AddTransactionFragment extends DialogFragment {
         });
         dialogView.findViewById(R.id.btnViewDetails).setOnClickListener(v -> {
             dialog.dismiss();
-            finishSaveTransaction();
+            if (onTransactionSavedListener != null) {
+                onTransactionSavedListener.onTransactionSaved();
+            }
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).setSelectedTab(R.id.nav_budget);
+            }
+            dismiss();
         });
         dialog.setOnCancelListener(d -> finishSaveTransaction());
         dialog.show();
@@ -909,30 +913,10 @@ public class AddTransactionFragment extends DialogFragment {
         if (budget.getBudgetName() != null && !budget.getBudgetName().trim().isEmpty()) {
             return budget.getBudgetName();
         }
-        return "ngân sách";
+        return getString(R.string.budget_fallback_display_name);
     }
 
     private void finishSaveTransaction() {
-        if (onTransactionSavedListener != null) {
-            onTransactionSavedListener.onTransactionSaved();
-        } else {
-            if (getActivity() instanceof MainActivity) {
-                ((MainActivity) getActivity()).setSelectedTab(R.id.nav_home);
-            }
-        }
-
-        if (getActivity() != null && !(getActivity() instanceof MainActivity)) {
-            getActivity().finish();
-        }
-        dismiss();
-    }
-
-    private void completeSaveTransaction() {
-        if (binding != null) {
-            binding.btnSave.setEnabled(true);
-        }
-        Toast.makeText(requireContext(), "Lưu giao dịch thành công!", Toast.LENGTH_SHORT).show();
-
         if (onTransactionSavedListener != null) {
             onTransactionSavedListener.onTransactionSaved();
         } else {

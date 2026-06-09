@@ -53,15 +53,15 @@ public class DayTransactionsAdapter extends RecyclerView.Adapter<DayTransactions
             else if (position == 3) timeStr = "18:30";
         }
 
-        String categoryName = tx.getCategoryName() != null ? tx.getCategoryName() : "Khác";
-        holder.tvSubtitle.setText(timeStr + "  •  " + categoryName);
+        String categoryName = tx.getCategoryName() != null ? tx.getCategoryName() : context.getString(R.string.label_other);
+        holder.tvSubtitle.setText(context.getString(R.string.format_time_category, timeStr, categoryName));
 
         double amount = tx.getAmount();
         if ("EXPENSE".equalsIgnoreCase(tx.getTransactionType()) || amount < 0) {
-            holder.tvAmount.setText("-" + CurrencyFormatter.formatVND(Math.abs(amount)));
+            holder.tvAmount.setText(context.getString(R.string.format_negative_amount, CurrencyFormatter.formatVND(Math.abs(amount))));
             holder.tvAmount.setTextColor(Color.parseColor("#F85149")); // red
         } else {
-            holder.tvAmount.setText("+" + CurrencyFormatter.formatVND(amount));
+            holder.tvAmount.setText(context.getString(R.string.format_positive_amount, CurrencyFormatter.formatVND(amount)));
             holder.tvAmount.setTextColor(Color.parseColor("#22C55E")); // green
         }
 

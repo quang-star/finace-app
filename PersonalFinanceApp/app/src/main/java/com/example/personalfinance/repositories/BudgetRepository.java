@@ -74,22 +74,4 @@ public class BudgetRepository {
                 });
     }
 
-    public void deleteBudget(int id, ApiCallback<Void> callback) {
-        RetrofitClient.getApiService().deleteBudget(id)
-                .enqueue(new Callback<ApiResponse<Void>>() {
-                    @Override
-                    public void onResponse(Call<ApiResponse<Void>> call, Response<ApiResponse<Void>> response) {
-                        if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                            callback.onSuccess(null);
-                        } else {
-                            callback.onError(response.body() != null ? response.body().getMessage() : "Lỗi không xác định khi xóa ngân sách");
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ApiResponse<Void>> call, Throwable t) {
-                        callback.onError(t.getMessage());
-                    }
-                });
-    }
 }

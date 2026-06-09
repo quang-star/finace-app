@@ -1,5 +1,6 @@
 package com.example.financebackend.service;
 
+import com.example.financebackend.config.AppTime;
 import com.example.financebackend.dto.TransactionDTO;
 import com.example.financebackend.model.*;
 import com.example.financebackend.repository.*;
@@ -160,7 +161,7 @@ public class TransactionService {
         if (transactionDate == null) {
             throw new RuntimeException("Transaction date is required");
         }
-        if (transactionDate.isAfter(LocalDate.now())) {
+        if (transactionDate.isAfter(AppTime.today())) {
             throw new RuntimeException("Không thể tạo giao dịch cho ngày trong tương lai");
         }
     }
@@ -176,7 +177,6 @@ public class TransactionService {
                 .accountName(transaction.getAccount().getAccountName())
                 .categoryId(transaction.getCategory() != null ? transaction.getCategory().getCategoryId() : null)
                 .categoryName(transaction.getCategory() != null ? transaction.getCategory().getCategoryName() : null)
-                .transferGroupId(transaction.getTransferGroup() != null ? transaction.getTransferGroup().getTransferGroupId() : null)
                 .title(transaction.getTitle())
                 .amount(transaction.getAmount())
                 .transactionType(transaction.getTransactionType())

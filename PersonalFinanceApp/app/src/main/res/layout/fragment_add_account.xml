@@ -88,7 +88,7 @@
             android:id="@+id/edtBalance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Số dư ban đầu"
+            android:hint="@string/ui_so_du_ban_dau"
             android:inputType="numberDecimal"
             android:textColor="@color/text_primary" />
     </com.google.android.material.textfield.TextInputLayout>

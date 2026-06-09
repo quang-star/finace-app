@@ -254,7 +254,7 @@ public class AccountDetailsFragment extends Fragment {
             binding.tvWalletBalance.setTextColor(ContextCompat.getColor(requireContext(), R.color.income_green));
         }
 
-        binding.tvTxCount.setText(filteredTransactionList.size() + " giao dịch");
+        binding.tvTxCount.setText(getString(R.string.format_transaction_count, filteredTransactionList.size()));
         binding.tvWalletIncome.setText(CurrencyFormatter.formatVND(totalIncome));
         binding.tvWalletExpense.setText(CurrencyFormatter.formatVND(totalExpense));
     }

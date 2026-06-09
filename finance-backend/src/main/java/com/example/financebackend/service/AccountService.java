@@ -30,12 +30,6 @@ public class AccountService {
                 .collect(Collectors.toList());
     }
 
-    public AccountDTO getAccountById(Integer accountId) {
-        Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new RuntimeException("Account not found with id: " + accountId));
-        return toDTO(account);
-    }
-
     @Transactional
     public AccountDTO createAccount(AccountDTO dto) {
         User user = userRepository.findById(dto.getUserId())

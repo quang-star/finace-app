@@ -81,7 +81,6 @@ public class GeminiService {
         properties.put("category", Map.of("type", "STRING"));
 
         responseSchema.put("properties", properties);
-        responseSchema.put("required", new String[]{"merchant", "amount", "date", "category"});
         generationConfig.put("responseSchema", responseSchema);
 
         requestBody.put("generationConfig", generationConfig);

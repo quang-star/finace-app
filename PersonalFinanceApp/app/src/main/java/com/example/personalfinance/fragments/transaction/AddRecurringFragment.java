@@ -112,7 +112,7 @@ public class AddRecurringFragment extends BottomSheetDialogFragment {
         fetchCategories();
 
         if (editingItem != null) {
-            binding.tvFormTitle.setText("Chỉnh sửa định kỳ");
+            binding.tvFormTitle.setText(R.string.label_edit_recurring);
             binding.edtAmount.setText(String.valueOf(editingItem.getAmount()));
             binding.edtNote.setText(editingItem.getNote());
             selectedStartDate = editingItem.getStartDate();
@@ -255,11 +255,11 @@ public class AddRecurringFragment extends BottomSheetDialogFragment {
         
         // Update repeat every interval suffix
         if ("DAILY".equalsIgnoreCase(selectedFreq)) {
-            binding.tvIntervalSuffix.setText("ngày");
+            binding.tvIntervalSuffix.setText(R.string.label_day_interval);
         } else if ("WEEKLY".equalsIgnoreCase(selectedFreq)) {
-            binding.tvIntervalSuffix.setText("tuần");
+            binding.tvIntervalSuffix.setText(R.string.label_week_interval);
         } else if ("MONTHLY".equalsIgnoreCase(selectedFreq)) {
-            binding.tvIntervalSuffix.setText("tháng");
+            binding.tvIntervalSuffix.setText(R.string.label_month_interval);
         }
     }
 
@@ -322,9 +322,9 @@ public class AddRecurringFragment extends BottomSheetDialogFragment {
             builder.setItems(days, (dialog, which) -> {
                 selectedDayNum = which + 1;
                 if ("MONTHLY".equalsIgnoreCase(selectedFreq)) {
-                    binding.tvDayOfMonth.setText("Mỗi ngày " + selectedDayNum);
+                    binding.tvDayOfMonth.setText(getString(R.string.format_every_day, selectedDayNum));
                 } else {
-                    binding.tvDayOfMonth.setText("Ngày " + selectedDayNum + " hằng năm");
+                    binding.tvDayOfMonth.setText(getString(R.string.format_annual_day, selectedDayNum));
                 }
             });
             builder.show();
@@ -410,10 +410,7 @@ public class AddRecurringFragment extends BottomSheetDialogFragment {
 
             @Override
             public void onFailure(@NonNull Call<ApiResponse<RecurringTransaction>> call, @NonNull Throwable t) {
-                // local fallback save mock notification
-                Toast.makeText(requireContext(), "Đã lưu giao dịch định kỳ thành công!", Toast.LENGTH_SHORT).show();
-                if (savedListener != null) savedListener.onSaved();
-                dismiss();
+                Toast.makeText(requireContext(), "Không thể lưu giao dịch định kỳ: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         };
 

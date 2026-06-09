@@ -1,17 +1,10 @@
 package com.example.personalfinance.repositories;
 
 import com.example.personalfinance.api.RetrofitClient;
-import com.example.personalfinance.models.AiProductClassificationResult;
-import com.example.personalfinance.models.AiProductLog;
-import com.example.personalfinance.models.AiScanResult;
 import com.example.personalfinance.models.ApiResponse;
-import com.example.personalfinance.models.OcrRequest;
-import com.example.personalfinance.models.ProductClassifyRequest;
 import com.example.personalfinance.models.ReportDTO;
-import com.example.personalfinance.models.SaveProductLogRequest;
 import com.example.personalfinance.models.ScanFeedbackRequest;
 import com.example.personalfinance.models.Transaction;
-import com.example.personalfinance.models.TransferRequest;
 
 import java.util.List;
 
@@ -102,25 +95,6 @@ public class TransactionRepository {
                 });
     }
 
-    public void transferFunds(TransferRequest request, ApiCallback<Void> callback) {
-        RetrofitClient.getApiService().transferFunds(request)
-                .enqueue(new Callback<ApiResponse<Void>>() {
-                    @Override
-                    public void onResponse(Call<ApiResponse<Void>> call, Response<ApiResponse<Void>> response) {
-                        if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                            callback.onSuccess(null);
-                        } else {
-                            callback.onError(response.body() != null ? response.body().getMessage() : "Lỗi không xác định khi chuyển khoản");
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ApiResponse<Void>> call, Throwable t) {
-                        callback.onError(t.getMessage());
-                    }
-                });
-    }
-
     public void getMonthlyReport(int userId, int year, int month, ApiCallback<ReportDTO> callback) {
         RetrofitClient.getApiService().getMonthlyReport(userId, year, month)
                 .enqueue(new Callback<ApiResponse<ReportDTO>>() {
@@ -178,25 +152,6 @@ public class TransactionRepository {
                 });
     }
 
-    public void classifyBill(OcrRequest request, ApiCallback<AiScanResult> callback) {
-        RetrofitClient.getApiService().classifyBill(request)
-                .enqueue(new Callback<ApiResponse<AiScanResult>>() {
-                    @Override
-                    public void onResponse(Call<ApiResponse<AiScanResult>> call, Response<ApiResponse<AiScanResult>> response) {
-                        if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                            callback.onSuccess(response.body().getData());
-                        } else {
-                            callback.onError(response.body() != null ? response.body().getMessage() : "Lỗi nhận diện hóa đơn");
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ApiResponse<AiScanResult>> call, Throwable t) {
-                        callback.onError(t.getMessage());
-                    }
-                });
-    }
-
     public void submitScanFeedback(ScanFeedbackRequest request, ApiCallback<String> callback) {
         RetrofitClient.getApiService().submitScanFeedback(request)
                 .enqueue(new Callback<ApiResponse<String>>() {
@@ -216,41 +171,4 @@ public class TransactionRepository {
                 });
     }
 
-    public void classifyProduct(ProductClassifyRequest request, ApiCallback<AiProductClassificationResult> callback) {
-        RetrofitClient.getApiService().classifyProduct(request)
-                .enqueue(new Callback<ApiResponse<AiProductClassificationResult>>() {
-                    @Override
-                    public void onResponse(Call<ApiResponse<AiProductClassificationResult>> call, Response<ApiResponse<AiProductClassificationResult>> response) {
-                        if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                            callback.onSuccess(response.body().getData());
-                        } else {
-                            callback.onError(response.body() != null ? response.body().getMessage() : "Lỗi nhận diện sản phẩm");
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ApiResponse<AiProductClassificationResult>> call, Throwable t) {
-                        callback.onError(t.getMessage());
-                    }
-                });
-    }
-
-    public void saveProductLog(SaveProductLogRequest request, ApiCallback<AiProductLog> callback) {
-        RetrofitClient.getApiService().saveProductLog(request)
-                .enqueue(new Callback<ApiResponse<AiProductLog>>() {
-                    @Override
-                    public void onResponse(Call<ApiResponse<AiProductLog>> call, Response<ApiResponse<AiProductLog>> response) {
-                        if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                            callback.onSuccess(response.body().getData());
-                        } else {
-                            callback.onError(response.body() != null ? response.body().getMessage() : "Lỗi lưu nhật ký sản phẩm");
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ApiResponse<AiProductLog>> call, Throwable t) {
-                        callback.onError(t.getMessage());
-                    }
-                });
-    }
 }

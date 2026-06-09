@@ -14,7 +14,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:baselineAligned="false" android:orientation="horizontal"
         android:gravity="center_vertical"
         android:padding="16dp"
         android:background="?attr/selectableItemBackground">
@@ -52,7 +52,7 @@
                 android:id="@+id/tvTransactionTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tiêu đề giao dịch"
+                android:text="@string/ui_tieu_de_giao_dich"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary" />
@@ -62,7 +62,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:text="Danh mục"
+                android:text="@string/title_categories"
                 android:textSize="12sp"
                 android:textColor="@color/text_secondary" />
         </LinearLayout>
@@ -78,7 +78,7 @@
                 android:id="@+id/tvTransactionAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0 ₫"
+                android:text="@string/ui_0_2"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary" />
@@ -88,7 +88,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:text="dd/MM/yyyy"
+                android:text="@string/ui_dd_mm_yyyy"
                 android:textSize="12sp"
                 android:textColor="@color/text_hint" />
         </LinearLayout>

@@ -108,7 +108,7 @@ public class TransactionPhotoDetailDialog extends DialogFragment {
         tvDetailNote.setText(noteText);
 
         // Display index indicator (e.g. "12 / 14")
-        tvDetailIndex.setText((position + 1) + " / " + totalCount);
+        tvDetailIndex.setText(getString(R.string.format_photo_index, position + 1, totalCount));
 
         // Format and display date/time matching Screen 7 (e.g. "lúc 18:38 ngày 3 tháng 4, 2026")
         String dateStr = transaction.getTransactionDate();

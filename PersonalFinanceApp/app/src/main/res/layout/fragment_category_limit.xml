@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Ngân sách danh mục"
+            android:text="@string/ui_ngan_sach_danh_muc"
             android:textColor="@color/text_primary"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -32,7 +32,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Cài đặt"
+            android:contentDescription="@string/title_settings"
             android:padding="8dp"
             android:src="@drawable/ic_settings"
             app:tint="@color/text_primary" />
@@ -94,7 +94,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
-                android:orientation="horizontal">
+                android:baselineAligned="false" android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -105,7 +105,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tổng ngân sách"
+                        android:text="@string/ui_tong_ngan_sach"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
 
@@ -129,7 +129,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Đã chi"
+                        android:text="@string/budget_warning_label_spent"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
 
@@ -153,7 +153,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Còn lại"
+                        android:text="@string/ui_con_lai"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
 
@@ -188,7 +188,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Cập nhật đến hôm nay"
+                    android:text="@string/ui_cap_nhat_den_hom_nay"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
 
@@ -234,7 +234,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
-                android:text="Tháng"
+                android:text="@string/home_month"
                 android:textColor="@color/white"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -247,7 +247,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
-                android:text="Năm"
+                android:text="@string/ui_nam"
                 android:textColor="@color/text_secondary"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -260,7 +260,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
-                android:text="Tất cả"
+                android:text="@string/ui_tat_ca"
                 android:textColor="@color/text_secondary"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -317,7 +317,7 @@
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="32dp"
         android:gravity="center"
-        android:text="Chưa có ngân sách cho kỳ này. Hãy thêm ngân sách để theo dõi chi tiêu theo danh mục."
+        android:text="@string/ui_chua_co_ngan_sach_cho_ky_nay_hay_them_ngan_sach"
         android:textColor="@color/text_secondary"
         android:textSize="14sp"
         android:visibility="gone"
@@ -344,7 +344,7 @@
         android:layout_marginBottom="20dp"
         android:background="@drawable/bg_button_rounded"
         android:backgroundTint="@color/primary"
-        android:text="+ Thêm ngân sách"
+        android:text="@string/ui_them_ngan_sach"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="14sp"

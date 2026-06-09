@@ -40,7 +40,7 @@
                         android:id="@+id/tvGreeting"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Chúc ngủ ngon 🌙"
+                        tools:text="Chúc ngủ ngon"
                         android:textColor="@color/text_secondary"
                         android:textSize="14sp" />
 
@@ -48,7 +48,7 @@
                         android:id="@+id/tvUsername"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sangrich"
+                        tools:text="Sangrich"
                         android:textColor="@color/text_primary"
                         android:textSize="24sp"
                         android:textStyle="bold"
@@ -77,7 +77,7 @@
                             android:id="@+id/tvBadgeText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Hôm nay chưa chi tiêu"
+                            tools:text="@string/home_today_no_expense"
                             android:textColor="#10B981"
                             android:textSize="11sp"
                             android:layout_marginStart="4dp"
@@ -125,7 +125,7 @@
                         android:id="@+id/tvDayLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Ngày"
+                        android:text="@string/home_day"
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp"
                         android:textStyle="bold" />
@@ -134,7 +134,7 @@
                         android:id="@+id/tvDayBubbleText"
                         android:layout_width="16dp"
                         android:layout_height="16dp"
-                        android:text="2"
+                        tools:text="2"
                         android:textColor="@color/white"
                         android:textSize="10sp"
                         android:background="@drawable/bg_circle"
@@ -158,7 +158,7 @@
                         android:id="@+id/tvMonthLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tháng"
+                        android:text="@string/home_month"
                         android:textColor="@color/text_primary"
                         android:textSize="13sp"
                         android:textStyle="bold" />
@@ -175,7 +175,7 @@
                         android:id="@+id/tvMonthBubbleText"
                         android:layout_width="16dp"
                         android:layout_height="16dp"
-                        android:text="3"
+                        tools:text="3"
                         android:textColor="@color/white"
                         android:textSize="10sp"
                         android:background="@drawable/bg_circle"
@@ -224,7 +224,7 @@
                             android:id="@+id/tvExpenseAmount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="236,000đ"
+                            tools:text="236.000đ"
                             android:textColor="@color/text_primary"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -232,7 +232,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Chi"
+                            android:text="@string/home_expense"
                             android:textColor="@color/text_secondary"
                             android:textSize="11sp"
                             android:layout_marginTop="2dp" />
@@ -270,7 +270,7 @@
                             android:id="@+id/tvIncomeAmount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0đ"
+                            tools:text="0đ"
                             android:textColor="@color/text_primary"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -278,7 +278,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Thu"
+                            android:text="@string/home_income"
                             android:textColor="@color/text_secondary"
                             android:textSize="11sp"
                             android:layout_marginTop="2dp" />
@@ -304,7 +304,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="VÍ CỦA TÔI"
+                        android:text="@string/home_my_wallets"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp"
                         android:textStyle="bold"
@@ -325,7 +325,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="+ Thêm ví"
+                            android:text="@string/home_add_wallet"
                             android:textColor="@color/primary"
                             android:textSize="12sp"
                             android:textStyle="bold" />
@@ -376,7 +376,7 @@
                         android:id="@+id/tvMonthTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="tháng 4 2026"
+                        tools:text="tháng 4 2026"
                         android:textColor="@color/text_primary"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -414,13 +414,13 @@
                 android:paddingVertical="8dp"
                 android:layout_marginBottom="4dp">
 
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="T2" android:textColor="@color/text_secondary" android:gravity="center" android:textSize="12sp" />
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="T3" android:textColor="@color/text_secondary" android:gravity="center" android:textSize="12sp" />
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="T4" android:textColor="@color/text_secondary" android:gravity="center" android:textSize="12sp" />
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="T5" android:textColor="@color/text_secondary" android:gravity="center" android:textSize="12sp" />
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="T6" android:textColor="@color/text_secondary" android:gravity="center" android:textSize="12sp" />
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="T7" android:textColor="@color/text_secondary" android:gravity="center" android:textSize="12sp" />
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="CN" android:textColor="@color/text_secondary" android:gravity="center" android:textSize="12sp" />
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/home_weekday_monday" android:textColor="@color/text_secondary" android:gravity="center" android:textSize="12sp" />
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/home_weekday_tuesday" android:textColor="@color/text_secondary" android:gravity="center" android:textSize="12sp" />
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/home_weekday_wednesday" android:textColor="@color/text_secondary" android:gravity="center" android:textSize="12sp" />
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/home_weekday_thursday" android:textColor="@color/text_secondary" android:gravity="center" android:textSize="12sp" />
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/home_weekday_friday" android:textColor="@color/text_secondary" android:gravity="center" android:textSize="12sp" />
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/home_weekday_saturday" android:textColor="@color/text_secondary" android:gravity="center" android:textSize="12sp" />
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/home_weekday_sunday" android:textColor="@color/text_secondary" android:gravity="center" android:textSize="12sp" />
             </LinearLayout>
 
             <!-- Monthly Calendar Grid Card Container -->
@@ -464,9 +464,10 @@
                         android:layout_marginBottom="12dp">
 
                         <TextView
+                            android:id="@+id/tvBudgetTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="NGÂN SÁCH THÁNG NÀY"
+                            tools:text="NGÂN SÁCH THÁNG 6/2026"
                             android:textColor="@color/text_secondary"
                             android:textSize="12sp"
                             android:textStyle="bold"
@@ -477,7 +478,7 @@
                             android:id="@+id/tvBudPercent"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0%"
+                            tools:text="0%"
                             android:textColor="@color/primary"
                             android:textSize="12sp"
                             android:textStyle="bold"
@@ -503,7 +504,7 @@
                             android:id="@+id/tvBudgetSpent"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Đã dùng: 0đ"
+                            tools:text="Đã dùng: 0đ"
                             android:textColor="@color/text_primary"
                             android:textSize="12sp"
                             android:layout_alignParentStart="true" />
@@ -512,7 +513,7 @@
                             android:id="@+id/tvBudgetTotal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Hạn mức: 0đ"
+                            tools:text="Hạn mức: 0đ"
                             android:textColor="@color/text_secondary"
                             android:textSize="12sp"
                             android:layout_alignParentEnd="true" />
@@ -537,7 +538,7 @@
         app:elevation="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="Thêm nhanh" />
+        android:contentDescription="@string/home_quick_add" />
 
     <!-- Overlay Selection Pill Button -->
     <com.google.android.material.button.MaterialButton
@@ -545,7 +546,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
-        android:text="Đã chọn 21/04 ✓"
+        tools:text="Đã chọn 21/04 ✓"
         android:textColor="@color/white"
         android:textSize="14sp"
         android:textStyle="bold"

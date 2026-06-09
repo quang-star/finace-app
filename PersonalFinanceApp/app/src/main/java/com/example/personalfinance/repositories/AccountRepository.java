@@ -75,25 +75,6 @@ public class AccountRepository {
                 });
     }
 
-    public void deleteAccount(int id, ApiCallback<Void> callback) {
-        RetrofitClient.getApiService().deleteAccount(id)
-                .enqueue(new Callback<ApiResponse<Void>>() {
-                    @Override
-                    public void onResponse(Call<ApiResponse<Void>> call, Response<ApiResponse<Void>> response) {
-                        if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                            callback.onSuccess(null);
-                        } else {
-                            callback.onError(response.body() != null ? response.body().getMessage() : "Lỗi không xác định khi xóa ví");
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ApiResponse<Void>> call, Throwable t) {
-                        callback.onError(t.getMessage());
-                    }
-                });
-    }
-
     // Categories
     public void getCategories(int userId, ApiCallback<List<Category>> callback) {
         RetrofitClient.getApiService().getCategories(userId)
@@ -114,22 +95,4 @@ public class AccountRepository {
                 });
     }
 
-    public void createCategory(Category category, ApiCallback<Category> callback) {
-        RetrofitClient.getApiService().createCategory(category)
-                .enqueue(new Callback<ApiResponse<Category>>() {
-                    @Override
-                    public void onResponse(Call<ApiResponse<Category>> call, Response<ApiResponse<Category>> response) {
-                        if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                            callback.onSuccess(response.body().getData());
-                        } else {
-                            callback.onError(response.body() != null ? response.body().getMessage() : "Lỗi tạo danh mục");
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ApiResponse<Category>> call, Throwable t) {
-                        callback.onError(t.getMessage());
-                    }
-                });
-    }
 }

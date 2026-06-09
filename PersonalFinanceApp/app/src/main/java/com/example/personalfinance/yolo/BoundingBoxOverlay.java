@@ -30,8 +30,14 @@ public class BoundingBoxOverlay extends View {
     private final Paint textPaint = new Paint();
     private final Paint textBackgroundPaint = new Paint();
 
+    private boolean isFitCenter = false;
     private int frameWidth = 1;
     private int frameHeight = 1;
+
+    public void setIsFitCenter(boolean isFitCenter) {
+        this.isFitCenter = isFitCenter;
+        postInvalidate();
+    }
 
     public BoundingBoxOverlay(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -88,19 +94,40 @@ public class BoundingBoxOverlay extends View {
 
             float scaleX = (float) getWidth() / frameWidth;
             float scaleY = (float) getHeight() / frameHeight;
-            float scale = Math.max(scaleX, scaleY);
 
-            float scaledW = frameWidth * scale;
-            float scaledH = frameHeight * scale;
+            float scale;
+            float offsetX;
+            float offsetY;
+            float scaledW;
+            float scaledH;
 
-            float offsetX = (scaledW - getWidth()) / 2.0f;
-            float offsetY = (scaledH - getHeight()) / 2.0f;
+            if (isFitCenter) {
+                scale = Math.min(scaleX, scaleY);
+                scaledW = frameWidth * scale;
+                scaledH = frameHeight * scale;
+                offsetX = (getWidth() - scaledW) / 2.0f;
+                offsetY = (getHeight() - scaledH) / 2.0f;
+            } else {
+                scale = Math.max(scaleX, scaleY);
+                scaledW = frameWidth * scale;
+                scaledH = frameHeight * scale;
+                offsetX = (scaledW - getWidth()) / 2.0f;
+                offsetY = (scaledH - getHeight()) / 2.0f;
+            }
 
             for (Box box : boxes) {
-                float left = box.rect.left * scaledW - offsetX;
-                float right = box.rect.right * scaledW - offsetX;
-                float top = box.rect.top * scaledH - offsetY;
-                float bottom = box.rect.bottom * scaledH - offsetY;
+                float left, right, top, bottom;
+                if (isFitCenter) {
+                    left = box.rect.left * scaledW + offsetX;
+                    right = box.rect.right * scaledW + offsetX;
+                    top = box.rect.top * scaledH + offsetY;
+                    bottom = box.rect.bottom * scaledH + offsetY;
+                } else {
+                    left = box.rect.left * scaledW - offsetX;
+                    right = box.rect.right * scaledW - offsetX;
+                    top = box.rect.top * scaledH - offsetY;
+                    bottom = box.rect.bottom * scaledH - offsetY;
+                }
 
                 // Draw bounding box
                 canvas.drawRect(left, top, right, bottom, boxPaint);

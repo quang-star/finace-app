@@ -57,7 +57,7 @@ public class CategoryStatsAdapter extends RecyclerView.Adapter<CategoryStatsAdap
             binding.tvCategoryAmount.setText(CurrencyFormatter.formatVND(item.getTotalAmount()));
 
             int percent = item.getPercentage() != null ? (int) Math.round(item.getPercentage()) : 0;
-            binding.tvCategoryPercent.setText(percent + "%");
+            binding.tvCategoryPercent.setText(context.getString(R.string.percentage_format, percent));
             binding.pbCategory.setProgress(percent);
 
             int color = resolveCategoryColor(item.getCategoryName());

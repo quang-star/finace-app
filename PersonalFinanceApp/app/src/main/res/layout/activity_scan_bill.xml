@@ -21,7 +21,7 @@
         android:id="@+id/ivCapturedPreview"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scaleType="centerCrop"
+        android:scaleType="fitCenter"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -65,65 +65,6 @@
             android:layout_height="40dp" />
     </LinearLayout>
 
-    <!-- Result Card Overlay -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardResult"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:visibility="gone"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="0dp"
-        app:strokeColor="@color/divider"
-        app:strokeWidth="1dp"
-        app:cardBackgroundColor="@color/surface"
-        app:layout_constraintBottom_toTopOf="@id/btnCapture"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <TextView
-                android:id="@+id/tvResultTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/scan_result"
-                android:textColor="@color/text_primary"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvDetectedAmount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:textColor="@color/primary"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvOcrText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:maxLines="5"
-                android:textColor="@color/text_secondary"
-                android:textSize="12sp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnConfirmResult"
-                style="@style/Widget.PersonalFinance.Button.Primary"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/btn_confirm" />
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
     <!-- Gallery Button -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnGallery"
@@ -131,7 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="48dp"
         android:layout_marginEnd="16dp"
-        android:contentDescription="Chọn từ thư viện"
+        android:contentDescription="@string/ui_chon_tu_thu_vien"
         android:src="@android:drawable/ic_menu_gallery"
         app:backgroundTint="#2E2E33"
         app:fabSize="mini"

@@ -31,10 +31,6 @@ public class Transaction {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "transfer_group_id")
-    private TransferGroup transferGroup;
-
     @Column(name = "title", nullable = false, length = 150)
     private String title;
 

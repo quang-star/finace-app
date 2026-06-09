@@ -14,7 +14,6 @@
     <!-- Finance Colors (Vibrant Green/Coral Red/Blue/Yellow) -->
     <color name="income_green">#22C55E</color>
     <color name="expense_red">#F85149</color>
-    <color name="transfer_blue">#3B82F6</color>
     <color name="warning_yellow">#FF9800</color>
 
     <!-- Background / Surface (Sangrich Obsidian Dark Theme) -->
@@ -55,4 +54,3 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>
-

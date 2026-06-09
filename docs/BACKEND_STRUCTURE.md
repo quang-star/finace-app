@@ -70,22 +70,17 @@ com.example.financebackend/
 │   ├── AccountController.java    # GET/POST/PUT/DELETE /api/accounts
 │   ├── CategoryController.java   # GET/POST/PUT/DELETE /api/categories
 │   ├── TransactionController.java # GET/POST/PUT/DELETE /api/transactions
-│   ├── TransferController.java   # POST /api/transfers
 │   ├── BudgetController.java     # GET/POST/PUT/DELETE /api/budgets
 │   ├── ReportController.java     # GET /api/reports/...
-│   ├── NotificationController.java # GET/PUT /api/notifications
-│   ├── AiScanController.java     # POST /api/ai-scan/...
-│   └── AiProductController.java  # POST /api/ai-product/...
+│   └── AiScanController.java     # POST /api/ai-scan/...
 │
 ├── service/                      # Nơi thực thi logic nghiệp vụ (Business Logic)
 │   ├── UserService.java          # Đồng bộ dữ liệu người dùng từ Firebase
 │   ├── AccountService.java       # CRUD ví, cập nhật số dư thực tế
 │   ├── CategoryService.java      # CRUD danh mục, nạp danh mục hệ thống
 │   ├── TransactionService.java   # CRUD giao dịch, tự động cập nhật số dư ví tương ứng
-│   ├── TransferService.java      # Xử lý giao dịch chuyển tiền giữa hai ví
 │   ├── BudgetService.java        # CRUD ngân sách, kiểm tra tiến độ chi tiêu
 │   ├── ReportService.java        # Tổng hợp báo cáo, vẽ biểu đồ tròn/cột
-│   ├── NotificationService.java  # Tạo thông báo nhắc nhở, cảnh báo ngân sách
 │   └── ExpenseClassifierService.java # Tích hợp Random Forest để gợi ý danh mục
 │
 ├── repository/                   # Tương tác cơ sở dữ liệu qua Spring Data JPA
@@ -94,10 +89,7 @@ com.example.financebackend/
 │   ├── CategoryRepository.java
 │   ├── TransactionRepository.java
 │   ├── BudgetRepository.java
-│   ├── NotificationRepository.java
-│   ├── TransferGroupRepository.java
-│   ├── AiScanLogRepository.java
-│   └── AiProductLogRepository.java
+│   └── AiScanLogRepository.java
 │
 ├── model/                        # Các thực thể cơ sở dữ liệu (JPA Entities)
 │   ├── User.java                 # Ánh xạ bảng `users`
@@ -105,11 +97,8 @@ com.example.financebackend/
 │   ├── Category.java             # Ánh xạ bảng `categories`
 │   ├── Transaction.java          # Ánh xạ bảng `transactions`
 │   ├── Budget.java               # Ánh xạ bảng `budgets`
-│   ├── TransferGroup.java        # Ánh xạ bảng `transfer_groups`
 │   ├── TransactionImage.java     # Ánh xạ bảng `transaction_images`
-│   ├── Notification.java         # Ánh xạ bảng `notifications`
-│   ├── AiScanLog.java            # Ánh xạ bảng `ai_scan_logs`
-│   └── AiProductLog.java         # Ánh xạ bảng `ai_product_logs`
+│   └── AiScanLog.java            # Ánh xạ bảng `ai_scan_logs`
 │
 ├── dto/                          # Các đối tượng truyền dữ liệu (Data Transfer Objects)
 │   ├── ApiResponse.java          # Cấu trúc JSON phản hồi chuẩn hóa toàn hệ thống
@@ -117,9 +106,7 @@ com.example.financebackend/
 │   ├── TransactionDTO.java
 │   ├── BudgetDTO.java
 │   ├── ReportDTO.java
-│   ├── LoginRequest.java
-│   ├── TransferRequest.java
-│   └── CategoryPrediction.java   # DTO trả về kết quả dự báo của AI
+│   └── LoginRequest.java
 │
 ├── config/                       # Các lớp cấu hình hệ thống
 │   ├── FirebaseConfig.java       # Khởi tạo Firebase Admin SDK với Service Account

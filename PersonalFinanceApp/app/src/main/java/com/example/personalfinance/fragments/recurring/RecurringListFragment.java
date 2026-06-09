@@ -175,7 +175,7 @@ public class RecurringListFragment extends Fragment {
         for (RecurringTransaction r : recurringList) {
             if (r.getIsActive()) activeCount++;
         }
-        binding.tvActiveCount.setText("Đang hoạt động (" + activeCount + ")");
+        binding.tvActiveCount.setText(getString(R.string.format_active_recurring, activeCount));
 
         if (recurringList.isEmpty()) {
             binding.emptyState.setVisibility(View.VISIBLE);
@@ -323,14 +323,14 @@ public class RecurringListFragment extends Fragment {
                 else if ("MONTHLY".equalsIgnoreCase(item.getRepeatType())) repeatLabel = "Hàng tháng";
             }
 
-            holder.binding.tvSubtext.setText(repeatLabel + dateSuffix);
+            holder.binding.tvSubtext.setText(context.getString(R.string.format_recurring_month_day, repeatLabel, dateSuffix));
 
             // Format amount
             if (Constants.TYPE_INCOME.equalsIgnoreCase(item.getTransactionType())) {
-                holder.binding.tvAmount.setText("+" + CurrencyFormatter.formatVND(item.getAmount()));
+                holder.binding.tvAmount.setText(context.getString(R.string.format_positive_amount, CurrencyFormatter.formatVND(item.getAmount())));
                 holder.binding.tvAmount.setTextColor(ContextCompat.getColor(context, R.color.income_green));
             } else {
-                holder.binding.tvAmount.setText("-" + CurrencyFormatter.formatVND(item.getAmount()));
+                holder.binding.tvAmount.setText(context.getString(R.string.format_negative_amount, CurrencyFormatter.formatVND(item.getAmount())));
                 holder.binding.tvAmount.setTextColor(ContextCompat.getColor(context, R.color.expense_red));
             }
 

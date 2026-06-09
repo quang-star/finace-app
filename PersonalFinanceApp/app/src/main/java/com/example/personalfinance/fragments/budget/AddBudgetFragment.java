@@ -116,15 +116,12 @@ public class AddBudgetFragment extends BottomSheetDialogFragment {
 
     private void bindInitialUi() {
         boolean editMode = !existingBudgets.isEmpty();
-        binding.tvSheetTitle.setText(editMode ? "Cập nhật ngân sách tháng" : "Thêm ngân sách tháng");
-        binding.btnSave.setText(editMode ? "Cập nhật ngân sách" : "Lưu ngân sách");
+        binding.tvSheetTitle.setText(editMode ? R.string.label_update_monthly_budget : R.string.ui_them_ngan_sach_thang);
+        binding.btnSave.setText(editMode ? R.string.label_update_budget : R.string.label_save_budget);
         binding.tvMonth.setText(DateUtils.formatMonthTitle(calendar.getTime()));
         binding.btnCancel.setOnClickListener(v -> dismiss());
         binding.btnSave.setOnClickListener(v -> saveBudgets());
         binding.btnReset.setOnClickListener(v -> resetAmounts());
-        binding.btnCopyPrevious.setOnClickListener(v ->
-                Toast.makeText(requireContext(), "Chức năng sao chép tháng trước đang được phát triển", Toast.LENGTH_SHORT).show());
-
         binding.edtTotalBudget.setHint("0 đ");
         binding.edtTotalBudget.setSelectAllOnFocus(true);
         binding.edtTotalBudget.setOnEditorActionListener((v, actionId, event) -> {
@@ -198,7 +195,7 @@ public class AddBudgetFragment extends BottomSheetDialogFragment {
 
         if (categoryRows.isEmpty()) {
             TextView emptyView = new TextView(requireContext());
-            emptyView.setText("Vui lòng thêm danh mục chi tiêu trước");
+            emptyView.setText(R.string.label_add_expense_categories_first);
             emptyView.setTextColor(getColor(R.color.text_secondary));
             emptyView.setTextSize(14);
             binding.categoryContainer.addView(emptyView);
@@ -244,7 +241,7 @@ public class AddBudgetFragment extends BottomSheetDialogFragment {
         row.addView(limitsStack, new LinearLayout.LayoutParams(dp(150), ViewGroup.LayoutParams.WRAP_CONTENT));
 
         TextView monthLabel = new TextView(requireContext());
-        monthLabel.setText("Tháng");
+        monthLabel.setText(R.string.label_budget_month);
         monthLabel.setTextColor(getColor(R.color.text_secondary));
         monthLabel.setTextSize(11);
         limitsStack.addView(monthLabel);
@@ -274,7 +271,7 @@ public class AddBudgetFragment extends BottomSheetDialogFragment {
         amountBox.addView(currency);
 
         TextView dailyLabel = new TextView(requireContext());
-        dailyLabel.setText("Tối đa/ngày");
+        dailyLabel.setText(R.string.label_daily_max);
         dailyLabel.setTextColor(getColor(R.color.text_secondary));
         dailyLabel.setTextSize(11);
         LinearLayout.LayoutParams dailyLabelParams = new LinearLayout.LayoutParams(

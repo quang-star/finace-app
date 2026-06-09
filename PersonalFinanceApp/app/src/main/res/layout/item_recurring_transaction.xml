@@ -15,7 +15,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:baselineAligned="false" android:orientation="horizontal"
         android:gravity="center_vertical"
         android:padding="16dp"
         android:background="?attr/selectableItemBackground">
@@ -53,7 +53,7 @@
                 android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tiền điện"
+                android:text="@string/ui_tien_dien"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary" />
@@ -63,7 +63,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="Hàng tháng - 20/05"
+                android:text="@string/ui_hang_thang_20_05"
                 android:textSize="12sp"
                 android:textColor="@color/text_secondary" />
         </LinearLayout>
@@ -79,7 +79,7 @@
                 android:id="@+id/tvAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="-500.000đ"
+                android:text="@string/ui_500_000d"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:textColor="@color/expense_red"

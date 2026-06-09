@@ -3,17 +3,13 @@ package com.example.personalfinance.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import com.example.personalfinance.R;
 import com.example.personalfinance.databinding.ActivityMainBinding;
-import com.example.personalfinance.fragments.budget.BudgetFragment;
 import com.example.personalfinance.fragments.home.HomeFragment;
-import com.example.personalfinance.fragments.profile.ProfileFragment;
 import com.example.personalfinance.fragments.transaction.TransactionFragment;
 import com.example.personalfinance.fragments.transaction.AddTransactionFragment;
-import com.example.personalfinance.fragments.account.AccountFragment;
 import com.example.personalfinance.fragments.transaction.TransactionListFragment;
 import com.example.personalfinance.fragments.category.CategoryLimitFragment;
 import com.example.personalfinance.models.User;
@@ -101,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         if (btnYolo != null) {
             btnYolo.setOnClickListener(v -> {
                 bottomSheetDialog.dismiss();
-                Toast.makeText(MainActivity.this, "Tinh nang Quet san pham (YOLO) dang phat trien - Coming soon!", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MainActivity.this, ScanProductActivity.class));
             });
         }
 

@@ -21,7 +21,7 @@
         android:id="@+id/tvRecurringTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Tên Giao dịch Định kỳ"
+        android:text="@string/ui_ten_giao_dich_dinh_ky"
         android:textColor="@color/text_primary"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -52,7 +52,7 @@
             android:id="@+id/tvPauseResumeText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tạm dừng định kỳ"
+            android:text="@string/ui_tam_dung_dinh_ky"
             android:textColor="@color/text_primary"
             android:textSize="14sp"
             android:layout_marginStart="16dp" />
@@ -81,7 +81,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Chỉnh sửa định kỳ"
+            android:text="@string/ui_chinh_sua_dinh_ky"
             android:textColor="@color/text_primary"
             android:textSize="14sp"
             android:layout_marginStart="16dp" />
@@ -110,7 +110,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Xóa định kỳ"
+            android:text="@string/ui_xoa_dinh_ky"
             android:textColor="@color/expense_red"
             android:textSize="14sp"
             android:layout_marginStart="16dp" />

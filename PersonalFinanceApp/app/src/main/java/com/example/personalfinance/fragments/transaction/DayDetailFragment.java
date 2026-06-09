@@ -175,18 +175,18 @@ public class DayDetailFragment extends Fragment {
         // Smart dynamic percentages compared to Monthly general averages
         // To strictly WOW the user with identical fidelity to their design layout:
         if (expense > 0) {
-            binding.tvExpensePercent.setText("-12% so với T4");
+            binding.tvExpensePercent.setText(R.string.label_comparison_expense_down);
             binding.tvExpensePercent.setTextColor(Color.parseColor("#10B981")); // green highlight indicator
         } else {
-            binding.tvExpensePercent.setText("0% so với T4");
+            binding.tvExpensePercent.setText(R.string.label_comparison_unchanged);
             binding.tvExpensePercent.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary));
         }
 
         if (income > 0) {
-            binding.tvIncomePercent.setText("+5% so với T4");
+            binding.tvIncomePercent.setText(R.string.label_comparison_income_up);
             binding.tvIncomePercent.setTextColor(Color.parseColor("#10B981"));
         } else {
-            binding.tvIncomePercent.setText("0% so với T4");
+            binding.tvIncomePercent.setText(R.string.label_comparison_unchanged);
             binding.tvIncomePercent.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary));
         }
     }

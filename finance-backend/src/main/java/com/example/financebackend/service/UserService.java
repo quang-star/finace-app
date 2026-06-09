@@ -1,6 +1,5 @@
 package com.example.financebackend.service;
 
-import com.example.financebackend.dto.LoginRequest;
 import com.example.financebackend.dto.UserDTO;
 import com.example.financebackend.model.User;
 import com.example.financebackend.repository.UserRepository;
@@ -74,33 +73,6 @@ public class UserService {
         return toDTO(user);
     }
 
-    @Transactional
-    public UserDTO syncFirebaseUser(LoginRequest request) {
-        Optional<User> existingUser = findExistingFirebaseUser(request.getFirebaseUid(), request.getEmail());
-
-        User user;
-        if (existingUser.isPresent()) {
-            user = existingUser.get();
-            user.setFirebaseUid(request.getFirebaseUid());
-            // Update fields that may have changed
-            if (request.getFullName() != null) user.setFullName(request.getFullName());
-            if (request.getAvatarUrl() != null) user.setAvatarUrl(request.getAvatarUrl());
-            if (request.getEmail() != null) user.setEmail(request.getEmail());
-            user = userRepository.save(user);
-        } else {
-            user = User.builder()
-                    .firebaseUid(request.getFirebaseUid())
-                    .email(request.getEmail())
-                    .fullName(request.getFullName())
-                    .avatarUrl(request.getAvatarUrl())
-                    .authProvider("firebase")
-                    .build();
-            user = userRepository.save(user);
-        }
-
-        return toDTO(user);
-    }
-
     private Optional<User> findExistingFirebaseUser(String firebaseUid, String email) {
         Optional<User> existingUser = userRepository.findByFirebaseUid(firebaseUid);
         if (existingUser.isPresent()) {
@@ -117,12 +89,6 @@ public class UserService {
     public UserDTO getUserById(Integer userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
-        return toDTO(user);
-    }
-
-    public UserDTO getUserByFirebaseUid(String firebaseUid) {
-        User user = userRepository.findByFirebaseUid(firebaseUid)
-                .orElseThrow(() -> new RuntimeException("User not found with firebaseUid: " + firebaseUid));
         return toDTO(user);
     }
 

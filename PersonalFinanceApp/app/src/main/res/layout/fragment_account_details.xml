@@ -28,14 +28,14 @@
             app:tint="@color/text_primary"
             android:clickable="true"
             android:focusable="true"
-            android:contentDescription="Back" />
+            android:contentDescription="@string/ui_back" />
 
         <TextView
             android:id="@+id/tvWalletTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Wallet"
+            android:text="@string/ui_wallet"
             android:textColor="@color/text_primary"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -51,7 +51,7 @@
             app:tint="@color/text_primary"
             android:clickable="true"
             android:focusable="true"
-            android:contentDescription="Edit" />
+            android:contentDescription="@string/ui_edit" />
     </RelativeLayout>
 
     <!-- Scrollable content -->
@@ -106,7 +106,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Wallet • VND"
+                            android:text="@string/ui_wallet_vnd"
                             android:textColor="@color/income_green"
                             android:textSize="11sp"
                             android:textStyle="bold"
@@ -129,7 +129,7 @@
                             android:layout_height="wrap_content"
                             android:paddingHorizontal="12dp"
                             android:paddingVertical="5dp"
-                            android:text="Tháng này"
+                            android:text="@string/ui_thang_nay"
                             android:textColor="@color/text_secondary"
                             android:textSize="11sp"
                             android:textStyle="bold"
@@ -142,7 +142,7 @@
                             android:layout_height="wrap_content"
                             android:paddingHorizontal="12dp"
                             android:paddingVertical="5dp"
-                            android:text="Năm nay"
+                            android:text="@string/ui_nam_nay"
                             android:textColor="@color/text_secondary"
                             android:textSize="11sp"
                             android:textStyle="bold"
@@ -155,7 +155,7 @@
                             android:layout_height="wrap_content"
                             android:paddingHorizontal="12dp"
                             android:paddingVertical="5dp"
-                            android:text="Tất cả"
+                            android:text="@string/ui_tat_ca"
                             android:textColor="@color/white"
                             android:textSize="11sp"
                             android:textStyle="bold"
@@ -169,7 +169,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tổng số dư"
+                        android:text="@string/ui_tong_so_du"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
 
@@ -177,7 +177,7 @@
                         android:id="@+id/tvWalletBalance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="-271,000đ"
+                        android:text="@string/ui_271_000d"
                         android:textColor="@color/expense_red"
                             android:textSize="22sp"
                         android:textStyle="bold"
@@ -187,7 +187,7 @@
                         android:id="@+id/tvTxCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="4 giao dịch"
+                        android:text="@string/ui_4_giao_dich"
                         android:textColor="@color/text_secondary"
                         android:textSize="11sp"
                         android:layout_marginTop="2dp" />
@@ -215,7 +215,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Thu nhập"
+                                android:text="@string/title_income"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="11sp" />
 
@@ -223,7 +223,7 @@
                                 android:id="@+id/tvWalletIncome"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="0đ"
+                                android:text="@string/ui_0d"
                                 android:textColor="@color/income_green"
                                 android:textStyle="bold"
                                 android:textSize="14sp"
@@ -247,7 +247,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Chi tiêu"
+                                android:text="@string/title_expense"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="11sp" />
 
@@ -255,7 +255,7 @@
                                 android:id="@+id/tvWalletExpense"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="271,000đ"
+                                android:text="@string/ui_271_000d_2"
                                 android:textColor="@color/text_primary"
                                 android:textStyle="bold"
                                 android:textSize="14sp"
@@ -270,7 +270,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tất cả giao dịch"
+                android:text="@string/title_all_transactions"
                 android:textColor="@color/text_primary"
                 android:textSize="15sp"
                 android:textStyle="bold"

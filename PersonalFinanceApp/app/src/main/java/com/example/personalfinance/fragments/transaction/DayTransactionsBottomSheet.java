@@ -72,7 +72,7 @@ public class DayTransactionsBottomSheet extends BottomSheetDialogFragment {
             }
         }
 
-        tvTransactionCount.setText(photoTxs.size() + "/" + photoTxs.size());
+        tvTransactionCount.setText(getString(R.string.format_fraction, photoTxs.size(), photoTxs.size()));
 
         // Calculate dynamic income and expense totals for the day
         double totalIncome = 0;
@@ -88,14 +88,14 @@ public class DayTransactionsBottomSheet extends BottomSheetDialogFragment {
         }
 
         if (totalIncome > 0) {
-            tvDayIncome.setText("Thu " + CurrencyFormatter.formatVND(totalIncome));
+            tvDayIncome.setText(getString(R.string.format_income_amount, CurrencyFormatter.formatVND(totalIncome)));
             tvDayIncome.setVisibility(View.VISIBLE);
         } else {
             tvDayIncome.setVisibility(View.GONE);
         }
 
         if (totalExpense > 0) {
-            tvDayExpense.setText("Chi " + CurrencyFormatter.formatVND(totalExpense));
+            tvDayExpense.setText(getString(R.string.format_expense_amount, CurrencyFormatter.formatVND(totalExpense)));
             tvDayExpense.setVisibility(View.VISIBLE);
         } else {
             tvDayExpense.setVisibility(View.GONE);
@@ -103,7 +103,7 @@ public class DayTransactionsBottomSheet extends BottomSheetDialogFragment {
 
         // Fallback if both are 0
         if (totalIncome == 0 && totalExpense == 0) {
-            tvDayExpense.setText("Chi " + CurrencyFormatter.formatVND(0));
+            tvDayExpense.setText(getString(R.string.format_expense_amount, CurrencyFormatter.formatVND(0)));
             tvDayExpense.setVisibility(View.VISIBLE);
         }
 
@@ -134,13 +134,13 @@ public class DayTransactionsBottomSheet extends BottomSheetDialogFragment {
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             Transaction tx = list.get(position);
-            holder.tvCardCategory.setText(tx.getCategoryName() != null ? tx.getCategoryName() : "Ăn uống");
+            holder.tvCardCategory.setText(tx.getCategoryName() != null ? tx.getCategoryName() : context.getString(R.string.ui_an_uong));
 
             double amount = tx.getAmount();
             if ("EXPENSE".equalsIgnoreCase(tx.getTransactionType()) || amount < 0) {
-                holder.tvCardAmount.setText("-" + CurrencyFormatter.formatVND(Math.abs(amount)));
+                holder.tvCardAmount.setText(context.getString(R.string.format_negative_amount, CurrencyFormatter.formatVND(Math.abs(amount))));
             } else {
-                holder.tvCardAmount.setText("+" + CurrencyFormatter.formatVND(amount));
+                holder.tvCardAmount.setText(context.getString(R.string.format_positive_amount, CurrencyFormatter.formatVND(amount)));
             }
 
             // Load transaction image dynamically with cache

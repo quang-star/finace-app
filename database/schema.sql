@@ -47,33 +47,11 @@ CREATE TABLE IF NOT EXISTS categories (
         ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS transfer_groups (
-    transfer_group_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    from_account_id INT NOT NULL,
-    to_account_id INT NOT NULL,
-    amount DECIMAL(15,2) NOT NULL,
-    transfer_date DATE NOT NULL,
-    note TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_transfer_groups_user
-        FOREIGN KEY (user_id)
-        REFERENCES users(user_id)
-        ON DELETE CASCADE,
-    CONSTRAINT fk_transfer_groups_from_account
-        FOREIGN KEY (from_account_id)
-        REFERENCES accounts(account_id),
-    CONSTRAINT fk_transfer_groups_to_account
-        FOREIGN KEY (to_account_id)
-        REFERENCES accounts(account_id)
-);
-
 CREATE TABLE IF NOT EXISTS transactions (
     transaction_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     account_id INT NOT NULL,
     category_id INT NULL,
-    transfer_group_id INT NULL,
     title VARCHAR(150) NOT NULL,
     amount DECIMAL(15,2) NOT NULL,
     transaction_type VARCHAR(20) NOT NULL,
@@ -91,11 +69,7 @@ CREATE TABLE IF NOT EXISTS transactions (
         REFERENCES accounts(account_id),
     CONSTRAINT fk_transactions_category
         FOREIGN KEY (category_id)
-        REFERENCES categories(category_id),
-    CONSTRAINT fk_transactions_transfer_group
-        FOREIGN KEY (transfer_group_id)
-        REFERENCES transfer_groups(transfer_group_id)
-        ON DELETE SET NULL
+        REFERENCES categories(category_id)
 );
 
 CREATE TABLE IF NOT EXISTS budgets (
@@ -164,42 +138,6 @@ CREATE TABLE IF NOT EXISTS ai_scan_logs (
         ON DELETE SET NULL
 );
 
-CREATE TABLE IF NOT EXISTS notifications (
-    notification_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    title VARCHAR(150) NOT NULL,
-    message TEXT NOT NULL,
-    notification_type VARCHAR(50),
-    is_read BOOLEAN DEFAULT FALSE,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_notifications_user
-        FOREIGN KEY (user_id)
-        REFERENCES users(user_id)
-        ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS ai_product_logs (
-    ai_product_log_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    transaction_id INT NULL,
-    detected_product VARCHAR(150),
-    confidence_score DECIMAL(5,4),
-    user_entered_price DECIMAL(15,2),
-    suggested_category_id INT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_ai_product_logs_user
-        FOREIGN KEY (user_id)
-        REFERENCES users(user_id)
-        ON DELETE CASCADE,
-    CONSTRAINT fk_ai_product_logs_transaction
-        FOREIGN KEY (transaction_id)
-        REFERENCES transactions(transaction_id)
-        ON DELETE SET NULL,
-    CONSTRAINT fk_ai_product_logs_suggested_category
-        FOREIGN KEY (suggested_category_id)
-        REFERENCES categories(category_id)
-        ON DELETE SET NULL
-);
 CREATE TABLE IF NOT EXISTS recurring_transactions (
     recurring_id INT AUTO_INCREMENT PRIMARY KEY,
 
@@ -240,45 +178,9 @@ CREATE TABLE IF NOT EXISTS recurring_transactions (
 );
 
 
-CREATE TABLE IF NOT EXISTS recurring_budgets (
-    recurring_budget_id INT AUTO_INCREMENT PRIMARY KEY,
-
-    user_id INT NOT NULL,
-    category_id INT NULL,
-
-    budget_name VARCHAR(100) NOT NULL,
-    amount_limit DECIMAL(15,2) NOT NULL,
-
-    repeat_type VARCHAR(20) NOT NULL,
-    repeat_interval INT DEFAULT 1,
-
-    start_date DATE NOT NULL,
-    end_date DATE NULL,
-    next_run_date DATE NOT NULL,
-
-    auto_create BOOLEAN DEFAULT TRUE,
-    is_active BOOLEAN DEFAULT TRUE,
-
-    note TEXT,
-
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-    CONSTRAINT fk_recurring_budgets_user
-        FOREIGN KEY (user_id)
-        REFERENCES users(user_id)
-        ON DELETE CASCADE,
-
-    CONSTRAINT fk_recurring_budgets_category
-        FOREIGN KEY (category_id)
-        REFERENCES categories(category_id)
-        ON DELETE SET NULL
-);
 CREATE INDEX idx_accounts_user_id ON accounts(user_id);
 CREATE INDEX idx_categories_user_id ON categories(user_id);
 CREATE INDEX idx_transactions_user_id ON transactions(user_id);
 CREATE INDEX idx_transactions_account_id ON transactions(account_id);
 CREATE INDEX idx_transactions_transaction_date ON transactions(transaction_date);
 CREATE INDEX idx_budgets_user_id ON budgets(user_id);
-CREATE INDEX idx_notifications_user_id ON notifications(user_id);
-CREATE INDEX idx_ai_product_logs_user_id ON ai_product_logs(user_id);

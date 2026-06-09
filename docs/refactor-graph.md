@@ -10,7 +10,6 @@ graph TD
 
     Backend --> B1["AI category lookup"]
     B1 --> B1a["AiScanController"]
-    B1 --> B1b["AiProductController"]
     B1 --> B1c["CategoryService.findCategoryByKeyword(userId, keyword)"]
 
     Backend --> B2["Dead OCR parsing code"]
