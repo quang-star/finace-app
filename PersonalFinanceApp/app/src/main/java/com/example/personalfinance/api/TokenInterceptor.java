@@ -15,10 +15,14 @@ public class TokenInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request originalRequest = chain.request();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         
+        // Add ngrok bypass header to prevent browser warning on dynamic/API hosts
+        Request.Builder requestBuilder = originalRequest.newBuilder()
+                .header("ngrok-skip-browser-warning", "true");
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
-            return chain.proceed(originalRequest);
+            return chain.proceed(requestBuilder.build());
         }
         
         try {
@@ -28,15 +32,12 @@ public class TokenInterceptor implements Interceptor {
             String token = result.getToken();
             
             if (token != null) {
-                Request newRequest = originalRequest.newBuilder()
-                        .header("Authorization", "Bearer " + token)
-                        .build();
-                return chain.proceed(newRequest);
+                requestBuilder.header("Authorization", "Bearer " + token);
             }
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
         
-        return chain.proceed(originalRequest);
+        return chain.proceed(requestBuilder.build());
     }
 }

@@ -22,14 +22,13 @@ import com.example.personalfinance.models.ApiResponse;
 import com.example.personalfinance.models.RecurringTransaction;
 import com.example.personalfinance.models.User;
 import com.example.personalfinance.utils.Constants;
+import com.example.personalfinance.utils.DateUtils;
 import com.example.personalfinance.utils.SharedPrefManager;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -107,10 +106,8 @@ public class AddRecurringFragment extends BottomSheetDialogFragment {
 
     private void setupInitialData() {
         Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-        SimpleDateFormat showSdf = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
-        selectedStartDate = sdf.format(cal.getTime());
-        binding.tvStartDate.setText(showSdf.format(cal.getTime()));
+        selectedStartDate = DateUtils.formatApiDate(cal.getTime());
+        binding.tvStartDate.setText(DateUtils.formatDisplayDate(cal.getTime()));
 
         fetchCategories();
 
@@ -121,9 +118,9 @@ public class AddRecurringFragment extends BottomSheetDialogFragment {
             selectedStartDate = editingItem.getStartDate();
             
             try {
-                java.util.Date date = sdf.parse(editingItem.getStartDate());
+                java.util.Date date = DateUtils.parseApiDate(editingItem.getStartDate());
                 if (date != null) {
-                    binding.tvStartDate.setText(showSdf.format(date));
+                    binding.tvStartDate.setText(DateUtils.formatDisplayDate(date));
                 }
             } catch (Exception ignored) {}
 
@@ -342,11 +339,8 @@ public class AddRecurringFragment extends BottomSheetDialogFragment {
             selectCal.set(Calendar.MONTH, month);
             selectCal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-            SimpleDateFormat showSdf = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
-
-            selectedStartDate = sdf.format(selectCal.getTime());
-            binding.tvStartDate.setText(showSdf.format(selectCal.getTime()));
+            selectedStartDate = DateUtils.formatApiDate(selectCal.getTime());
+            binding.tvStartDate.setText(DateUtils.formatDisplayDate(selectCal.getTime()));
         }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
         dialog.show();
     }

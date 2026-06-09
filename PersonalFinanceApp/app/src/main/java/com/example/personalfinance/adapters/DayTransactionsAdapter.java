@@ -14,6 +14,7 @@ import com.example.personalfinance.R;
 import com.example.personalfinance.models.Transaction;
 import com.example.personalfinance.utils.CurrencyFormatter;
 import java.util.List;
+import java.util.Locale;
 
 public class DayTransactionsAdapter extends RecyclerView.Adapter<DayTransactionsAdapter.ViewHolder> {
 
@@ -66,7 +67,9 @@ public class DayTransactionsAdapter extends RecyclerView.Adapter<DayTransactions
 
         // Category color & icon mapping
         int colorVal = Color.parseColor("#3B82F6"); // Default blue
-        String name = tx.getTitle().toLowerCase() + " " + categoryName.toLowerCase();
+        String name = tx.getTitle().toLowerCase(Locale.ROOT)
+                + " "
+                + categoryName.toLowerCase(Locale.ROOT);
         if (name.contains("ăn uống") || name.contains("food") || name.contains("cà phê") || name.contains("bánh") || name.contains("highlands")) {
             colorVal = Color.parseColor("#10B981"); // Emerald green
             holder.ivIcon.setImageResource(R.drawable.ic_transaction);

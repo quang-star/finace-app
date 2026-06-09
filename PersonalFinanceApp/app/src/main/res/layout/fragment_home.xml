@@ -362,11 +362,15 @@
                     app:tint="@color/text_primary" />
 
                 <LinearLayout
+                    android:id="@+id/monthSelectorContainer"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?android:attr/selectableItemBackground">
 
                     <TextView
                         android:id="@+id/tvMonthTitle"

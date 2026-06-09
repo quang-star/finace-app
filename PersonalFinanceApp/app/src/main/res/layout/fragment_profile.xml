@@ -93,6 +93,19 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
 
+                <!-- User Email -->
+                <TextView
+                    android:id="@+id/tvUserEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="email@example.com"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp"
+                    app:layout_constraintTop_toBottomOf="@id/tvUserName"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
                 <!-- Subtitle Date Pill -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardDatePill"
@@ -103,7 +116,7 @@
                     app:cardElevation="0dp"
                     app:strokeWidth="0dp"
                     app:cardBackgroundColor="#222227"
-                    app:layout_constraintTop_toBottomOf="@id/tvUserName"
+                    app:layout_constraintTop_toBottomOf="@id/tvUserEmail"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent">
 
@@ -118,47 +131,7 @@
                         android:textSize="12sp" />
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Gold Share Profile Chip Button -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/btnShareProfile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    app:cardCornerRadius="18dp"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="0dp"
-                    app:cardBackgroundColor="@color/warning_yellow"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground"
-                    app:layout_constraintTop_toBottomOf="@id/cardDatePill"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:paddingHorizontal="16dp"
-                        android:paddingVertical="8dp">
-
-                        <ImageView
-                            android:layout_width="14dp"
-                            android:layout_height="14dp"
-                            android:src="@drawable/ic_search_lens"
-                            app:tint="@color/primary_dark" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="6dp"
-                            android:text="Chia sẻ hồ sơ"
-                            android:textColor="@color/primary_dark"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -370,105 +343,6 @@
 
         </GridLayout>
 
-        <!-- Premium Card Upgrade Row -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardUpgrade"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginHorizontal="6dp"
-            app:cardCornerRadius="18dp"
-            app:cardElevation="0dp"
-            app:strokeWidth="1dp"
-            app:strokeColor="@color/divider"
-            app:cardBackgroundColor="@color/surface"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"
-            app:layout_constraintTop_toBottomOf="@id/glOverviewGrid"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp">
-
-                <!-- Yellow Badge Circle with Crown -->
-                <FrameLayout
-                    android:id="@+id/flCrownContainer"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/bg_circle"
-                    android:backgroundTint="#2E2E33"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_crown"
-                        app:tint="@color/warning_yellow" />
-                </FrameLayout>
-
-                <!-- Texts -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginEnd="12dp"
-                    app:layout_constraintStart_toEndOf="@id/flCrownContainer"
-                    app:layout_constraintEnd_toStartOf="@id/btnUpgradeAction"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Nâng cấp"
-                        android:textColor="@color/text_primary"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="Mở khóa tất cả tính năng cao cấp"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="12sp" />
-                </LinearLayout>
-
-                <!-- Gold Nâng Cấp Button -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/btnUpgradeAction"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="0dp"
-                    app:cardBackgroundColor="@color/warning_yellow"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="14dp"
-                        android:paddingVertical="6dp"
-                        android:text="Nâng cấp"
-                        android:textColor="@color/primary_dark"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-                </com.google.android.material.card.MaterialCardView>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.google.android.material.card.MaterialCardView>
-
         <!-- Options Container Card -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardOptions"
@@ -481,7 +355,7 @@
             app:strokeWidth="1dp"
             app:strokeColor="@color/divider"
             app:cardBackgroundColor="@color/surface"
-            app:layout_constraintTop_toBottomOf="@id/cardUpgrade"
+            app:layout_constraintTop_toBottomOf="@id/glOverviewGrid"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
@@ -490,9 +364,9 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- Apple ID Option Row -->
+                <!-- Đổi mật khẩu Option Row -->
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/btnAppleId"
+                    android:id="@+id/btnChangePassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackground"
@@ -501,108 +375,10 @@
                     android:padding="16dp">
 
                     <ImageView
-                        android:id="@+id/ivAppleLogo"
+                        android:id="@+id/ivChangePassword"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/ic_apple"
-                        app:tint="@color/white"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginStart="14dp"
-                        android:layout_marginEnd="8dp"
-                        app:layout_constraintStart_toEndOf="@id/ivAppleLogo"
-                        app:layout_constraintEnd_toStartOf="@id/cardLinkedBadge"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Apple ID"
-                            android:textColor="@color/text_primary"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tvUserEmail"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="email@example.com"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="12sp"
-                            android:ellipsize="end"
-                            android:maxLines="1" />
-                    </LinearLayout>
-
-                    <!-- Green linked badge -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/cardLinkedBadge"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="0dp"
-                        app:strokeWidth="0dp"
-                        app:cardBackgroundColor="#1b3b2b"
-                        app:layout_constraintEnd_toStartOf="@id/ivChevronApple"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        android:layout_marginEnd="8dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingHorizontal="8dp"
-                            android:paddingVertical="2dp"
-                            android:text="Đã liên kết"
-                            android:textColor="#10B981"
-                            android:textSize="11sp"
-                            android:textStyle="bold" />
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <ImageView
-                        android:id="@+id/ivChevronApple"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:src="@drawable/ic_arrow_back"
-                        android:rotation="180"
-                        app:tint="@color/text_hint"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <!-- Divider -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/divider"
-                    android:layout_marginHorizontal="16dp" />
-
-
-
-                <!-- Danh mục Option Row -->
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/btnCategories"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="16dp">
-
-                    <ImageView
-                        android:id="@+id/ivCategories"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_categories"
+                        android:src="@drawable/ic_settings"
                         app:tint="@color/white"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -612,17 +388,17 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="14dp"
-                        android:text="Danh mục"
+                        android:text="Đổi mật khẩu"
                         android:textColor="@color/text_primary"
                         android:textSize="15sp"
                         android:textStyle="bold"
-                        app:layout_constraintStart_toEndOf="@id/ivCategories"
-                        app:layout_constraintEnd_toStartOf="@id/ivChevronCategories"
+                        app:layout_constraintStart_toEndOf="@id/ivChangePassword"
+                        app:layout_constraintEnd_toStartOf="@id/ivChevronChangePassword"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent" />
 
                     <ImageView
-                        android:id="@+id/ivChevronCategories"
+                        android:id="@+id/ivChevronChangePassword"
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:src="@drawable/ic_arrow_back"
@@ -640,309 +416,6 @@
                     android:layout_height="1dp"
                     android:background="@color/divider"
                     android:layout_marginHorizontal="16dp" />
-
-                <!-- Quản lý Ví Option Row -->
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/btnManageAccounts"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="16dp">
-
-                    <ImageView
-                        android:id="@+id/ivManageAccounts"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_credit_card"
-                        app:tint="@color/white"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="14dp"
-                        android:text="Quản lý Ví &amp; Tài sản"
-                        android:textColor="@color/text_primary"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toEndOf="@id/ivManageAccounts"
-                        app:layout_constraintEnd_toStartOf="@id/ivChevronManageAccounts"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
-
-                    <ImageView
-                        android:id="@+id/ivChevronManageAccounts"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:src="@drawable/ic_arrow_back"
-                        android:rotation="180"
-                        app:tint="@color/text_hint"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <!-- Divider -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/divider"
-                    android:layout_marginHorizontal="16dp" />
-
-                <!-- Quản lý Ngân sách Option Row -->
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/btnManageBudgets"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="16dp">
-
-                    <ImageView
-                        android:id="@+id/ivManageBudgets"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_budget"
-                        app:tint="@color/white"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="14dp"
-                        android:text="Quản lý Ngân sách"
-                        android:textColor="@color/text_primary"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toEndOf="@id/ivManageBudgets"
-                        app:layout_constraintEnd_toStartOf="@id/ivChevronManageBudgets"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
-
-                    <ImageView
-                        android:id="@+id/ivChevronManageBudgets"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:src="@drawable/ic_arrow_back"
-                        android:rotation="180"
-                        app:tint="@color/text_hint"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <!-- Divider -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/divider"
-                    android:layout_marginHorizontal="16dp" />
-
-                <!-- Ngôn ngữ Option Row -->
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/btnLanguage"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="16dp">
-
-                    <ImageView
-                        android:id="@+id/ivLanguage"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_language"
-                        app:tint="@color/white"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="14dp"
-                        android:text="Ngôn ngữ"
-                        android:textColor="@color/text_primary"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toEndOf="@id/ivLanguage"
-                        app:layout_constraintEnd_toStartOf="@id/tvLanguageValue"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
-
-                    <TextView
-                        android:id="@+id/tvLanguageValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Tiếng Việt 🇻🇳"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="13sp"
-                        app:layout_constraintEnd_toStartOf="@id/ivChevronLanguage"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        android:layout_marginEnd="8dp" />
-
-                    <ImageView
-                        android:id="@+id/ivChevronLanguage"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:src="@drawable/ic_arrow_back"
-                        android:rotation="180"
-                        app:tint="@color/text_hint"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <!-- Divider -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/divider"
-                    android:layout_marginHorizontal="16dp" />
-
-                <!-- Giao diện Option Row -->
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/btnTheme"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="16dp">
-
-                    <ImageView
-                        android:id="@+id/ivTheme"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_theme"
-                        app:tint="@color/white"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="14dp"
-                        android:text="Giao diện"
-                        android:textColor="@color/text_primary"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toEndOf="@id/ivTheme"
-                        app:layout_constraintEnd_toStartOf="@id/tvThemeValue"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
-
-                    <TextView
-                        android:id="@+id/tvThemeValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Tối 🌙"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="13sp"
-                        app:layout_constraintEnd_toStartOf="@id/ivChevronTheme"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        android:layout_marginEnd="8dp" />
-
-                    <ImageView
-                        android:id="@+id/ivChevronTheme"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:src="@drawable/ic_arrow_back"
-                        android:rotation="180"
-                        app:tint="@color/text_hint"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <!-- Divider -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/divider"
-                    android:layout_marginHorizontal="16dp" />
-
-                <!-- Tiền tệ Option Row -->
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/btnCurrency"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="16dp">
-
-                    <ImageView
-                        android:id="@+id/ivCurrency"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_credit_card"
-                        app:tint="@color/white"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="14dp"
-                        android:text="Tiền tệ"
-                        android:textColor="@color/text_primary"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toEndOf="@id/ivCurrency"
-                        app:layout_constraintEnd_toStartOf="@id/tvCurrencyValue"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
-
-                    <TextView
-                        android:id="@+id/tvCurrencyValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="VND 🇻🇳"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="13sp"
-                        app:layout_constraintEnd_toStartOf="@id/ivChevronCurrency"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        android:layout_marginEnd="8dp" />
-
-                    <ImageView
-                        android:id="@+id/ivChevronCurrency"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:src="@drawable/ic_arrow_back"
-                        android:rotation="180"
-                        app:tint="@color/text_hint"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <!-- Divider -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/divider"
-                    android:layout_marginHorizontal="16dp" />
-
-
 
                 <!-- Đăng xuất Option Row -->
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -1021,21 +494,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/cardOptions" />
+            app:layout_constraintTop_toBottomOf="@id/cardOptions"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <TextView
             android:id="@+id/tvAddAccount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/cardOptions" />
+            app:layout_constraintTop_toBottomOf="@id/cardOptions"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <Button
             android:id="@+id/btnLogout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/cardOptions" />
+            app:layout_constraintTop_toBottomOf="@id/cardOptions"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

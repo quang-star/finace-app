@@ -1,13 +1,24 @@
 package com.example.personalfinance.activities;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.ImageFormat;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.CameraSelector;
+import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
 import androidx.camera.core.ImageProxy;
@@ -15,45 +26,47 @@ import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import android.content.Intent;
-import android.net.Uri;
-import androidx.annotation.Nullable;
-import com.example.personalfinance.R;
-import com.example.personalfinance.api.RetrofitClient;
+
 import com.example.personalfinance.databinding.ActivityScanProductBinding;
 import com.example.personalfinance.fragments.transaction.AddTransactionFragment;
-import com.example.personalfinance.models.AiProductClassificationResult;
-import com.example.personalfinance.models.AiProductLog;
-import com.example.personalfinance.models.ApiResponse;
-import com.example.personalfinance.models.ProductClassifyRequest;
-import com.example.personalfinance.models.SaveProductLogRequest;
+import com.example.personalfinance.ml.ProductRandomForestClassifier;
 import com.example.personalfinance.models.User;
 import com.example.personalfinance.utils.DateUtils;
 import com.example.personalfinance.utils.SharedPrefManager;
+import com.example.personalfinance.yolo.BoundingBoxOverlay;
+import com.example.personalfinance.yolo.YoloDetector;
 import com.google.common.util.concurrent.ListenableFuture;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ScanProductActivity extends AppCompatActivity {
 
+    private static final String YOLO_LOG_TAG = "YOLO_CAPTURE";
     private static final int CAMERA_PERMISSION_CODE = 1002;
     private static final int GALLERY_PICK_CODE = 1003;
+
     private ActivityScanProductBinding binding;
     private ImageCapture imageCapture;
+    private ImageAnalysis imageAnalysis;
     private ExecutorService cameraExecutor;
     private User currentUser;
+    private YoloDetector yoloDetector;
+    private ProductRandomForestClassifier productClassifier;
 
-    // Detect state
     private String detectedProductName = "";
     private double detectedConfidence = 0.0;
-
-    // Mock products for fallback TFLite
-    private final String[] mockProducts = {"Cà phê sữa", "Bánh mì kẹp thịt", "Bún chả", "Xăng xe máy", "Trà sữa trân châu", "Áo thun nam", "Sách giáo trình"};
-    private final double[] mockConfidences = {0.94, 0.89, 0.96, 0.98, 0.87, 0.92, 0.90};
+    private boolean isRealtimeAnalyzing = false;
+    private boolean isCapturing = false;
+    private List<YoloDetector.YoloDetection> latestDetections = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,12 +82,17 @@ public class ScanProductActivity extends AppCompatActivity {
 
         cameraExecutor = Executors.newSingleThreadExecutor();
 
+        try {
+            yoloDetector = new YoloDetector(this, "yolo_product.tflite");
+            productClassifier = new ProductRandomForestClassifier();
+        } catch (IOException e) {
+            Toast.makeText(this, "Loi tai mo hinh YOLO: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
         binding.btnBack.setOnClickListener(v -> finish());
         binding.btnCapture.setOnClickListener(v -> captureProduct());
         binding.btnGallery.setOnClickListener(v -> openGallery());
-        binding.btnSaveProduct.setOnClickListener(v -> saveAndConfirmProduct());
 
-        // Request camera permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             startCamera();
         } else {
@@ -84,13 +102,12 @@ public class ScanProductActivity extends AppCompatActivity {
 
     private void startCamera() {
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
-
         cameraProviderFuture.addListener(() -> {
             try {
                 ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
                 bindPreview(cameraProvider);
             } catch (ExecutionException | InterruptedException e) {
-                Toast.makeText(this, "Lỗi khởi động camera: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Loi khoi dong camera: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }, ContextCompat.getMainExecutor(this));
     }
@@ -103,146 +120,244 @@ public class ScanProductActivity extends AppCompatActivity {
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
                 .build();
 
-        CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
+        imageAnalysis = new ImageAnalysis.Builder()
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_YUV_420_888)
+                .build();
+        imageAnalysis.setAnalyzer(cameraExecutor, imageProxy -> {
+            if (isCapturing || isRealtimeAnalyzing || yoloDetector == null) {
+                imageProxy.close();
+                return;
+            }
+
+            isRealtimeAnalyzing = true;
+            Bitmap bitmap = yuvToBitmap(imageProxy);
+            int rotationDegrees = imageProxy.getImageInfo().getRotationDegrees();
+            imageProxy.close();
+
+            if (bitmap != null) {
+                Bitmap rotatedBitmap = rotateBitmap(bitmap, rotationDegrees);
+                List<YoloDetector.YoloDetection> detections = yoloDetector.detect(rotatedBitmap);
+                runOnUiThread(() -> showRealtimeDetections(rotatedBitmap, detections));
+            }
+            isRealtimeAnalyzing = false;
+        });
 
         try {
             cameraProvider.unbindAll();
-            cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture);
+            cameraProvider.bindToLifecycle(this, CameraSelector.DEFAULT_BACK_CAMERA, preview, imageCapture, imageAnalysis);
         } catch (Exception e) {
-            Toast.makeText(this, "Lỗi liên kết camera: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Loi lien ket camera: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
     private void captureProduct() {
-        if (imageCapture == null) return;
+        if (imageCapture == null) {
+            return;
+        }
 
+        resetDetectedState();
+        isCapturing = true;
+        binding.ivFrozenPhoto.setVisibility(View.GONE);
         binding.progressBar.setVisibility(View.VISIBLE);
         binding.btnCapture.setEnabled(false);
-        binding.cardProductInfo.setVisibility(View.GONE);
 
         imageCapture.takePicture(ContextCompat.getMainExecutor(this), new ImageCapture.OnImageCapturedCallback() {
             @Override
             public void onCaptureSuccess(@NonNull ImageProxy imageProxy) {
+                Bitmap bitmap = imageProxyToBitmap(imageProxy);
+                int rotationDegrees = imageProxy.getImageInfo().getRotationDegrees();
                 imageProxy.close();
-                runMockDetection();
+
+                if (bitmap == null) {
+                    binding.progressBar.setVisibility(View.GONE);
+                    binding.btnCapture.setEnabled(true);
+                    isCapturing = false;
+                    Toast.makeText(ScanProductActivity.this, "Khong the xu ly anh chup", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Bitmap rotatedBitmap = rotateBitmap(bitmap, rotationDegrees);
+                String imageUri = saveBitmapToCache(rotatedBitmap);
+                binding.ivFrozenPhoto.setImageBitmap(rotatedBitmap);
+                binding.ivFrozenPhoto.setVisibility(View.VISIBLE);
+                runYoloDetection(rotatedBitmap, imageUri);
             }
 
             @Override
             public void onError(@NonNull ImageCaptureException exception) {
                 binding.progressBar.setVisibility(View.GONE);
                 binding.btnCapture.setEnabled(true);
-                Toast.makeText(ScanProductActivity.this, "Lỗi chụp ảnh sản phẩm: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
+                isCapturing = false;
+                Toast.makeText(ScanProductActivity.this, "Loi chup anh: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void runMockDetection() {
-        // Simulates a YOLO TFLite object detection pipeline on the taken frame
-        int index = (int) (Math.random() * mockProducts.length);
-        detectedProductName = mockProducts[index];
-        detectedConfidence = mockConfidences[index];
+    private void runYoloDetection(Bitmap bitmap, String imageUri) {
+        if (yoloDetector == null) {
+            binding.progressBar.setVisibility(View.GONE);
+            binding.btnCapture.setEnabled(true);
+            openTransactionForm(0, "", imageUri);
+            return;
+        }
 
+        cameraExecutor.execute(() -> {
+            List<YoloDetector.YoloDetection> detections = yoloDetector.detect(bitmap);
+            runOnUiThread(() -> showDetectionResult(bitmap, detections, imageUri));
+        });
+    }
+
+    private void showDetectionResult(Bitmap bitmap, List<YoloDetector.YoloDetection> detections, String imageUri) {
+        List<YoloDetector.YoloDetection> safeDetections = new ArrayList<>();
+        if (detections != null) {
+            for (YoloDetector.YoloDetection detection : detections) {
+                if (detection != null) {
+                    safeDetections.add(detection);
+                }
+            }
+        }
+        binding.overlayView.setFrameSize(bitmap.getWidth(), bitmap.getHeight());
+        List<BoundingBoxOverlay.Box> overlayBoxes = new ArrayList<>();
+        for (YoloDetector.YoloDetection detection : safeDetections) {
+            overlayBoxes.add(new BoundingBoxOverlay.Box(detection.rect, detection.className, detection.confidence));
+        }
+        binding.overlayView.setBoxes(overlayBoxes);
+        latestDetections = new ArrayList<>(safeDetections);
+        Log.d(YOLO_LOG_TAG, "detections=" + safeDetections.size());
+        for (YoloDetector.YoloDetection detection : safeDetections) {
+            Log.d(YOLO_LOG_TAG, "classId=" + detection.classId
+                    + ", className=" + detection.className
+                    + ", confidence=" + detection.confidence
+                    + ", bbox=[" + detection.rect.left
+                    + "," + detection.rect.top
+                    + "," + detection.rect.right
+                    + "," + detection.rect.bottom + "]");
+        }
+
+        if (safeDetections.isEmpty()) {
+            detectedProductName = "";
+            detectedConfidence = 0.0;
+            binding.cardProductInfo.setVisibility(View.GONE);
+            ProductRandomForestClassifier.Prediction prediction = productClassifier != null
+                    ? productClassifier.classify(safeDetections)
+                    : null;
+            int categoryId = prediction != null ? prediction.getCategoryId() : 0;
+            openTransactionForm(categoryId, "", imageUri);
+            return;
+        }
+
+        YoloDetector.YoloDetection best = safeDetections.get(0);
+        for (YoloDetector.YoloDetection detection : safeDetections) {
+            if (detection.confidence > best.confidence) {
+                best = detection;
+            }
+        }
+
+        detectedProductName = best.className;
+        detectedConfidence = best.confidence;
+        ProductRandomForestClassifier.Prediction prediction = productClassifier != null
+                ? productClassifier.classify(latestDetections)
+                : null;
+        int categoryId = prediction != null ? prediction.getCategoryId() : 0;
+        openTransactionForm(categoryId, detectedProductName, imageUri);
+    }
+
+    private void showRealtimeDetections(Bitmap bitmap, List<YoloDetector.YoloDetection> detections) {
+        if (isCapturing) {
+            return;
+        }
+
+        binding.overlayView.setFrameSize(bitmap.getWidth(), bitmap.getHeight());
+        List<BoundingBoxOverlay.Box> overlayBoxes = new ArrayList<>();
+        for (YoloDetector.YoloDetection detection : detections) {
+            overlayBoxes.add(new BoundingBoxOverlay.Box(detection.rect, detection.className, detection.confidence));
+        }
+        binding.overlayView.setBoxes(overlayBoxes);
+    }
+
+    private Bitmap imageProxyToBitmap(ImageProxy imageProxy) {
+        try {
+            ByteBuffer buffer = imageProxy.getPlanes()[0].getBuffer();
+            byte[] bytes = new byte[buffer.remaining()];
+            buffer.get(bytes);
+            return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private Bitmap yuvToBitmap(ImageProxy image) {
+        try {
+            ImageProxy.PlaneProxy[] planes = image.getPlanes();
+            ByteBuffer yBuffer = planes[0].getBuffer();
+            ByteBuffer uBuffer = planes[1].getBuffer();
+            ByteBuffer vBuffer = planes[2].getBuffer();
+
+            int ySize = yBuffer.remaining();
+            int uSize = uBuffer.remaining();
+            int vSize = vBuffer.remaining();
+
+            byte[] nv21 = new byte[ySize + uSize + vSize];
+            yBuffer.get(nv21, 0, ySize);
+            vBuffer.get(nv21, ySize, vSize);
+            uBuffer.get(nv21, ySize + vSize, uSize);
+
+            YuvImage yuvImage = new YuvImage(nv21, ImageFormat.NV21, image.getWidth(), image.getHeight(), null);
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            yuvImage.compressToJpeg(new Rect(0, 0, yuvImage.getWidth(), yuvImage.getHeight()), 90, outputStream);
+            byte[] imageBytes = outputStream.toByteArray();
+            return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private Bitmap rotateBitmap(Bitmap bitmap, int rotationDegrees) {
+        if (rotationDegrees == 0) {
+            return bitmap;
+        }
+
+        android.graphics.Matrix matrix = new android.graphics.Matrix();
+        matrix.postRotate(rotationDegrees);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+    private void openTransactionForm(int categoryId, String title, String imageUri) {
         binding.progressBar.setVisibility(View.GONE);
         binding.btnCapture.setEnabled(true);
+        isCapturing = false;
+        binding.cardProductInfo.setVisibility(View.GONE);
 
-        binding.tvProductLabel.setText("Sản phẩm: " + detectedProductName);
-        binding.tvConfidence.setText("Độ tin cậy: " + (int)(detectedConfidence * 100) + "%");
-        binding.etPrice.setText("");
-        binding.cardProductInfo.setVisibility(View.VISIBLE);
-        binding.etPrice.requestFocus();
-    }
-
-    private void saveAndConfirmProduct() {
-        String priceText = binding.etPrice.getText().toString().trim();
-
-        if (priceText.isEmpty()) {
-            binding.etPrice.setError("Vui lòng nhập giá sản phẩm");
-            binding.etPrice.requestFocus();
-            return;
-        }
-
-        double enteredPrice;
-        try {
-            enteredPrice = Double.parseDouble(priceText);
-        } catch (NumberFormatException e) {
-            binding.etPrice.setError("Giá tiền không hợp lệ");
-            binding.etPrice.requestFocus();
-            return;
-        }
-
-        binding.btnSaveProduct.setEnabled(false);
-        binding.progressBar.setVisibility(View.VISIBLE);
-
-        // 1. Call Random Forest to categorize the detected product name
-        ProductClassifyRequest classifyRequest = new ProductClassifyRequest(currentUser.getUserId(), detectedProductName);
-
-        RetrofitClient.getApiService().classifyProduct(classifyRequest).enqueue(new Callback<ApiResponse<AiProductClassificationResult>>() {
-            @Override
-            public void onResponse(Call<ApiResponse<AiProductClassificationResult>> call, Response<ApiResponse<AiProductClassificationResult>> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                    AiProductClassificationResult result = response.body().getData();
-                    if (result != null) {
-                        logAndOpenTransaction(enteredPrice, result.getSuggestedCategoryId(), result.getSuggestedCategoryName());
-                    } else {
-                        Toast.makeText(ScanProductActivity.this, "Không phân loại được sản phẩm", Toast.LENGTH_SHORT).show();
-                        binding.btnSaveProduct.setEnabled(true);
-                        binding.progressBar.setVisibility(View.GONE);
-                    }
-                } else {
-                    String msg = response.body() != null ? response.body().getMessage() : "Lỗi phân loại chi tiêu";
-                    Toast.makeText(ScanProductActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    binding.btnSaveProduct.setEnabled(true);
-                    binding.progressBar.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ApiResponse<AiProductClassificationResult>> call, Throwable t) {
-                Toast.makeText(ScanProductActivity.this, "Lỗi kết nối phân loại: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                binding.btnSaveProduct.setEnabled(true);
-                binding.progressBar.setVisibility(View.GONE);
-            }
-        });
-    }
-
-    private void logAndOpenTransaction(double price, Integer categoryId, String categoryName) {
-        // 2. Submit log to AI product logs
-        SaveProductLogRequest logRequest = new SaveProductLogRequest(
-                currentUser.getUserId(),
-                detectedProductName,
-                detectedConfidence,
-                price,
-                categoryId
+        AddTransactionFragment addFragment = AddTransactionFragment.newInstance(
+                0,
+                title != null ? title : "",
+                categoryId,
+                DateUtils.getCurrentDateString(),
+                0,
+                imageUri
         );
+        addFragment.show(getSupportFragmentManager(), "AddTransactionFragment");
+    }
 
-        RetrofitClient.getApiService().saveProductLog(logRequest).enqueue(new Callback<ApiResponse<AiProductLog>>() {
-            @Override
-            public void onResponse(Call<ApiResponse<AiProductLog>> call, Response<ApiResponse<AiProductLog>> response) {
-                binding.btnSaveProduct.setEnabled(true);
-                binding.progressBar.setVisibility(View.GONE);
-
-                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                    // Open prefilled transaction form
-                    AddTransactionFragment addFragment = AddTransactionFragment.newInstance(
-                            price,
-                            detectedProductName,
-                            categoryId != null ? categoryId : 0,
-                            DateUtils.getCurrentDateString(),
-                            0 // No OCR feedback needed for YOLO product scans
-                    );
-                    addFragment.show(getSupportFragmentManager(), "AddTransactionFragment");
-                } else {
-                    Toast.makeText(ScanProductActivity.this, "Lỗi lưu log sản phẩm", Toast.LENGTH_SHORT).show();
-                }
+    private String saveBitmapToCache(Bitmap bitmap) {
+        try {
+            File file = File.createTempFile("product_scan_", ".jpg", getCacheDir());
+            try (FileOutputStream outputStream = new FileOutputStream(file)) {
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 92, outputStream);
             }
+            return Uri.fromFile(file).toString();
+        } catch (IOException e) {
+            return null;
+        }
+    }
 
-            @Override
-            public void onFailure(Call<ApiResponse<AiProductLog>> call, Throwable t) {
-                binding.btnSaveProduct.setEnabled(true);
-                binding.progressBar.setVisibility(View.GONE);
-                Toast.makeText(ScanProductActivity.this, "Lỗi kết nối lưu log: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+    private void resetDetectedState() {
+        detectedProductName = "";
+        detectedConfidence = 0.0;
+        latestDetections = new ArrayList<>();
+        binding.cardProductInfo.setVisibility(View.GONE);
+        binding.overlayView.clear();
     }
 
     private void openGallery() {
@@ -255,8 +370,31 @@ public class ScanProductActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == GALLERY_PICK_CODE && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            // Simply runs mock detection on the selected gallery image
-            runMockDetection();
+            Uri imageUri = data.getData();
+            binding.progressBar.setVisibility(View.VISIBLE);
+            binding.btnCapture.setEnabled(false);
+            resetDetectedState();
+
+            try {
+                Bitmap bitmap = android.provider.MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                if (bitmap == null) {
+                    binding.progressBar.setVisibility(View.GONE);
+                    binding.btnCapture.setEnabled(true);
+                    Toast.makeText(this, "Khong the tai anh tu thu vien", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                ProcessCameraProvider cameraProvider = ProcessCameraProvider.getInstance(this).get();
+                cameraProvider.unbindAll();
+
+                binding.ivFrozenPhoto.setImageBitmap(bitmap);
+                binding.ivFrozenPhoto.setVisibility(View.VISIBLE);
+                runYoloDetection(bitmap, imageUri.toString());
+            } catch (Exception e) {
+                binding.progressBar.setVisibility(View.GONE);
+                binding.btnCapture.setEnabled(true);
+                Toast.makeText(this, "Loi doc anh: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -267,7 +405,7 @@ public class ScanProductActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startCamera();
             } else {
-                Toast.makeText(this, "Quyền truy cập Camera bị từ chối. Không thể quét sản phẩm!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Quyen camera bi tu choi", Toast.LENGTH_LONG).show();
                 finish();
             }
         }
@@ -275,9 +413,15 @@ public class ScanProductActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-        if (cameraExecutor != null) {
-            cameraExecutor.shutdown();
+        if (imageAnalysis != null) {
+            imageAnalysis.clearAnalyzer();
         }
+        if (cameraExecutor != null) {
+            cameraExecutor.shutdownNow();
+        }
+        if (yoloDetector != null) {
+            yoloDetector.close();
+        }
+        super.onDestroy();
     }
 }

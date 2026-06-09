@@ -42,6 +42,30 @@
             android:src="@drawable/ic_transaction"
             app:strokeColor="#3B82F6"
             app:strokeWidth="1.5dp" />
+
+        <!-- Background Thumbnail for stacked images -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imgThumbnailBack"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="start|top"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            app:shapeAppearanceOverlay="@style/RoundedImage"
+            app:strokeColor="#3B82F6"
+            app:strokeWidth="1.5dp" />
+
+        <!-- Front Thumbnail for stacked images -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imgThumbnailFront"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="end|bottom"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            app:shapeAppearanceOverlay="@style/RoundedImage"
+            app:strokeColor="#3B82F6"
+            app:strokeWidth="1.5dp" />
     </FrameLayout>
 
     <!-- Day Number Text -->

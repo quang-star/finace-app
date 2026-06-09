@@ -18,17 +18,20 @@ public class TransactionService {
     private final AccountRepository accountRepository;
     private final CategoryRepository categoryRepository;
     private final AccountService accountService;
+    private final TransactionImageRepository transactionImageRepository;
 
     public TransactionService(TransactionRepository transactionRepository,
                               UserRepository userRepository,
                               AccountRepository accountRepository,
                               CategoryRepository categoryRepository,
-                              AccountService accountService) {
+                              AccountService accountService,
+                              TransactionImageRepository transactionImageRepository) {
         this.transactionRepository = transactionRepository;
         this.userRepository = userRepository;
         this.accountRepository = accountRepository;
         this.categoryRepository = categoryRepository;
         this.accountService = accountService;
+        this.transactionImageRepository = transactionImageRepository;
     }
 
     public List<TransactionDTO> getTransactionsByUserId(Integer userId) {
@@ -163,6 +166,9 @@ public class TransactionService {
     }
 
     public TransactionDTO toDTO(Transaction transaction) {
+        List<TransactionImage> images = transactionImageRepository.findByTransactionTransactionId(transaction.getTransactionId());
+        String imageUrl = images.isEmpty() ? null : images.get(0).getImageUrl();
+
         return TransactionDTO.builder()
                 .transactionId(transaction.getTransactionId())
                 .userId(transaction.getUser().getUserId())
@@ -177,6 +183,7 @@ public class TransactionService {
                 .transactionDate(transaction.getTransactionDate())
                 .note(transaction.getNote())
                 .status(transaction.getStatus())
+                .imageUrl(imageUrl)
                 .createdAt(transaction.getCreatedAt())
                 .updatedAt(transaction.getUpdatedAt())
                 .build();

@@ -12,6 +12,7 @@ import com.example.personalfinance.databinding.ItemHorizontalWalletBinding;
 import com.example.personalfinance.models.Account;
 import com.example.personalfinance.utils.CurrencyFormatter;
 import java.util.List;
+import java.util.Locale;
 
 public class HorizontalAccountAdapter extends RecyclerView.Adapter<HorizontalAccountAdapter.ViewHolder> {
 
@@ -59,7 +60,9 @@ public class HorizontalAccountAdapter extends RecyclerView.Adapter<HorizontalAcc
         }
 
         public void bind(Account account) {
-            binding.tvAccountName.setText(account.getAccountName());
+            String name = account.getAccountName();
+            if ("Ví chính".equalsIgnoreCase(name)) name = "Wallet";
+            binding.tvAccountName.setText(name);
             binding.tvBalance.setText(CurrencyFormatter.formatVND(account.getBalance()));
 
             if (account.getBalance() < 0) {
@@ -76,7 +79,9 @@ public class HorizontalAccountAdapter extends RecyclerView.Adapter<HorizontalAcc
             }
 
             // Setup colors and icons based on Account Type
-            String type = account.getAccountType() != null ? account.getAccountType().toUpperCase() : "CASH";
+            String type = account.getAccountType() != null
+                    ? account.getAccountType().toUpperCase(Locale.ROOT)
+                    : "CASH";
             GradientDrawable background = (GradientDrawable) binding.viewTypeColor.getBackground();
 
             switch (type) {

@@ -13,6 +13,7 @@
         android:scaleType="centerCrop"
         android:src="@drawable/bg_summary_gradient"
         android:alpha="0.25"
+        android:visibility="gone"
         android:contentDescription="@null" />
 
     <!-- Top bar -->
@@ -37,6 +38,7 @@
             android:focusable="true" />
 
         <TextView
+            android:id="@+id/tvScreenTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"

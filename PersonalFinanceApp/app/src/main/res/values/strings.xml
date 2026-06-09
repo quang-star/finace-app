@@ -148,6 +148,8 @@
     <string name="cd_user_avatar">Ảnh đại diện</string>
     <string name="cd_google_icon">Biểu tượng Google</string>
 
+    <string name="msg_coming_soon">Coming soon!</string>
+
     <!-- Facebook Login (Replace with your actual values from Facebook Developer Console) -->
     <string name="facebook_app_id">1000227555738150</string>
     <string name="facebook_client_token">691a6cdc5d73f04cb0b507351be9b653</string>

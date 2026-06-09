@@ -14,16 +14,14 @@ import com.example.personalfinance.adapters.BudgetAdapter;
 import com.example.personalfinance.databinding.FragmentBudgetBinding;
 import com.example.personalfinance.models.Budget;
 import com.example.personalfinance.models.User;
+import com.example.personalfinance.utils.DateUtils;
 import com.example.personalfinance.utils.SharedPrefManager;
 import com.example.personalfinance.viewmodels.BudgetViewModel;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class BudgetFragment extends Fragment {
 
@@ -122,9 +120,8 @@ public class BudgetFragment extends Fragment {
     private Date parseDate(String value) {
         if (value == null || value.trim().isEmpty()) return null;
         try {
-            String dateOnly = value.contains("T") ? value.split("T")[0] : value;
-            return new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(dateOnly);
-        } catch (ParseException ignored) {
+            return DateUtils.parseApiDate(value);
+        } catch (Exception ignored) {
             return null;
         }
     }

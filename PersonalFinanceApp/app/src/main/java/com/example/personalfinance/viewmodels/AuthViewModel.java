@@ -12,6 +12,8 @@ import com.example.personalfinance.repositories.AuthRepository;
 import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.Locale;
+
 public class AuthViewModel extends ViewModel {
 
     private final AuthRepository repository;
@@ -110,7 +112,7 @@ public class AuthViewModel extends ViewModel {
             return "Đăng nhập thất bại. Vui lòng thử lại.";
         }
 
-        String lowerMessage = message.toLowerCase();
+        String lowerMessage = message.toLowerCase(Locale.ROOT);
         if (lowerMessage.contains("network error")
                 || lowerMessage.contains("timeout")
                 || lowerMessage.contains("interrupted connection")

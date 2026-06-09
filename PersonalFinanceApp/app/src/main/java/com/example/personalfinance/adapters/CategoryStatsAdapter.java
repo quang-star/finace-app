@@ -68,21 +68,26 @@ public class CategoryStatsAdapter extends RecyclerView.Adapter<CategoryStatsAdap
         }
 
         private int resolveCategoryColor(String categoryName) {
-            String name = categoryName != null ? categoryName.toLowerCase(Locale.ROOT) : "";
-            if (containsAny(name, "ăn uống", "food", "cà phê", "coffee")) {
-                return Color.parseColor("#10B981");
-            } else if (containsAny(name, "sức khỏe", "y tế", "health")) {
-                return Color.parseColor("#EF4444");
-            } else if (containsAny(name, "mua sắm", "shopping", "quần áo")) {
-                return Color.parseColor("#D946EF");
-            } else if (containsAny(name, "di chuyển", "travel", "xe")) {
-                return Color.parseColor("#3B82F6");
-            } else if (containsAny(name, "lương", "salary")) {
-                return Color.parseColor("#22C55E");
-            } else if (containsAny(name, "thưởng", "bonus")) {
-                return Color.parseColor("#F59E0B");
+            if (categoryName == null || categoryName.trim().isEmpty()) {
+                return Color.parseColor("#9CA3AF");
             }
-            return Color.parseColor("#E5C158");
+
+            // Premium Obsidian-Dark compatible palette
+            String[] palette = {
+                "#3B82F6", // Blue
+                "#10B981", // Green
+                "#D946EF", // Pink
+                "#F59E0B", // Yellow
+                "#EF4444", // Red
+                "#8B5CF6", // Purple
+                "#06B6D4", // Cyan
+                "#F97316", // Orange
+                "#EC4899", // Rose
+                "#14B8A6"  // Teal
+            };
+
+            int index = Math.abs(categoryName.hashCode()) % palette.length;
+            return Color.parseColor(palette[index]);
         }
 
         private int resolveCategoryIcon(String categoryName) {

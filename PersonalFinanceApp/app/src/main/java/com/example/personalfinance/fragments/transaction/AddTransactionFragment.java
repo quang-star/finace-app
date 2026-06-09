@@ -32,14 +32,14 @@ import com.example.personalfinance.utils.SharedPrefManager;
 import com.example.personalfinance.viewmodels.TransactionViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import androidx.fragment.app.DialogFragment;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -47,14 +47,34 @@ import com.example.personalfinance.api.RetrofitClient;
 
 public class AddTransactionFragment extends DialogFragment {
 
-    public static AddTransactionFragment newInstance(double amount, String title, int categoryId, String date, int aiScanLogId) {
+    public static AddTransactionFragment newInstance(int transactionId, double amount, String title, int categoryId, String date, int aiScanLogId, String imageUrl) {
         AddTransactionFragment fragment = new AddTransactionFragment();
         Bundle args = new Bundle();
+        args.putInt("transactionId", transactionId);
         args.putDouble("amount", amount);
         args.putString("title", title);
         args.putInt("categoryId", categoryId);
         args.putString("date", date);
         args.putInt("aiScanLogId", aiScanLogId);
+        args.putString("imageUrl", imageUrl);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static AddTransactionFragment newInstance(double amount, String title, int categoryId, String date, int aiScanLogId) {
+        return newInstance(0, amount, title, categoryId, date, aiScanLogId, null);
+    }
+
+    public static AddTransactionFragment newInstance(double amount, String title, int categoryId, String date, int aiScanLogId, String localImageUri) {
+        AddTransactionFragment fragment = new AddTransactionFragment();
+        Bundle args = new Bundle();
+        args.putInt("transactionId", 0);
+        args.putDouble("amount", amount);
+        args.putString("title", title);
+        args.putInt("categoryId", categoryId);
+        args.putString("date", date);
+        args.putInt("aiScanLogId", aiScanLogId);
+        args.putString("imageUri", localImageUri);
         fragment.setArguments(args);
         return fragment;
     }
@@ -68,6 +88,8 @@ public class AddTransactionFragment extends DialogFragment {
         this.onTransactionSavedListener = listener;
     }
 
+    private int transactionId = 0;
+    private String existingImageUrl = null;
     private FragmentAddTransactionBinding binding;
     private TransactionViewModel viewModel;
     private User currentUser;
@@ -106,6 +128,8 @@ public class AddTransactionFragment extends DialogFragment {
 
         // Set default date / read from arguments
         if (getArguments() != null) {
+            transactionId = getArguments().getInt("transactionId", 0);
+            existingImageUrl = getArguments().getString("imageUrl", null);
             double amount = getArguments().getDouble("amount", 0);
             String title = getArguments().getString("title", "");
             String dateArg = getArguments().getString("date");
@@ -119,6 +143,20 @@ public class AddTransactionFragment extends DialogFragment {
             }
             if (!title.isEmpty()) {
                 binding.edtTitle.setText(title);
+            }
+            if (transactionId > 0) {
+                binding.tvScreenTitle.setText("Chi tiết giao dịch");
+                binding.btnSave.setText("Cập nhật giao dịch");
+            }
+            if (existingImageUrl != null && !existingImageUrl.isEmpty()) {
+                String baseUrl = RetrofitClient.getClient().baseUrl().toString();
+                String path = existingImageUrl.startsWith("/") ? existingImageUrl.substring(1) : existingImageUrl;
+                loadNetworkImage(baseUrl + path);
+            }
+            String localImageUriStr = getArguments().getString("imageUri", null);
+            if (localImageUriStr != null && !localImageUriStr.isEmpty()) {
+                selectedImageUri = android.net.Uri.parse(localImageUriStr);
+                cacheSelectedImageForUpload(selectedImageUri);
             }
         } else {
             selectedDateStr = DateUtils.getCurrentDateString();
@@ -247,7 +285,7 @@ public class AddTransactionFragment extends DialogFragment {
             calendar.set(Calendar.MONTH, month);
             calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-            selectedDateStr = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(calendar.getTime());
+            selectedDateStr = DateUtils.formatApiDate(calendar.getTime());
             binding.edtDate.setText(DateUtils.formatDateForDisplay(selectedDateStr));
         };
 
@@ -314,7 +352,8 @@ public class AddTransactionFragment extends DialogFragment {
         for (Account acc : allAccounts) {
             names.add(acc.getAccountName() + " (" + CurrencyFormatter.formatVND(acc.getBalance()) + ")");
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, names);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.custom_spinner_item, names);
+        adapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_item);
         binding.spAccount.setAdapter(adapter);
     }
 
@@ -353,7 +392,8 @@ public class AddTransactionFragment extends DialogFragment {
             }
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, names);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.custom_spinner_item, names);
+        adapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_item);
         binding.spCategory.setAdapter(adapter);
 
         // Pre-select category if passed in arguments
@@ -429,21 +469,26 @@ public class AddTransactionFragment extends DialogFragment {
         transaction.setTransactionDate(selectedDateStr);
         transaction.setNote(note);
         transaction.setStatus("completed");
+        if (transactionId > 0) {
+            transaction.setTransactionId(transactionId);
+        }
 
         int aiScanLogId = 0;
         if (getArguments() != null && getArguments().containsKey("aiScanLogId")) {
             aiScanLogId = getArguments().getInt("aiScanLogId");
         }
 
-        viewModel.createTransaction(transaction, aiScanLogId, selectedCategory.getCategoryId());
+        if (transactionId > 0) {
+            viewModel.updateTransaction(transactionId, transaction);
+        } else {
+            viewModel.createTransaction(transaction, aiScanLogId, selectedCategory.getCategoryId());
+        }
     }
 
     private boolean isSelectedDateInFuture() {
         try {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            format.setLenient(false);
-            java.util.Date selectedDate = format.parse(selectedDateStr);
-            java.util.Date today = format.parse(DateUtils.getCurrentDateString());
+            java.util.Date selectedDate = DateUtils.parseApiDate(selectedDateStr);
+            java.util.Date today = DateUtils.parseApiDate(DateUtils.getCurrentDateString());
             return selectedDate != null && today != null && selectedDate.after(today);
         } catch (Exception e) {
             return true;
@@ -504,7 +549,10 @@ public class AddTransactionFragment extends DialogFragment {
     }
 
     private void openGallery() {
-        android.content.Intent intent = new android.content.Intent(android.content.Intent.ACTION_PICK);
+        android.content.Intent intent = new android.content.Intent(android.content.Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(android.content.Intent.CATEGORY_OPENABLE);
+        intent.addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
+                | android.content.Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
         intent.setType("image/*");
         startActivityForResult(intent, REQUEST_IMAGE_PICK);
     }
@@ -532,20 +580,17 @@ public class AddTransactionFragment extends DialogFragment {
                 }
             } else if (requestCode == REQUEST_IMAGE_PICK && data != null && data.getData() != null) {
                 selectedImageUri = data.getData();
-                persistGalleryReadPermission(data, selectedImageUri);
+                persistGalleryReadPermission(selectedImageUri);
                 cacheSelectedImageForUpload(selectedImageUri);
             }
         }
     }
 
-    private void persistGalleryReadPermission(android.content.Intent data, android.net.Uri uri) {
-        int flags = data.getFlags() & android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
-        if (flags == 0 || android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            return;
-        }
-
+    private void persistGalleryReadPermission(android.net.Uri uri) {
         try {
-            requireContext().getContentResolver().takePersistableUriPermission(uri, flags);
+            requireContext().getContentResolver().takePersistableUriPermission(
+                    uri,
+                    android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION);
         } catch (SecurityException ignored) {
             // Some gallery providers grant temporary read access only; cached bytes still cover upload.
         }
@@ -584,6 +629,7 @@ public class AddTransactionFragment extends DialogFragment {
         capturedImageUri = null;
         selectedImageBytes = null;
         selectedImageMimeType = null;
+        existingImageUrl = null;
         if (binding == null) return;
         binding.layoutImagePreview.setVisibility(View.GONE);
         binding.btnAddImage.setVisibility(View.VISIBLE);
@@ -651,19 +697,83 @@ public class AddTransactionFragment extends DialogFragment {
         }
     }
 
-    private byte[] readImageBytes(android.net.Uri uri) throws IOException {
-        try (InputStream inputStream = requireContext().getContentResolver().openInputStream(uri);
-             ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream()) {
-            if (inputStream == null) {
-                return new byte[0];
+    private int getOrientation(android.net.Uri uri) {
+        // Method 1: Try ExifInterface
+        try (InputStream is = requireContext().getContentResolver().openInputStream(uri)) {
+            if (is != null) {
+                androidx.exifinterface.media.ExifInterface exif =
+                        new androidx.exifinterface.media.ExifInterface(is);
+                int orientation = exif.getAttributeInt(
+                        androidx.exifinterface.media.ExifInterface.TAG_ORIENTATION,
+                        androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL);
+                switch (orientation) {
+                    case androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_90:
+                        return 90;
+                    case androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180:
+                        return 180;
+                    case androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_270:
+                        return 270;
+                }
             }
+        } catch (Exception ignored) {}
 
-            byte[] buffer = new byte[8192];
-            int len;
-            while ((len = inputStream.read(buffer)) != -1) {
-                byteBuffer.write(buffer, 0, len);
+        // Method 2: Try querying MediaStore
+        try {
+            String[] projection = { android.provider.MediaStore.Images.ImageColumns.ORIENTATION };
+            android.database.Cursor cursor = requireContext().getContentResolver().query(uri, projection, null, null, null);
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    int colIndex = cursor.getColumnIndex(android.provider.MediaStore.Images.ImageColumns.ORIENTATION);
+                    if (colIndex != -1) {
+                        int rotation = cursor.getInt(colIndex);
+                        cursor.close();
+                        return rotation;
+                    }
+                }
+                cursor.close();
             }
-            return byteBuffer.toByteArray();
+        } catch (Exception ignored) {}
+
+        return 0;
+    }
+
+    private byte[] readImageBytes(android.net.Uri uri) throws IOException {
+        int rotation = getOrientation(uri);
+        if (rotation == 0) {
+            // No rotation needed, return raw bytes
+            try (InputStream inputStream = requireContext().getContentResolver().openInputStream(uri);
+                 ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream()) {
+                if (inputStream == null) {
+                    return new byte[0];
+                }
+                byte[] buffer = new byte[8192];
+                int len;
+                while ((len = inputStream.read(buffer)) != -1) {
+                    byteBuffer.write(buffer, 0, len);
+                }
+                return byteBuffer.toByteArray();
+            }
+        } else {
+            // Decode, rotate, compress, and return bytes
+            try (InputStream is = requireContext().getContentResolver().openInputStream(uri)) {
+                Bitmap originalBitmap = BitmapFactory.decodeStream(is);
+                if (originalBitmap == null) {
+                    return new byte[0];
+                }
+                android.graphics.Matrix matrix = new android.graphics.Matrix();
+                matrix.postRotate(rotation);
+                Bitmap rotatedBitmap = Bitmap.createBitmap(
+                    originalBitmap, 0, 0,
+                    originalBitmap.getWidth(), originalBitmap.getHeight(),
+                    matrix, true
+                );
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                // Compress to JPEG with 90% quality to maintain premium appearance
+                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bos);
+                originalBitmap.recycle();
+                rotatedBitmap.recycle();
+                return bos.toByteArray();
+            }
         }
     }
 
@@ -835,6 +945,46 @@ public class AddTransactionFragment extends DialogFragment {
             getActivity().finish();
         }
         dismiss();
+    }
+
+    private void loadNetworkImage(String url) {
+        new Thread(() -> {
+            try {
+                android.util.Log.d("AddTransactionFragment", "Loading image from URL: " + url);
+                java.net.URL imageUrl = new java.net.URL(url);
+                java.net.HttpURLConnection conn = (java.net.HttpURLConnection) imageUrl.openConnection();
+                conn.setDoInput(true);
+                conn.setRequestProperty("ngrok-skip-browser-warning", "true");
+                conn.setRequestProperty("User-Agent", "Android-App");
+                conn.connect();
+
+                int responseCode = conn.getResponseCode();
+                android.util.Log.d("AddTransactionFragment", "HTTP Response code: " + responseCode);
+
+                if (responseCode >= 200 && responseCode < 300) {
+                    java.io.InputStream is = conn.getInputStream();
+                    android.graphics.Bitmap bitmap = android.graphics.BitmapFactory.decodeStream(is);
+                    if (bitmap == null) {
+                        android.util.Log.e("AddTransactionFragment", "Failed to decode bitmap from stream!");
+                    } else {
+                        android.util.Log.d("AddTransactionFragment", "Successfully decoded bitmap! Size: " + bitmap.getWidth() + "x" + bitmap.getHeight());
+                    }
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(() -> {
+                            if (binding != null && bitmap != null) {
+                                binding.ivThumbnail.setImageBitmap(bitmap);
+                                binding.layoutImagePreview.setVisibility(View.VISIBLE);
+                                binding.btnAddImage.setVisibility(View.GONE);
+                            }
+                        });
+                    }
+                } else {
+                    android.util.Log.e("AddTransactionFragment", "Failed to load image, HTTP response: " + responseCode);
+                }
+            } catch (Exception e) {
+                android.util.Log.e("AddTransactionFragment", "Error loading image: ", e);
+            }
+        }).start();
     }
 
     @Override

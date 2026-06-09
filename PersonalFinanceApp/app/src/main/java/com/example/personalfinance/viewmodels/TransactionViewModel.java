@@ -141,6 +141,23 @@ public class TransactionViewModel extends ViewModel {
         });
     }
 
+    public void updateTransaction(int id, Transaction transaction) {
+        isLoading.setValue(true);
+        transactionRepository.updateTransaction(id, transaction, new TransactionRepository.ApiCallback<Transaction>() {
+            @Override
+            public void onSuccess(Transaction result) {
+                transactionCreated.postValue(result);
+                isLoading.postValue(false);
+            }
+
+            @Override
+            public void onError(String error) {
+                errorMessage.postValue("Lỗi cập nhật giao dịch: " + error);
+                isLoading.postValue(false);
+            }
+        });
+    }
+
     public void transferFunds(TransferRequest request) {
         isLoading.setValue(true);
         transactionRepository.transferFunds(request, new TransactionRepository.ApiCallback<Void>() {

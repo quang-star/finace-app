@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +34,53 @@ public class CategoryService {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new RuntimeException("Category not found with id: " + categoryId));
         return toDTO(category);
+    }
+
+    public Category findCategoryByKeyword(Integer userId, String keyword) {
+        List<Category> categories = categoryRepository.findByUserUserIdOrIsDefaultTrue(userId);
+        String normalizedKeyword = keyword != null ? keyword.toLowerCase(Locale.ROOT) : "";
+        String vietnameseName = mapKeywordToVietnameseName(normalizedKeyword);
+
+        for (Category category : categories) {
+            String categoryName = category.getCategoryName();
+            if (categoryName == null) {
+                continue;
+            }
+            String normalizedCategoryName = categoryName.toLowerCase(Locale.ROOT);
+            if (categoryName.equalsIgnoreCase(vietnameseName)
+                    || (!normalizedKeyword.isBlank() && normalizedCategoryName.contains(normalizedKeyword))) {
+                return category;
+            }
+        }
+
+        for (Category category : categories) {
+            if ("expense".equalsIgnoreCase(category.getCategoryType())) {
+                return category;
+            }
+        }
+
+        return null;
+    }
+
+    private String mapKeywordToVietnameseName(String keyword) {
+        switch (keyword) {
+            case "food":
+                return "Ăn uống";
+            case "transport":
+                return "Di chuyển";
+            case "shopping":
+                return "Mua sắm";
+            case "bills":
+                return "Hóa đơn";
+            case "entertainment":
+                return "Giải trí";
+            case "health":
+                return "Sức khỏe";
+            case "education":
+                return "Giáo dục";
+            default:
+                return "Khác";
+        }
     }
 
     @Transactional

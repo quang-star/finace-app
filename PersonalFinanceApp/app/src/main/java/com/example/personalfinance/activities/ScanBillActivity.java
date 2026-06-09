@@ -37,6 +37,8 @@ import com.google.mlkit.vision.text.TextRecognizer;
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
 import android.content.Intent;
 import android.net.Uri;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -54,6 +56,8 @@ public class ScanBillActivity extends AppCompatActivity {
     private ExecutorService cameraExecutor;
     private User currentUser;
     private AiScanResult scanResult;
+    private Uri currentImageUri;
+    private ProcessCameraProvider cameraProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +92,7 @@ public class ScanBillActivity extends AppCompatActivity {
 
         cameraProviderFuture.addListener(() -> {
             try {
-                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                cameraProvider = cameraProviderFuture.get();
                 bindPreview(cameraProvider);
             } catch (ExecutionException | InterruptedException e) {
                 Toast.makeText(this, "Lỗi khởi động camera: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -145,6 +149,22 @@ public class ScanBillActivity extends AppCompatActivity {
             return;
         }
 
+        currentImageUri = saveImageProxyToCache(imageProxy);
+
+        // Freeze preview and display captured photo
+        runOnUiThread(() -> {
+            if (currentImageUri != null) {
+                binding.ivCapturedPreview.setImageURI(currentImageUri);
+                binding.ivCapturedPreview.setVisibility(View.VISIBLE);
+                binding.previewView.setVisibility(View.GONE);
+                binding.btnCapture.setVisibility(View.GONE);
+                binding.btnGallery.setVisibility(View.GONE);
+                if (cameraProvider != null) {
+                    cameraProvider.unbindAll();
+                }
+            }
+        });
+
         InputImage image = InputImage.fromMediaImage(
                 imageProxy.getImage(),
                 imageProxy.getImageInfo().getRotationDegrees()
@@ -190,15 +210,19 @@ public class ScanBillActivity extends AppCompatActivity {
                                 + ", date=" + scanResult.getDetectedDate()
                                 + ", category=" + scanResult.getSuggestedCategoryName()
                                 + ", confidence=" + scanResult.getConfidenceScore());
-                        displayResult(scanResult);
+
+                        // Automatically open AddTransactionFragment sheet!
+                        confirmAndOpenAddSheet();
                     } else {
                         Log.w(TAG, "OCR classify returned empty data");
                         Toast.makeText(ScanBillActivity.this, "Không trích xuất được thông tin từ hóa đơn", Toast.LENGTH_SHORT).show();
+                        resetCameraAndPreview();
                     }
                 } else {
                     String msg = response.body() != null ? response.body().getMessage() : "Lỗi phân tích hóa đơn";
                     Log.w(TAG, "OCR classify failed. code=" + response.code() + ", message=" + msg);
                     Toast.makeText(ScanBillActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    resetCameraAndPreview();
                 }
             }
 
@@ -208,6 +232,7 @@ public class ScanBillActivity extends AppCompatActivity {
                 binding.btnCapture.setEnabled(true);
                 Log.e(TAG, "OCR classify request failed", t);
                 Toast.makeText(ScanBillActivity.this, "Lỗi kết nối server: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                resetCameraAndPreview();
             }
         });
     }
@@ -232,7 +257,8 @@ public class ScanBillActivity extends AppCompatActivity {
                 scanResult.getDetectedMerchant() != null ? scanResult.getDetectedMerchant() : "Hóa đơn quét",
                 scanResult.getSuggestedCategoryId() != null ? scanResult.getSuggestedCategoryId() : 0,
                 scanResult.getDetectedDate() != null ? scanResult.getDetectedDate() : DateUtils.getCurrentDateString(),
-                scanResult.getAiScanLogId() != null ? scanResult.getAiScanLogId() : 0
+                scanResult.getAiScanLogId() != null ? scanResult.getAiScanLogId() : 0,
+                currentImageUri != null ? currentImageUri.toString() : null
         );
 
         addFragment.show(getSupportFragmentManager(), "AddTransactionFragment");
@@ -249,6 +275,20 @@ public class ScanBillActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == GALLERY_PICK_CODE && resultCode == RESULT_OK && data != null && data.getData() != null) {
             Uri imageUri = data.getData();
+            currentImageUri = imageUri;
+
+            // Freeze preview and display gallery photo
+            runOnUiThread(() -> {
+                binding.ivCapturedPreview.setImageURI(imageUri);
+                binding.ivCapturedPreview.setVisibility(View.VISIBLE);
+                binding.previewView.setVisibility(View.GONE);
+                binding.btnCapture.setVisibility(View.GONE);
+                binding.btnGallery.setVisibility(View.GONE);
+                if (cameraProvider != null) {
+                    cameraProvider.unbindAll();
+                }
+            });
+
             try {
                 InputImage image = InputImage.fromFilePath(this, imageUri);
                 binding.progressBar.setVisibility(View.VISIBLE);
@@ -289,6 +329,59 @@ public class ScanBillActivity extends AppCompatActivity {
                 finish();
             }
         }
+    }
+
+    private Uri saveImageProxyToCache(ImageProxy imageProxy) {
+        try {
+            Bitmap bitmap = imageProxyToBitmap(imageProxy);
+            if (bitmap == null) return null;
+
+            java.io.File cacheFile = new java.io.File(getCacheDir(), "captured_bill.jpg");
+            try (java.io.FileOutputStream fos = new java.io.FileOutputStream(cacheFile)) {
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+            }
+            bitmap.recycle();
+            return Uri.fromFile(cacheFile);
+        } catch (Exception e) {
+            Log.e(TAG, "Error saving captured image to cache", e);
+            return null;
+        }
+    }
+
+    private Bitmap imageProxyToBitmap(ImageProxy imageProxy) {
+        ImageProxy.PlaneProxy[] planes = imageProxy.getPlanes();
+        java.nio.ByteBuffer buffer = planes[0].getBuffer();
+        byte[] bytes = new byte[buffer.remaining()];
+        buffer.get(bytes);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+        int rotationDegrees = imageProxy.getImageInfo().getRotationDegrees();
+        if (rotationDegrees != 0) {
+            android.graphics.Matrix matrix = new android.graphics.Matrix();
+            matrix.postRotate(rotationDegrees);
+            Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            bitmap.recycle();
+            return rotatedBitmap;
+        }
+        return bitmap;
+    }
+
+    private void resetCameraAndPreview() {
+        currentImageUri = null;
+        scanResult = null;
+        runOnUiThread(() -> {
+            binding.ivCapturedPreview.setImageURI(null);
+            binding.ivCapturedPreview.setVisibility(View.GONE);
+            binding.previewView.setVisibility(View.VISIBLE);
+
+            binding.btnCapture.setVisibility(View.VISIBLE);
+            binding.btnCapture.setEnabled(true);
+            binding.btnGallery.setVisibility(View.VISIBLE);
+            binding.progressBar.setVisibility(View.GONE);
+            binding.cardResult.setVisibility(View.GONE);
+
+            startCamera();
+        });
     }
 
     @Override

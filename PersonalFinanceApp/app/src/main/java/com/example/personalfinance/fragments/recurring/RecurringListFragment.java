@@ -33,6 +33,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -347,7 +348,7 @@ public class RecurringListFragment extends Fragment {
 
             // Icons
             int iconRes = R.drawable.ic_recurring;
-            String name = item.getTitle().toLowerCase();
+            String name = item.getTitle().toLowerCase(Locale.ROOT);
             if (name.contains("điện") || name.contains("nước")) iconRes = R.drawable.ic_home;
             else if (name.contains("internet") || name.contains("wifi") || name.contains("mạng")) iconRes = R.drawable.ic_scan;
             else if (name.contains("lương") || name.contains("bonus") || name.contains("thu nhập")) iconRes = R.drawable.ic_budget;

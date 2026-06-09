@@ -167,4 +167,12 @@ public interface ApiService {
             @retrofit2.http.Query("transactionId") int transactionId,
             @retrofit2.http.Part okhttp3.MultipartBody.Part file
     );
+
+    // USER AVATAR
+    @retrofit2.http.Multipart
+    @POST("api/users/{id}/avatar")
+    Call<ApiResponse<User>> uploadAvatar(
+            @Path("id") int id,
+            @retrofit2.http.Part okhttp3.MultipartBody.Part file
+    );
 }

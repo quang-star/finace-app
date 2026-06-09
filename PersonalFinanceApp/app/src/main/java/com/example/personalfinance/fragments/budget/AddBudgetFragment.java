@@ -26,6 +26,7 @@ import com.example.personalfinance.models.Budget;
 import com.example.personalfinance.models.Category;
 import com.example.personalfinance.models.User;
 import com.example.personalfinance.utils.Constants;
+import com.example.personalfinance.utils.DateUtils;
 import com.example.personalfinance.utils.SharedPrefManager;
 import com.example.personalfinance.viewmodels.BudgetViewModel;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -34,7 +35,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -118,7 +118,7 @@ public class AddBudgetFragment extends BottomSheetDialogFragment {
         boolean editMode = !existingBudgets.isEmpty();
         binding.tvSheetTitle.setText(editMode ? "Cập nhật ngân sách tháng" : "Thêm ngân sách tháng");
         binding.btnSave.setText(editMode ? "Cập nhật ngân sách" : "Lưu ngân sách");
-        binding.tvMonth.setText(new SimpleDateFormat("'Tháng' MM/yyyy", Locale.getDefault()).format(calendar.getTime()));
+        binding.tvMonth.setText(DateUtils.formatMonthTitle(calendar.getTime()));
         binding.btnCancel.setOnClickListener(v -> dismiss());
         binding.btnSave.setOnClickListener(v -> saveBudgets());
         binding.btnReset.setOnClickListener(v -> resetAmounts());
@@ -388,7 +388,7 @@ public class AddBudgetFragment extends BottomSheetDialogFragment {
 
         List<Budget> budgetsToCreate = new ArrayList<>();
         List<Budget> budgetsToUpdate = new ArrayList<>();
-        String monthLabel = new SimpleDateFormat("MM/yyyy", Locale.getDefault()).format(calendar.getTime());
+        String monthLabel = DateUtils.formatMonthYear(calendar.getTime());
 
         for (CategoryBudgetRow row : categoryRows) {
             double amount = parseAmount(row.amountInput.getText().toString());
@@ -422,7 +422,7 @@ public class AddBudgetFragment extends BottomSheetDialogFragment {
     private String formatMonthBoundary(boolean firstDay) {
         Calendar selected = (Calendar) calendar.clone();
         selected.set(Calendar.DAY_OF_MONTH, firstDay ? 1 : selected.getActualMaximum(Calendar.DAY_OF_MONTH));
-        return new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(selected.getTime());
+        return DateUtils.formatApiDate(selected.getTime());
     }
 
     private void setFormattedText(EditText editText, double value) {

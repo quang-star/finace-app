@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
+import com.example.personalfinance.R;
 import com.example.personalfinance.databinding.FragmentAddAccountBinding;
 import com.example.personalfinance.models.Account;
 import com.example.personalfinance.models.User;
@@ -51,7 +52,8 @@ public class AddAccountFragment extends BottomSheetDialogFragment {
         viewModel = new ViewModelProvider(this).get(AccountViewModel.class);
 
         // Set up Spinner
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, typeDisplayNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.custom_spinner_item, typeDisplayNames);
+        adapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_item);
         binding.spAccountType.setAdapter(adapter);
 
         // Cancel

@@ -111,4 +111,9 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <!-- Rounded Image Shape -->
+    <style name="RoundedImage" parent="">
+        <item name="cornerSize">8dp</item>
+    </style>
+
 </resources>

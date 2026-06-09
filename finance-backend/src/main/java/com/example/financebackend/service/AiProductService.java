@@ -19,15 +19,18 @@ public class AiProductService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final ExpenseClassifierService expenseClassifierService;
+    private final ProductRandomForestService productRandomForestService;
 
     public AiProductService(AiProductLogRepository aiProductLogRepository,
                             UserRepository userRepository,
                             CategoryRepository categoryRepository,
-                            ExpenseClassifierService expenseClassifierService) {
+                            ExpenseClassifierService expenseClassifierService,
+                            ProductRandomForestService productRandomForestService) {
         this.aiProductLogRepository = aiProductLogRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
         this.expenseClassifierService = expenseClassifierService;
+        this.productRandomForestService = productRandomForestService;
     }
 
     @Transactional
@@ -56,6 +59,11 @@ public class AiProductService {
 
     public String classifyProduct(String productName) {
         return expenseClassifierService.classify(productName);
+    }
+
+    public ProductRandomForestService.ProductPrediction classifyProductDetections(
+            List<ProductRandomForestService.DetectionInput> detections) {
+        return productRandomForestService.classify(detections);
     }
 
     public List<AiProductLog> getLogsByUser(Integer userId) {

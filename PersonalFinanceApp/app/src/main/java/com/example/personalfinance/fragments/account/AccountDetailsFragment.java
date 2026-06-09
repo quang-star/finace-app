@@ -22,14 +22,13 @@ import com.example.personalfinance.databinding.FragmentAccountDetailsBinding;
 import com.example.personalfinance.models.Transaction;
 import com.example.personalfinance.models.User;
 import com.example.personalfinance.utils.CurrencyFormatter;
+import com.example.personalfinance.utils.DateUtils;
 import com.example.personalfinance.utils.SharedPrefManager;
 import com.example.personalfinance.viewmodels.TransactionViewModel;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 public class AccountDetailsFragment extends Fragment {
 
@@ -65,6 +64,9 @@ public class AccountDetailsFragment extends Fragment {
         if (getArguments() != null) {
             accountId = getArguments().getInt(ARG_ACCOUNT_ID);
             accountName = getArguments().getString(ARG_ACCOUNT_NAME);
+            if ("Ví chính".equalsIgnoreCase(accountName)) {
+                accountName = "Wallet";
+            }
             accountBalance = getArguments().getDouble(ARG_ACCOUNT_BALANCE);
         }
     }
@@ -202,8 +204,6 @@ public class AccountDetailsFragment extends Fragment {
         double totalIncome = 0;
         double totalExpense = 0;
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-
         for (Transaction t : fullTransactionList) {
             boolean keep = false;
             
@@ -213,10 +213,7 @@ public class AccountDetailsFragment extends Fragment {
                 try {
                     String dateStr = t.getTransactionDate();
                     if (dateStr != null) {
-                        if (dateStr.contains("T")) {
-                            dateStr = dateStr.split("T")[0];
-                        }
-                        java.util.Date date = sdf.parse(dateStr);
+                        java.util.Date date = DateUtils.parseApiDate(dateStr);
                         if (date != null) {
                             Calendar txCal = Calendar.getInstance();
                             txCal.setTime(date);

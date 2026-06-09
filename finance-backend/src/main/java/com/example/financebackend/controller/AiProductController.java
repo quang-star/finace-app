@@ -3,11 +3,17 @@ package com.example.financebackend.controller;
 import com.example.financebackend.dto.ApiResponse;
 import com.example.financebackend.model.AiProductLog;
 import com.example.financebackend.model.Category;
-import com.example.financebackend.repository.CategoryRepository;
 import com.example.financebackend.service.AiProductService;
+import com.example.financebackend.service.CategoryService;
+import com.example.financebackend.service.ProductRandomForestService;
 import lombok.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -16,103 +22,88 @@ import java.util.List;
 @RequestMapping("/api/ai-product")
 public class AiProductController {
 
+    private static final Logger logger = LoggerFactory.getLogger(AiProductController.class);
+
     private final AiProductService aiProductService;
-    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
     public AiProductController(AiProductService aiProductService,
-                               CategoryRepository categoryRepository) {
+                               CategoryService categoryService) {
         this.aiProductService = aiProductService;
-        this.categoryRepository = categoryRepository;
+        this.categoryService = categoryService;
     }
 
     @PostMapping("/classify")
     public ResponseEntity<ApiResponse<AiProductClassificationResult>> classifyProduct(@RequestBody ProductClassifyRequest request) {
-        try {
-            String keyword = aiProductService.classifyProduct(request.getProductName());
-            Category matchedCategory = findCategoryInDb(request.getUserId(), keyword);
-            
-            Integer categoryId = matchedCategory != null ? matchedCategory.getCategoryId() : null;
-            String categoryName = matchedCategory != null ? matchedCategory.getCategoryName() : "Khác";
+        logProductClassifyRequest(request);
 
-            AiProductClassificationResult result = new AiProductClassificationResult();
-            result.setSuggestedCategoryId(categoryId);
-            result.setSuggestedCategoryName(categoryName);
-            result.setConfidenceScore(BigDecimal.valueOf(0.90)); // default confidence for YOLO + keyword
+        ProductRandomForestService.ProductPrediction prediction =
+                aiProductService.classifyProductDetections(request.getDetections());
+        String keyword = prediction != null ? prediction.getKeyword() : aiProductService.classifyProduct(request.getProductName());
+        Category matchedCategory = categoryService.findCategoryByKeyword(request.getUserId(), keyword);
 
-            return ResponseEntity.ok(ApiResponse.success("Product classified successfully", result));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+        Integer categoryId = matchedCategory != null ? matchedCategory.getCategoryId() : null;
+        String categoryName = matchedCategory != null ? matchedCategory.getCategoryName() : "Khác";
+
+        AiProductClassificationResult result = new AiProductClassificationResult();
+        result.setSuggestedCategoryId(categoryId);
+        result.setSuggestedCategoryName(categoryName);
+        double confidenceScore = prediction != null ? prediction.getConfidenceScore() : 0.90;
+        result.setConfidenceScore(BigDecimal.valueOf(confidenceScore));
+
+        return ResponseEntity.ok(ApiResponse.success("Product classified successfully", result));
+    }
+
+    private void logProductClassifyRequest(ProductClassifyRequest request) {
+        List<ProductRandomForestService.DetectionInput> detections = request.getDetections();
+        logger.info("YOLO classify request userId={}, productName='{}', detections={}",
+                request.getUserId(),
+                request.getProductName(),
+                detections != null ? detections.size() : 0);
+
+        if (detections == null || detections.isEmpty()) {
+            logger.info("YOLO detections empty.");
+            return;
+        }
+
+        ProductRandomForestService.DetectionInput bestDetection = detections.stream()
+                .filter(detection -> detection.getConfidence() != null)
+                .max((left, right) -> Double.compare(left.getConfidence(), right.getConfidence()))
+                .orElse(detections.get(0));
+
+        logger.info("YOLO best object classId={}, className='{}', confidence={}, bbox={}",
+                bestDetection.getClassId(),
+                bestDetection.getClassName(),
+                bestDetection.getConfidence(),
+                bestDetection.getBbox());
+
+        for (ProductRandomForestService.DetectionInput detection : detections) {
+            logger.info("YOLO detection classId={}, className='{}', confidence={}, bbox={}",
+                    detection.getClassId(),
+                    detection.getClassName(),
+                    detection.getConfidence(),
+                    detection.getBbox());
         }
     }
 
     @PostMapping("/log")
     public ResponseEntity<ApiResponse<AiProductLog>> saveLog(@RequestBody SaveProductLogRequest request) {
-        try {
-            AiProductLog log = aiProductService.saveProductLog(
-                    request.getUserId(),
-                    request.getDetectedProduct(),
-                    request.getConfidenceScore(),
-                    request.getUserEnteredPrice(),
-                    request.getSuggestedCategoryId()
-            );
-            return ResponseEntity.ok(ApiResponse.success("Product log saved successfully", log));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
-        }
-    }
-
-    private Category findCategoryInDb(Integer userId, String keyword) {
-        List<Category> categories = categoryRepository.findByUserUserIdOrIsDefaultTrue(userId);
-        
-        String vietnameseName;
-        switch (keyword.toLowerCase()) {
-            case "food":
-                vietnameseName = "Ăn uống";
-                break;
-            case "transport":
-                vietnameseName = "Di chuyển";
-                break;
-            case "shopping":
-                vietnameseName = "Mua sắm";
-                break;
-            case "bills":
-                vietnameseName = "Hóa đơn";
-                break;
-            case "entertainment":
-                vietnameseName = "Giải trí";
-                break;
-            case "health":
-                vietnameseName = "Sức khỏe";
-                break;
-            case "education":
-                vietnameseName = "Giáo dục";
-                break;
-            default:
-                vietnameseName = "Khác";
-        }
-
-        // Try exact match
-        for (Category cat : categories) {
-            if (cat.getCategoryName().equalsIgnoreCase(vietnameseName) || 
-                cat.getCategoryName().toLowerCase().contains(keyword.toLowerCase())) {
-                return cat;
-            }
-        }
-
-        // Try to find a default expense category
-        for (Category cat : categories) {
-            if ("expense".equalsIgnoreCase(cat.getCategoryType())) {
-                return cat;
-            }
-        }
-
-        return null;
+        AiProductLog log = aiProductService.saveProductLog(
+                request.getUserId(),
+                request.getDetectedProduct(),
+                request.getConfidenceScore(),
+                request.getUserEnteredPrice(),
+                request.getSuggestedCategoryId()
+        );
+        return ResponseEntity.ok(ApiResponse.success("Product log saved successfully", log));
     }
 
     @Data
     public static class ProductClassifyRequest {
         private Integer userId;
         private String productName;
+        private String imageName;
+        private List<ProductRandomForestService.DetectionInput> detections;
     }
 
     @Data

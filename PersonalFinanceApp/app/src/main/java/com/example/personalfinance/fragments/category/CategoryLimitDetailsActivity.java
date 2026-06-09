@@ -22,6 +22,8 @@ import com.example.personalfinance.models.ApiResponse;
 import com.example.personalfinance.models.Budget;
 import com.example.personalfinance.utils.CurrencyFormatter;
 
+import java.util.Locale;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -63,7 +65,7 @@ public class CategoryLimitDetailsActivity extends AppCompatActivity {
         
         // Dynamically style category color dot
         int circleColor = Color.parseColor("#F97316"); // Default orange
-        String name = budget.getBudgetName().toLowerCase();
+        String name = budget.getBudgetName().toLowerCase(Locale.ROOT);
         if (name.contains("di chuyển")) circleColor = Color.parseColor("#3B82F6");
         else if (name.contains("mua sắm")) circleColor = Color.parseColor("#EC4899");
         else if (name.contains("giải trí")) circleColor = Color.parseColor("#8B5CF6");
@@ -127,9 +129,6 @@ public class CategoryLimitDetailsActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
 
         // Customise the dialog for limit inputs
-        TextView tvTitle = dialogView.findViewById(R.id.tvTitle);
-        if (tvTitle != null) tvTitle.setText("Chỉnh sửa giới hạn");
-
         EditText edtCategoryName = dialogView.findViewById(R.id.edtCategoryName);
         if (edtCategoryName != null) {
             edtCategoryName.setHint("Hạn mức tháng mới (VND)");

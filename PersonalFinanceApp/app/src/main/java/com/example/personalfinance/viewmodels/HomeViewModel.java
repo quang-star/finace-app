@@ -91,11 +91,10 @@ public class HomeViewModel extends ViewModel {
         cal.set(java.util.Calendar.MONTH, month - 1);
         cal.set(java.util.Calendar.DAY_OF_MONTH, 1);
         
-        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US);
-        String startDate = sdf.format(cal.getTime());
+        String startDate = DateUtils.formatApiDate(cal.getTime());
         
         cal.set(java.util.Calendar.DAY_OF_MONTH, cal.getActualMaximum(java.util.Calendar.DAY_OF_MONTH));
-        String endDate = sdf.format(cal.getTime());
+        String endDate = DateUtils.formatApiDate(cal.getTime());
 
         repository.getTransactions(userId, startDate, endDate, new TransactionRepository.ApiCallback<List<Transaction>>() {
             @Override

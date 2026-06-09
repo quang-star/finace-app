@@ -6,7 +6,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    private static final String DEFAULT_BASE_URL = "http://10.0.2.2:8080/";
+    private static final String DEFAULT_BASE_URL = "https://unwinsome-vapoury-eustolia.ngrok-free.dev";
     private static final String HTTP_SCHEME = "http://";
     private static final String HTTPS_SCHEME = "https://";
     private static final String DEFAULT_PORT = "8080";

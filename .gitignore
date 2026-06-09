@@ -3,6 +3,7 @@
 build/
 app/build/
 local.properties
+PersonalFinanceApp/gradle/gradle-daemon-jvm.properties
 .idea/
 .idea/workspace.xml
 .idea/caches/
@@ -33,6 +34,7 @@ target/
 finance-backend/.idea/
 finance-backend/target/
 finance-backend/*.iml
+finance-backend/uploads/
 
 # --- Local agent/planning files ---
 .clinerules
@@ -54,6 +56,7 @@ finance-backend/src/main/resources/firebase-service-account.json
 finance-backend/target/classes/firebase-service-account.json
 PersonalFinanceApp/app/google-services.json
 finance-backend/src/main/resources/application.properties
+finance-backend/src/main/resources/ai-settings.properties
 __pycache__/
 *.pyc
 *.pyo
@@ -62,6 +65,7 @@ __pycache__/
 *.pkl
 *.pickle
 *.joblib
+tools/*.xlsx
 dataset/raw/
 logs/
 .ipynb_checkpoints/

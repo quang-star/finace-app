@@ -9,6 +9,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,12 +27,12 @@ import com.example.personalfinance.models.Transaction;
 import com.example.personalfinance.models.User;
 import com.example.personalfinance.utils.Constants;
 import com.example.personalfinance.utils.CurrencyFormatter;
+import com.example.personalfinance.utils.DateUtils;
 import com.example.personalfinance.utils.SharedPrefManager;
 import com.example.personalfinance.fragments.recurring.RecurringListFragment;
 import com.example.personalfinance.viewmodels.TransactionViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -81,12 +82,15 @@ public class TransactionListFragment extends Fragment {
         adapter.setOnTransactionClickListener(transaction -> {
             // Open transaction details or edit fragment
             AddTransactionFragment editFragment = AddTransactionFragment.newInstance(
+                    transaction.getTransactionId() != null ? transaction.getTransactionId() : 0,
                     transaction.getAmount(),
                     transaction.getTitle(),
                     transaction.getCategoryId() != null ? transaction.getCategoryId() : 1,
                     transaction.getTransactionDate(),
-                    0
+                    0,
+                    transaction.getImageUrl()
             );
+            editFragment.setOnTransactionSavedListener(this::loadTransactions);
             editFragment.show(getParentFragmentManager(), "AddTransactionFragment");
         });
         binding.rvTransactions.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -118,11 +122,7 @@ public class TransactionListFragment extends Fragment {
         });
 
         binding.monthSelectorContainer.setOnClickListener(v -> {
-            // Month selection dropdown click - let's cycle monthly for simplicity in mock,
-            // or show a simple month dialog. For now we cycle month forward by 1:
-            currentCalendar.add(Calendar.MONTH, 1);
-            updateMonthHeader();
-            filterAndDisplayTransactions();
+            showMonthYearPickerDialog();
         });
 
         binding.fabAdd.setOnClickListener(v -> {
@@ -137,6 +137,77 @@ public class TransactionListFragment extends Fragment {
                     .addToBackStack(null)
                     .commit();
         });
+    }
+
+    private void showMonthYearPickerDialog() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme);
+        View view = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_month_year_picker, null);
+        bottomSheetDialog.setContentView(view);
+
+        TextView tvYear = view.findViewById(R.id.tvYear);
+        ImageView btnPrevYear = view.findViewById(R.id.btnPrevYear);
+        ImageView btnNextYear = view.findViewById(R.id.btnNextYear);
+
+        int[] monthResIds = {
+                R.id.btnMonth1, R.id.btnMonth2, R.id.btnMonth3, R.id.btnMonth4,
+                R.id.btnMonth5, R.id.btnMonth6, R.id.btnMonth7, R.id.btnMonth8,
+                R.id.btnMonth9, R.id.btnMonth10, R.id.btnMonth11, R.id.btnMonth12
+        };
+
+        TextView[] monthButtons = new TextView[12];
+        for (int i = 0; i < 12; i++) {
+            monthButtons[i] = view.findViewById(monthResIds[i]);
+        }
+
+        final int[] tempYear = {currentCalendar.get(Calendar.YEAR)};
+        final int activeYear = currentCalendar.get(Calendar.YEAR);
+        final int activeMonth = currentCalendar.get(Calendar.MONTH); // 0-indexed
+
+        Runnable updateDialogUI = new Runnable() {
+            @Override
+            public void run() {
+                tvYear.setText("Năm " + tempYear[0]);
+                for (int i = 0; i < 12; i++) {
+                    TextView btn = monthButtons[i];
+                    if (tempYear[0] == activeYear && i == activeMonth) {
+                        // Active selected month
+                        btn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.primary)));
+                        btn.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+                    } else {
+                        // Regular month
+                        btn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.surface)));
+                        btn.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_primary));
+                    }
+                }
+            }
+        };
+
+        // Initial UI setup
+        updateDialogUI.run();
+
+        btnPrevYear.setOnClickListener(v -> {
+            tempYear[0]--;
+            updateDialogUI.run();
+        });
+
+        btnNextYear.setOnClickListener(v -> {
+            tempYear[0]++;
+            updateDialogUI.run();
+        });
+
+        for (int i = 0; i < 12; i++) {
+            final int monthIndex = i;
+            monthButtons[i].setOnClickListener(v -> {
+                currentCalendar.set(Calendar.YEAR, tempYear[0]);
+                currentCalendar.set(Calendar.MONTH, monthIndex);
+                currentCalendar.set(Calendar.DAY_OF_MONTH, 1);
+                updateMonthHeader();
+                filterAndDisplayTransactions();
+                bottomSheetDialog.dismiss();
+            });
+        }
+
+        bottomSheetDialog.show();
     }
 
     private void selectTypeTab(String type, TextView tabView) {
@@ -168,7 +239,7 @@ public class TransactionListFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                searchQuery = s.toString().trim().toLowerCase();
+                searchQuery = s.toString().trim().toLowerCase(Locale.ROOT);
                 filterAndDisplayTransactions();
             }
 
@@ -213,18 +284,13 @@ public class TransactionListFragment extends Fragment {
         double totalIncome = 0;
         double totalExpense = 0;
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-
         for (Transaction t : fullTransactionList) {
             // 1. Filter by Month/Year
             boolean matchTime = false;
             try {
                 String dateStr = t.getTransactionDate();
                 if (dateStr != null) {
-                    if (dateStr.contains("T")) {
-                        dateStr = dateStr.split("T")[0];
-                    }
-                    java.util.Date date = sdf.parse(dateStr);
+                    java.util.Date date = DateUtils.parseApiDate(dateStr);
                     if (date != null) {
                         Calendar txCal = Calendar.getInstance();
                         txCal.setTime(date);
@@ -256,9 +322,9 @@ public class TransactionListFragment extends Fragment {
             // 3. Filter by search query
             boolean matchSearch = true;
             if (!searchQuery.isEmpty()) {
-                String title = t.getTitle() != null ? t.getTitle().toLowerCase() : "";
-                String category = t.getCategoryName() != null ? t.getCategoryName().toLowerCase() : "";
-                String note = t.getNote() != null ? t.getNote().toLowerCase() : "";
+                String title = t.getTitle() != null ? t.getTitle().toLowerCase(Locale.ROOT) : "";
+                String category = t.getCategoryName() != null ? t.getCategoryName().toLowerCase(Locale.ROOT) : "";
+                String note = t.getNote() != null ? t.getNote().toLowerCase(Locale.ROOT) : "";
                 matchSearch = title.contains(searchQuery) || category.contains(searchQuery) || note.contains(searchQuery);
             }
 
@@ -298,7 +364,6 @@ public class TransactionListFragment extends Fragment {
         View btnManual = bottomSheetView.findViewById(R.id.btnOptionManual);
         View btnOcr = bottomSheetView.findViewById(R.id.btnOptionOcr);
         View btnYolo = bottomSheetView.findViewById(R.id.btnOptionYolo);
-        View btnCancel = bottomSheetView.findViewById(R.id.btnCancel);
 
         if (btnManual != null) {
             btnManual.setOnClickListener(v -> {
@@ -320,10 +385,6 @@ public class TransactionListFragment extends Fragment {
                 bottomSheetDialog.dismiss();
                 startActivity(new Intent(requireContext(), com.example.personalfinance.activities.ScanProductActivity.class));
             });
-        }
-
-        if (btnCancel != null) {
-            btnCancel.setOnClickListener(v -> bottomSheetDialog.dismiss());
         }
 
         bottomSheetDialog.show();

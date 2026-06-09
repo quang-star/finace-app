@@ -15,9 +15,11 @@ import com.example.personalfinance.databinding.ItemTransactionBinding;
 import com.example.personalfinance.models.Transaction;
 import com.example.personalfinance.utils.Constants;
 import com.example.personalfinance.utils.CurrencyFormatter;
+import com.example.personalfinance.utils.DateUtils;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -184,7 +186,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         public void bind(DisplayItem item) {
             String dateStr = item.dateStr;
             try {
-                java.util.Date date = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).parse(dateStr);
+                java.util.Date date = DateUtils.parseApiDate(dateStr);
                 if (date != null) {
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(date);
@@ -250,7 +252,9 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
 
             // Dynamically color & iconify based on Category Name (Clone CapMoney premium feel)
-            String catName = transaction.getCategoryName() != null ? transaction.getCategoryName().toLowerCase() : "";
+            String catName = transaction.getCategoryName() != null
+                    ? transaction.getCategoryName().toLowerCase(Locale.ROOT)
+                    : "";
             int circleColor;
             int iconRes;
 

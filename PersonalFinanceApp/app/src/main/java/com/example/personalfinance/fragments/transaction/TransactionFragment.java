@@ -22,6 +22,7 @@ import com.example.personalfinance.models.User;
 import com.example.personalfinance.repositories.TransactionRepository;
 import com.example.personalfinance.utils.Constants;
 import com.example.personalfinance.utils.CurrencyFormatter;
+import com.example.personalfinance.utils.DateUtils;
 import com.example.personalfinance.utils.SharedPrefManager;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.data.PieData;
@@ -29,7 +30,6 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -168,7 +168,6 @@ public class TransactionFragment extends Fragment {
     }
 
     private DateRange resolveDateRange() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         Calendar start = (Calendar) calendar.clone();
         Calendar end = (Calendar) calendar.clone();
 
@@ -184,7 +183,7 @@ public class TransactionFragment extends Fragment {
             end.set(Calendar.DAY_OF_MONTH, end.getActualMaximum(Calendar.DAY_OF_MONTH));
         }
 
-        return new DateRange(format.format(start.getTime()), format.format(end.getTime()));
+        return new DateRange(DateUtils.formatApiDate(start.getTime()), DateUtils.formatApiDate(end.getTime()));
     }
 
     private void applyReportToUi() {
@@ -290,21 +289,26 @@ public class TransactionFragment extends Fragment {
     }
 
     private int resolveCategoryColor(String categoryName) {
-        String name = categoryName != null ? categoryName.toLowerCase(Locale.ROOT) : "";
-        if (name.contains("ăn uống") || name.contains("food")) {
-            return Color.parseColor("#4CAF50");
-        } else if (name.contains("sức khỏe") || name.contains("health")) {
-            return Color.parseColor("#F44336");
-        } else if (name.contains("mua sắm") || name.contains("shopping")) {
-            return Color.parseColor("#E91E63");
-        } else if (name.contains("lương") || name.contains("salary")) {
-            return Color.parseColor("#22C55E");
-        } else if (name.contains("thưởng") || name.contains("bonus")) {
-            return Color.parseColor("#F59E0B");
-        } else if (name.contains("đầu tư") || name.contains("investment")) {
-            return Color.parseColor("#3B82F6");
+        if (categoryName == null || categoryName.trim().isEmpty()) {
+            return Color.parseColor("#9CA3AF");
         }
-        return Color.parseColor(Constants.TYPE_EXPENSE.equals(selectedType) ? "#EF4444" : "#10B981");
+
+        // Premium Obsidian-Dark compatible palette
+        String[] palette = {
+            "#3B82F6", // Blue
+            "#10B981", // Green
+            "#D946EF", // Pink
+            "#F59E0B", // Yellow
+            "#EF4444", // Red
+            "#8B5CF6", // Purple
+            "#06B6D4", // Cyan
+            "#F97316", // Orange
+            "#EC4899", // Rose
+            "#14B8A6"  // Teal
+        };
+
+        int index = Math.abs(categoryName.hashCode()) % palette.length;
+        return Color.parseColor(palette[index]);
     }
 
     @Override

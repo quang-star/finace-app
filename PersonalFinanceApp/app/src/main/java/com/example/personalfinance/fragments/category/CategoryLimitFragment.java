@@ -27,11 +27,10 @@ import com.example.personalfinance.fragments.budget.AddBudgetFragment;
 import com.example.personalfinance.models.Budget;
 import com.example.personalfinance.models.User;
 import com.example.personalfinance.utils.CurrencyFormatter;
+import com.example.personalfinance.utils.DateUtils;
 import com.example.personalfinance.utils.SharedPrefManager;
 import com.example.personalfinance.viewmodels.BudgetViewModel;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -48,8 +47,6 @@ public class CategoryLimitFragment extends Fragment {
         ALL
     }
 
-    private static final String DATE_FORMAT = "yyyy-MM-dd";
-
     private FragmentCategoryLimitBinding binding;
     private BudgetViewModel viewModel;
     private User currentUser;
@@ -57,9 +54,6 @@ public class CategoryLimitFragment extends Fragment {
 
     private final List<Budget> allBudgetList = new ArrayList<>();
     private final List<Budget> displayedBudgetList = new ArrayList<>();
-    private final SimpleDateFormat apiDateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
-    private final SimpleDateFormat monthTitleFormat = new SimpleDateFormat("'Tháng' MM/yyyy", Locale.getDefault());
-
     private PeriodMode selectedMode = PeriodMode.MONTH;
     private int selectedYear;
     private int selectedMonth;
@@ -205,7 +199,7 @@ public class CategoryLimitFragment extends Fragment {
         } else {
             Calendar selectedDate = Calendar.getInstance();
             selectedDate.set(selectedYear, selectedMonth, 1);
-            binding.tvPeriodTitle.setText(monthTitleFormat.format(selectedDate.getTime()));
+            binding.tvPeriodTitle.setText(DateUtils.formatMonthTitle(selectedDate.getTime()));
         }
     }
 
@@ -356,9 +350,8 @@ public class CategoryLimitFragment extends Fragment {
     private Date parseDate(String value) {
         if (value == null || value.trim().isEmpty()) return null;
         try {
-            String dateOnly = value.contains("T") ? value.split("T")[0] : value;
-            return apiDateFormat.parse(dateOnly);
-        } catch (ParseException ignored) {
+            return DateUtils.parseApiDate(value);
+        } catch (Exception ignored) {
             return null;
         }
     }

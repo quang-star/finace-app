@@ -23,6 +23,7 @@ public class TransactionDTO {
     private LocalDate transactionDate;
     private String note;
     private String status;
+    private String imageUrl;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

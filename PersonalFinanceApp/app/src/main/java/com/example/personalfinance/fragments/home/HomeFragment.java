@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+import android.widget.ImageView;
+import android.widget.TextView;
+import androidx.core.content.ContextCompat;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -27,6 +30,7 @@ import com.example.personalfinance.models.CalendarDay;
 import com.example.personalfinance.models.Transaction;
 import com.example.personalfinance.models.User;
 import com.example.personalfinance.utils.CurrencyFormatter;
+import com.example.personalfinance.utils.DateUtils;
 import com.example.personalfinance.utils.SharedPrefManager;
 import com.example.personalfinance.fragments.account.AddAccountFragment;
 import com.example.personalfinance.fragments.account.AccountDetailsFragment;
@@ -37,12 +41,10 @@ import com.example.personalfinance.viewmodels.AccountViewModel;
 import com.example.personalfinance.viewmodels.BudgetViewModel;
 import com.example.personalfinance.viewmodels.HomeViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class HomeFragment extends Fragment {
@@ -107,44 +109,84 @@ public class HomeFragment extends Fragment {
     private void setupCalendarRecyclerView() {
         calendarAdapter = new CalendarGridAdapter(requireContext(), calendarDays);
         calendarAdapter.setOnDayClickListener((day, hasTransaction, position) -> {
-            calendarAdapter.setSelectedPosition(position);
-
-            // Update currentCalendar's day
-            currentCalendar.set(Calendar.DAY_OF_MONTH, day.getDayNumber());
-            updateTabStyles();
-
-            // If in Day mode, fetch daily report
-            if (!isMonthMode) {
-                String dayDateStr = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(currentCalendar.getTime());
-                viewModel.fetchDailyReport(currentUser.getUserId(), dayDateStr);
-            }
-
-            int month = currentCalendar.get(Calendar.MONTH) + 1;
-            String dayStr = day.getDayNumber() < 10 ? "0" + day.getDayNumber() : String.valueOf(day.getDayNumber());
-            String monthStr = month < 10 ? "0" + month : String.valueOf(month);
-
-            binding.btnSelectedDayPill.setText("Đã chọn " + dayStr + "/" + monthStr + " ✓");
-            binding.btnSelectedDayPill.setVisibility(View.VISIBLE);
-
-            binding.btnSelectedDayPill.setOnClickListener(v -> {
-                binding.btnSelectedDayPill.setVisibility(View.GONE);
-                calendarAdapter.clearSelection();
-
+            if (!hasTransaction) {
+                // Instantly open the AddTransactionFragment for that day, manual input by default
+                AddTransactionFragment addFragment = new AddTransactionFragment();
+                Bundle bundle = new Bundle();
+                // Generate dynamic selected date in format "yyyy-MM-dd"
                 Calendar selectCal = (Calendar) currentCalendar.clone();
                 selectCal.set(Calendar.DAY_OF_MONTH, day.getDayNumber());
-
-                String selectedDateStr = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(selectCal.getTime());
-                String dayTitle = new SimpleDateFormat("EEEE, 'ngày' d 'thg' M, yyyy", new Locale("vi", "VN")).format(selectCal.getTime());
-                if (dayTitle.length() > 0) {
-                    dayTitle = dayTitle.substring(0, 1).toUpperCase() + dayTitle.substring(1);
+                String dateStr = DateUtils.formatApiDate(selectCal.getTime());
+                bundle.putString("prefilled_date", dateStr);
+                addFragment.setArguments(bundle);
+                addFragment.setOnTransactionSavedListener(this::loadDataForSelectedMonth);
+                addFragment.show(getParentFragmentManager(), "AddTransactionFragment");
+            } else {
+                List<Transaction> dayTxs = day.getTransactions();
+                boolean hasImage = false;
+                if (dayTxs != null) {
+                    for (Transaction t : dayTxs) {
+                        if (t.getImageUrl() != null && !t.getImageUrl().trim().isEmpty()) {
+                            hasImage = true;
+                            break;
+                        }
+                    }
                 }
 
-                DayDetailFragment detailFragment = DayDetailFragment.newInstance(selectedDateStr, dayTitle);
-                getParentFragmentManager().beginTransaction()
-                        .replace(R.id.fragmentContainer, detailFragment)
-                        .addToBackStack(null)
-                        .commit();
-            });
+                if (hasImage) {
+                    // Open DayTransactionsBottomSheet for days with images!
+                    double total = 0;
+                    for (Transaction t : dayTxs) {
+                        if ("EXPENSE".equalsIgnoreCase(t.getTransactionType()) || t.getAmount() < 0) {
+                            total -= Math.abs(t.getAmount());
+                        } else {
+                            total += t.getAmount();
+                        }
+                    }
+                    Calendar selectCal = (Calendar) currentCalendar.clone();
+                    selectCal.set(Calendar.DAY_OF_MONTH, day.getDayNumber());
+                    String dayTitle = DateUtils.formatVietnameseDayTitle(selectCal.getTime());
+                    com.example.personalfinance.fragments.transaction.DayTransactionsBottomSheet sheet =
+                            com.example.personalfinance.fragments.transaction.DayTransactionsBottomSheet.newInstance(dayTitle, dayTxs, total);
+                    sheet.show(getParentFragmentManager(), "DayTransactionsBottomSheet");
+                } else {
+                    calendarAdapter.setSelectedPosition(position);
+
+                    // Update currentCalendar's day
+                    currentCalendar.set(Calendar.DAY_OF_MONTH, day.getDayNumber());
+                    updateTabStyles();
+
+                    // If in Day mode, fetch daily report
+                    if (!isMonthMode) {
+                        String dayDateStr = DateUtils.formatApiDate(currentCalendar.getTime());
+                        viewModel.fetchDailyReport(currentUser.getUserId(), dayDateStr);
+                    }
+
+                    int month = currentCalendar.get(Calendar.MONTH) + 1;
+                    String dayStr = day.getDayNumber() < 10 ? "0" + day.getDayNumber() : String.valueOf(day.getDayNumber());
+                    String monthStr = month < 10 ? "0" + month : String.valueOf(month);
+
+                    binding.btnSelectedDayPill.setText("Đã chọn " + dayStr + "/" + monthStr + " ✓");
+                    binding.btnSelectedDayPill.setVisibility(View.VISIBLE);
+
+                    binding.btnSelectedDayPill.setOnClickListener(v -> {
+                        binding.btnSelectedDayPill.setVisibility(View.GONE);
+                        calendarAdapter.clearSelection();
+
+                        Calendar selectCal = (Calendar) currentCalendar.clone();
+                        selectCal.set(Calendar.DAY_OF_MONTH, day.getDayNumber());
+
+                        String selectedDateStr = DateUtils.formatApiDate(selectCal.getTime());
+                        String dayTitle = DateUtils.formatVietnameseDayTitle(selectCal.getTime());
+
+                        DayDetailFragment detailFragment = DayDetailFragment.newInstance(selectedDateStr, dayTitle);
+                        getParentFragmentManager().beginTransaction()
+                                .replace(R.id.fragmentContainer, detailFragment)
+                                .addToBackStack(null)
+                                .commit();
+                    });
+                }
+            }
         });
 
         binding.rvCalendarGrid.setLayoutManager(new GridLayoutManager(requireContext(), 7));
@@ -182,17 +224,24 @@ public class HomeFragment extends Fragment {
         binding.fabAdd.setOnClickListener(v -> showAddOptionsBottomSheet(-1));
 
         binding.btnPrevMonth.setOnClickListener(v -> {
+            currentCalendar.set(Calendar.DAY_OF_MONTH, 1); // Reset to 1st to prevent rollover bugs
             currentCalendar.add(Calendar.MONTH, -1);
             loadDataForSelectedMonth();
         });
 
         binding.btnNextMonth.setOnClickListener(v -> {
+            currentCalendar.set(Calendar.DAY_OF_MONTH, 1); // Reset to 1st to prevent rollover bugs
             currentCalendar.add(Calendar.MONTH, 1);
             loadDataForSelectedMonth();
         });
 
+        binding.monthSelectorContainer.setOnClickListener(v -> {
+            showMonthYearPickerDialog();
+        });
+
         binding.btnResetMonth.setOnClickListener(v -> {
             currentCalendar.setTimeInMillis(System.currentTimeMillis());
+            currentCalendar.set(Calendar.DAY_OF_MONTH, 1); // Reset to 1st to prevent rollover bugs
             loadDataForSelectedMonth();
         });
 
@@ -206,7 +255,7 @@ public class HomeFragment extends Fragment {
         binding.btnDayTab.setOnClickListener(v -> {
             isMonthMode = false;
             updateTabStyles();
-            String dateStr = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(currentCalendar.getTime());
+            String dateStr = DateUtils.formatApiDate(currentCalendar.getTime());
             viewModel.fetchDailyReport(currentUser.getUserId(), dateStr);
         });
 
@@ -217,6 +266,73 @@ public class HomeFragment extends Fragment {
             int year = currentCalendar.get(Calendar.YEAR);
             viewModel.fetchDashboardData(currentUser.getUserId(), month, year);
         });
+    }
+
+    private void showMonthYearPickerDialog() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme);
+        View view = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_month_year_picker, null);
+        bottomSheetDialog.setContentView(view);
+
+        TextView tvYear = view.findViewById(R.id.tvYear);
+        ImageView btnPrevYear = view.findViewById(R.id.btnPrevYear);
+        ImageView btnNextYear = view.findViewById(R.id.btnNextYear);
+
+        int[] monthResIds = {
+                R.id.btnMonth1, R.id.btnMonth2, R.id.btnMonth3, R.id.btnMonth4,
+                R.id.btnMonth5, R.id.btnMonth6, R.id.btnMonth7, R.id.btnMonth8,
+                R.id.btnMonth9, R.id.btnMonth10, R.id.btnMonth11, R.id.btnMonth12
+        };
+
+        TextView[] monthButtons = new TextView[12];
+        for (int i = 0; i < 12; i++) {
+            monthButtons[i] = view.findViewById(monthResIds[i]);
+        }
+
+        final int[] tempYear = {currentCalendar.get(Calendar.YEAR)};
+        final int activeYear = currentCalendar.get(Calendar.YEAR);
+        final int activeMonth = currentCalendar.get(Calendar.MONTH); // 0-indexed
+
+        Runnable updateDialogUI = new Runnable() {
+            @Override
+            public void run() {
+                tvYear.setText("Năm " + tempYear[0]);
+                for (int i = 0; i < 12; i++) {
+                    TextView btn = monthButtons[i];
+                    if (tempYear[0] == activeYear && i == activeMonth) {
+                        btn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.primary)));
+                        btn.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+                    } else {
+                        btn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.surface)));
+                        btn.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_primary));
+                    }
+                }
+            }
+        };
+
+        updateDialogUI.run();
+
+        btnPrevYear.setOnClickListener(v -> {
+            tempYear[0]--;
+            updateDialogUI.run();
+        });
+
+        btnNextYear.setOnClickListener(v -> {
+            tempYear[0]++;
+            updateDialogUI.run();
+        });
+
+        for (int i = 0; i < 12; i++) {
+            final int monthIndex = i;
+            monthButtons[i].setOnClickListener(v -> {
+                currentCalendar.set(Calendar.YEAR, tempYear[0]);
+                currentCalendar.set(Calendar.MONTH, monthIndex);
+                currentCalendar.set(Calendar.DAY_OF_MONTH, 1);
+                loadDataForSelectedMonth();
+                bottomSheetDialog.dismiss();
+            });
+        }
+
+        bottomSheetDialog.show();
     }
 
     private void loadDataForSelectedMonth() {
@@ -239,7 +355,7 @@ public class HomeFragment extends Fragment {
 
         viewModel.fetchDashboardData(currentUser.getUserId(), month, year);
         if (!isMonthMode) {
-            String dateStr = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(currentCalendar.getTime());
+            String dateStr = DateUtils.formatApiDate(currentCalendar.getTime());
             viewModel.fetchDailyReport(currentUser.getUserId(), dateStr);
         }
     }
@@ -327,23 +443,21 @@ public class HomeFragment extends Fragment {
         // Group transactions by dayOfMonth
         Map<Integer, List<Transaction>> groupedTx = new HashMap<>();
         if (transactions != null) {
-            SimpleDateFormat dayFormat = new SimpleDateFormat("dd", Locale.US);
-            SimpleDateFormat monthFormat = new SimpleDateFormat("MM", Locale.US);
-            SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy", Locale.US);
-            
             int selectedMonthVal = currentCalendar.get(Calendar.MONTH) + 1;
             int selectedYearVal = currentCalendar.get(Calendar.YEAR);
 
             for (Transaction tx : transactions) {
                 try {
                     // Transaction date is expected in "yyyy-MM-dd"
-                    java.util.Date date = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(tx.getTransactionDate());
+                    java.util.Date date = DateUtils.parseApiDate(tx.getTransactionDate());
                     if (date != null) {
-                        int txMonth = Integer.parseInt(monthFormat.format(date));
-                        int txYear = Integer.parseInt(yearFormat.format(date));
+                        Calendar txCal = Calendar.getInstance();
+                        txCal.setTime(date);
+                        int txMonth = txCal.get(Calendar.MONTH) + 1;
+                        int txYear = txCal.get(Calendar.YEAR);
                         
                         if (txMonth == selectedMonthVal && txYear == selectedYearVal) {
-                            int day = Integer.parseInt(dayFormat.format(date));
+                            int day = txCal.get(Calendar.DAY_OF_MONTH);
                             if (!groupedTx.containsKey(day)) {
                                 groupedTx.put(day, new ArrayList<>());
                             }
@@ -403,10 +517,11 @@ public class HomeFragment extends Fragment {
                     // Generate dynamic selected date in format "yyyy-MM-dd"
                     Calendar selectCal = (Calendar) currentCalendar.clone();
                     selectCal.set(Calendar.DAY_OF_MONTH, prefilledDay);
-                    String dateStr = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(selectCal.getTime());
+                    String dateStr = DateUtils.formatApiDate(selectCal.getTime());
                     bundle.putString("prefilled_date", dateStr);
                     addFragment.setArguments(bundle);
                 }
+                addFragment.setOnTransactionSavedListener(this::loadDataForSelectedMonth);
                 addFragment.show(getParentFragmentManager(), "AddTransactionFragment");
             });
         }

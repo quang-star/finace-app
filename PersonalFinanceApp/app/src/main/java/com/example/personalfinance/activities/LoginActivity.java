@@ -17,7 +17,6 @@ import com.example.personalfinance.firebase.FirebaseAuthHelper;
 import com.example.personalfinance.models.User;
 import com.example.personalfinance.utils.SharedPrefManager;
 import com.example.personalfinance.viewmodels.AuthViewModel;
-import com.facebook.CallbackManager;
 import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
@@ -26,7 +25,6 @@ public class LoginActivity extends AppCompatActivity {
     private ActivityLoginBinding binding;
     private AuthViewModel viewModel;
     private FirebaseAuthHelper authHelper;
-    private CallbackManager facebookCallbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,22 +55,8 @@ public class LoginActivity extends AppCompatActivity {
         authHelper.initGoogleSignIn(this, getString(R.string.default_web_client_id));
         binding.btnGoogleLogin.setOnClickListener(v -> handleGoogleLogin());
 
-        // Facebook Login
-        facebookCallbackManager = authHelper.initFacebookLogin(new FirebaseAuthCallback() {
-            @Override
-            public void onSuccess(FirebaseUser user) {
-                Log.d(TAG, "Facebook → Firebase auth success: " + user.getEmail());
-                viewModel.syncUserWithBackend(user, null);
-            }
-
-            @Override
-            public void onFailure(Exception exception) {
-                binding.progressBar.setVisibility(View.GONE);
-                enableSocialButtons(true);
-                Toast.makeText(LoginActivity.this, viewModel.getReadableAuthError(exception), Toast.LENGTH_LONG).show();
-            }
-        });
-        binding.btnFacebookLogin.setOnClickListener(v -> handleFacebookLogin());
+        // Facebook Login is not available yet.
+        binding.btnFacebookLogin.setOnClickListener(v -> showComingSoon());
 
         // Register LiveData Observers
         observeViewModel();
@@ -119,19 +103,13 @@ public class LoginActivity extends AppCompatActivity {
         startActivityForResult(signInIntent, FirebaseAuthHelper.RC_GOOGLE_SIGN_IN);
     }
 
-    private void handleFacebookLogin() {
-        binding.progressBar.setVisibility(View.VISIBLE);
-        enableSocialButtons(false);
-        authHelper.signInWithFacebook(this);
+    private void showComingSoon() {
+        Toast.makeText(this, R.string.msg_coming_soon, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (facebookCallbackManager != null) {
-            facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
-        }
 
         if (requestCode == FirebaseAuthHelper.RC_GOOGLE_SIGN_IN) {
             authHelper.handleGoogleSignInResult(data, new FirebaseAuthCallback() {

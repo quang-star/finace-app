@@ -16,6 +16,7 @@ public class Transaction implements java.io.Serializable {
     private String status;
     private String createdAt;
     private String updatedAt;
+    private String imageUrl;
 
     public Transaction() {}
 
@@ -155,5 +156,13 @@ public class Transaction implements java.io.Serializable {
 
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

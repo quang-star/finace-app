@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="930" viewBox="0 0 1600 930">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#222"/>
+    </marker>
+    <marker id="arrowDashed" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#333"/>
+    </marker>
+    <style>
+      .page { fill: #fffde6; }
+      .layer { fill: #fffbd0; stroke: #c7ca74; stroke-width: 1.2; }
+      .subtle { fill: #fff9c4; stroke: #c7ca74; stroke-width: 1; }
+      .box { fill: #e8f4ff; stroke: #7aa3c2; stroke-width: 1.2; }
+      .box-green { fill: #70c55b; stroke: #1f5f1f; stroke-width: 1.4; }
+      .box-orange { fill: #ffc52b; stroke: #8a6a00; stroke-width: 1.4; }
+      .box-teal { fill: #1398aa; stroke: #075d6c; stroke-width: 1.4; }
+      .text { font-family: Arial, Helvetica, sans-serif; fill: #222; font-size: 14px; }
+      .title { font-family: Arial, Helvetica, sans-serif; fill: #222; font-size: 15px; font-weight: 600; }
+      .white { fill: #fff; font-weight: 700; }
+      .small { font-size: 13px; }
+      .arrow { fill: none; stroke: #222; stroke-width: 2.2; marker-end: url(#arrow); }
+      .arrow-thick { fill: none; stroke: #222; stroke-width: 3.2; marker-end: url(#arrow); }
+      .arrow-dashed { fill: none; stroke: #333; stroke-width: 1.8; stroke-dasharray: 4 4; marker-end: url(#arrowDashed); }
+      .label { font-family: Arial, Helvetica, sans-serif; fill: #333; font-size: 14px; }
+    </style>
+  </defs>
+
+  <rect class="page" x="0" y="0" width="1600" height="930"/>
+
+  <!-- Backend layer -->
+  <rect class="layer" x="35" y="30" width="1530" height="350"/>
+  <text class="title" x="795" y="43" text-anchor="middle">⚙ Tầng Backend (Spring Boot REST API)</text>
+
+  <!-- Spring Boot cylinder -->
+  <path class="box-green" d="M930 56 C930 40,1095 40,1095 56 L1095 116 C1095 132,930 132,930 116 Z"/>
+  <ellipse class="box-green" cx="1012.5" cy="56" rx="82.5" ry="16"/>
+  <path d="M930 116 C930 132,1095 132,1095 116" fill="none" stroke="#1f5f1f" stroke-width="1.4"/>
+  <text class="text white" x="1012" y="83" text-anchor="middle">Spring Boot Server</text>
+  <text class="text white small" x="1012" y="103" text-anchor="middle">(Java 21, Layered Arch)</text>
+
+  <!-- Security -->
+  <rect class="box" x="720" y="175" width="110" height="45"/>
+  <text class="text" x="775" y="194" text-anchor="middle">Spring Security</text>
+  <text class="text small" x="775" y="211" text-anchor="middle">FirebaseAuthFilter</text>
+
+  <path class="arrow" d="M1010 132 C930 135,820 142,780 175"/>
+
+  <!-- Business services container -->
+  <rect class="subtle" x="55" y="270" width="1175" height="90"/>
+  <text class="label" x="620" y="282" text-anchor="middle">Các Controller và Service nghiệp vụ</text>
+
+  <rect class="box" x="305" y="292" width="165" height="45"/>
+  <text class="text" x="387" y="311" text-anchor="middle">Auth/User Service</text>
+  <text class="text small" x="387" y="328" text-anchor="middle">Sync Firebase User</text>
+
+  <rect class="box" x="510" y="292" width="155" height="45"/>
+  <text class="text" x="587" y="311" text-anchor="middle">Account Service</text>
+  <text class="text small" x="587" y="328" text-anchor="middle">Quản lý ví/tài khoản</text>
+
+  <rect class="box" x="705" y="292" width="165" height="45"/>
+  <text class="text" x="787" y="311" text-anchor="middle">Transaction Service</text>
+  <text class="text small" x="787" y="328" text-anchor="middle">Ghi chép thu chi</text>
+
+  <rect class="box" x="910" y="292" width="150" height="45"/>
+  <text class="text" x="985" y="311" text-anchor="middle">Budget Service</text>
+  <text class="text small" x="985" y="328" text-anchor="middle">Cảnh báo hạn mức</text>
+
+  <rect class="box" x="1100" y="292" width="155" height="45"/>
+  <text class="text" x="1177" y="311" text-anchor="middle">Report Service</text>
+  <text class="text small" x="1177" y="328" text-anchor="middle">Tổng hợp dữ liệu</text>
+
+  <path class="arrow" d="M775 220 C730 245,510 250,388 292"/>
+  <path class="arrow" d="M775 220 C730 250,600 253,588 292"/>
+  <path class="arrow" d="M775 220 L787 292"/>
+  <path class="arrow" d="M775 220 C845 250,955 252,985 292"/>
+  <path class="arrow" d="M775 220 C900 245,1150 247,1177 292"/>
+
+  <!-- Repository / database -->
+  <rect class="layer" x="28" y="440" width="220" height="130"/>
+  <text class="title" x="35" y="457">▣ Tầng Cơ sở dữ liệu</text>
+  <path class="box-teal" d="M70 478 C70 460,200 460,200 478 L200 525 C200 543,70 543,70 525 Z"/>
+  <ellipse class="box-teal" cx="135" cy="478" rx="65" ry="18"/>
+  <path d="M70 525 C70 543,200 543,200 525" fill="none" stroke="#075d6c" stroke-width="1.4"/>
+  <text class="text white" x="135" y="500" text-anchor="middle">MySQL Database</text>
+  <text class="text white small" x="135" y="518" text-anchor="middle">Spring Data JPA</text>
+
+  <path class="arrow-thick" d="M135 380 L135 460"/>
+  <text class="label" x="67" y="428">5. Repository truy vấn/cập nhật</text>
+
+  <!-- Firebase layer -->
+  <rect class="layer" x="255" y="440" width="700" height="310"/>
+  <text class="title" x="265" y="457">🔥 Dịch vụ Xác thực (Bên thứ 3)</text>
+
+  <path class="box-orange" d="M520 488 C520 468,695 468,695 488 L695 543 C695 563,520 563,520 543 Z"/>
+  <ellipse class="box-orange" cx="607.5" cy="488" rx="87.5" ry="20"/>
+  <path d="M520 543 C520 563,695 563,695 543" fill="none" stroke="#8a6a00" stroke-width="1.4"/>
+  <text class="text" x="607" y="510" text-anchor="middle" font-weight="700">Firebase Authentication</text>
+  <text class="text small" x="607" y="529" text-anchor="middle">(Quản lý đăng nhập &amp; ID Token)</text>
+
+  <rect class="box" x="280" y="675" width="110" height="30"/>
+  <text class="text small" x="335" y="695" text-anchor="middle">Google Sign-In</text>
+
+  <rect class="box" x="430" y="675" width="115" height="30"/>
+  <text class="text small" x="487" y="695" text-anchor="middle">Facebook Login</text>
+
+  <rect class="box" x="590" y="675" width="120" height="30"/>
+  <text class="text small" x="650" y="695" text-anchor="middle">Email/Password</text>
+
+  <path class="arrow" d="M335 675 C330 590,470 560,527 535"/>
+  <path class="arrow" d="M487 675 C485 590,540 570,565 552"/>
+  <path class="arrow" d="M650 675 C652 610,642 575,625 552"/>
+
+  <!-- Client layer -->
+  <rect class="layer" x="995" y="630" width="570" height="230"/>
+  <text class="title" x="1190" y="646">▣ Tầng Client (Android App)</text>
+
+  <path class="box-green" d="M1258 670 C1258 654,1360 654,1360 670 L1360 718 C1360 734,1258 734,1258 718 Z"/>
+  <ellipse class="box-green" cx="1309" cy="670" rx="51" ry="16"/>
+  <path d="M1258 718 C1258 734,1360 734,1360 718" fill="none" stroke="#1f5f1f" stroke-width="1.4"/>
+  <text class="text" x="1309" y="692" text-anchor="middle" font-weight="700">Android App</text>
+  <text class="text small" x="1309" y="710" text-anchor="middle">(Java, MVVM)</text>
+
+  <rect class="box" x="1030" y="792" width="175" height="48"/>
+  <text class="text small" x="1117" y="812" text-anchor="middle">Activity/Fragment</text>
+  <text class="text small" x="1117" y="830" text-anchor="middle">Obsidian-Dark UI</text>
+
+  <rect class="box" x="1268" y="792" width="135" height="48"/>
+  <text class="text small" x="1335" y="812" text-anchor="middle">ViewModel</text>
+  <text class="text small" x="1335" y="830" text-anchor="middle">Repository</text>
+
+  <rect class="box" x="1432" y="792" width="110" height="48"/>
+  <text class="text small" x="1487" y="812" text-anchor="middle">Retrofit</text>
+  <text class="text small" x="1487" y="830" text-anchor="middle">OkHttp</text>
+
+  <path class="arrow" d="M1258 708 C1190 720,1118 730,1117 792"/>
+  <path class="arrow" d="M1309 734 L1335 792"/>
+  <path class="arrow" d="M1360 706 C1395 728,1400 770,1432 797"/>
+
+  <!-- Auth flow between Android and Firebase -->
+  <path class="arrow-dashed" d="M1258 692 C1120 660,920 595,695 510"/>
+  <text class="label" x="790" y="600">1. Yêu cầu đăng nhập</text>
+
+  <path class="arrow-dashed" d="M695 535 C900 608,1110 668,1258 704"/>
+  <text class="label" x="655" y="605">2. Trả Firebase ID Token</text>
+
+  <!-- API call from Android to Backend -->
+  <path class="arrow-thick" d="M1487 792 C1515 700,1515 360,1515 190 C1515 130,1210 105,1095 92"/>
+  <text class="label" x="1390" y="420">3. Gửi API Request + JWT/ID Token</text>
+
+  <!-- Verify token -->
+  <path class="arrow-dashed" d="M720 200 C635 255,610 355,607 468"/>
+  <text class="label" x="548" y="415">4. Backend verify token</text>
+
+  <!-- Response -->
+  <path class="arrow-dashed" d="M930 92 C870 95,835 125,805 175"/>
+  <text class="label" x="832" y="150">Request hợp lệ</text>
+</svg>

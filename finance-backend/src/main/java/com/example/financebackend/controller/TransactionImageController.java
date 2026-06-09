@@ -63,12 +63,31 @@ public class TransactionImageController {
             // Construct image URL (relative to server root)
             String imageUrl = "/uploads/" + filename;
 
-            // Create database record
-            TransactionImage transactionImage = TransactionImage.builder()
-                    .transaction(transaction)
-                    .imageUrl(imageUrl)
-                    .ocrText("") // Manual mode does not run OCR
-                    .build();
+            // Check if record already exists for the transaction
+            java.util.List<TransactionImage> existingImages = transactionImageRepository.findByTransactionTransactionId(transactionId);
+            TransactionImage transactionImage;
+            if (existingImages != null && !existingImages.isEmpty()) {
+                transactionImage = existingImages.get(0);
+
+                // Delete old file from disk if it exists
+                String oldUrl = transactionImage.getImageUrl();
+                if (oldUrl != null && oldUrl.startsWith("/uploads/")) {
+                    String oldFilename = oldUrl.substring("/uploads/".length());
+                    try {
+                        Files.deleteIfExists(Paths.get("uploads", oldFilename));
+                    } catch (IOException ignored) {}
+                }
+
+                transactionImage.setImageUrl(imageUrl);
+                transactionImage.setUploadedAt(java.time.LocalDateTime.now());
+            } else {
+                // Create database record
+                transactionImage = TransactionImage.builder()
+                        .transaction(transaction)
+                        .imageUrl(imageUrl)
+                        .ocrText("") // Manual mode does not run OCR
+                        .build();
+            }
 
             TransactionImage saved = transactionImageRepository.save(transactionImage);
 
