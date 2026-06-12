@@ -114,9 +114,6 @@ public class TransactionListFragment extends Fragment {
             }
         });
 
-        binding.btnFilter.setOnClickListener(v -> {
-            Toast.makeText(requireContext(), "Bộ lọc nâng cao đang tải...", Toast.LENGTH_SHORT).show();
-        });
 
         binding.monthSelectorContainer.setOnClickListener(v -> {
             showMonthYearPickerDialog();

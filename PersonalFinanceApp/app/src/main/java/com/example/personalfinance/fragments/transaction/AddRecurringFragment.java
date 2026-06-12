@@ -19,6 +19,7 @@ import com.example.personalfinance.R;
 import com.example.personalfinance.api.RetrofitClient;
 import com.example.personalfinance.databinding.FragmentAddRecurringBinding;
 import com.example.personalfinance.models.ApiResponse;
+import com.example.personalfinance.models.Account;
 import com.example.personalfinance.models.RecurringTransaction;
 import com.example.personalfinance.models.User;
 import com.example.personalfinance.utils.Constants;
@@ -38,17 +39,20 @@ public class AddRecurringFragment extends BottomSheetDialogFragment {
 
     private FragmentAddRecurringBinding binding;
     private User currentUser;
-    
+
     private RecurringTransaction editingItem = null;
     private String selectedType = Constants.TYPE_EXPENSE; // Constants.TYPE_EXPENSE or INCOME
     private String selectedFreq = "MONTHLY"; // "DAILY", "WEEKLY", "MONTHLY", "YEARLY"
     private int selectedDayNum = 20; // Default execution day
     private String selectedStartDate = ""; // "yyyy-MM-dd"
-    
+
     private int selectedCategoryId = 1;
     private String selectedCategoryName = "Sinh hoạt";
     private String selectedCategoryColor = "#6366F1";
     private java.util.List<com.example.personalfinance.models.Category> allCategories = new java.util.ArrayList<>();
+
+    private int selectedAccountId = -1;
+    private java.util.List<Account> allAccounts = new java.util.ArrayList<>();
 
     private OnSavedListener savedListener;
 
@@ -110,6 +114,7 @@ public class AddRecurringFragment extends BottomSheetDialogFragment {
         binding.tvStartDate.setText(DateUtils.formatDisplayDate(cal.getTime()));
 
         fetchCategories();
+        fetchAccounts();
 
         if (editingItem != null) {
             binding.tvFormTitle.setText(R.string.label_edit_recurring);
@@ -231,6 +236,40 @@ public class AddRecurringFragment extends BottomSheetDialogFragment {
                 // Fallback logging
             }
         });
+    }
+
+    private void fetchAccounts() {
+        com.example.personalfinance.api.RetrofitClient.getApiService().getAccounts(currentUser.getUserId()).enqueue(new retrofit2.Callback<com.example.personalfinance.models.ApiResponse<java.util.List<Account>>>() {
+            @Override
+            public void onResponse(@NonNull retrofit2.Call<com.example.personalfinance.models.ApiResponse<java.util.List<Account>>> call, @NonNull retrofit2.Response<com.example.personalfinance.models.ApiResponse<java.util.List<Account>>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    allAccounts.clear();
+                    if (response.body().getData() != null) {
+                        allAccounts.addAll(response.body().getData());
+                    }
+                    setupDefaultAccount();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull retrofit2.Call<com.example.personalfinance.models.ApiResponse<java.util.List<Account>>> call, @NonNull Throwable t) {
+                // Fallback logging
+            }
+        });
+    }
+
+    private void setupDefaultAccount() {
+        if (!allAccounts.isEmpty()) {
+            for (Account acc : allAccounts) {
+                if ("Ví chính".equalsIgnoreCase(acc.getAccountName())) {
+                    selectedAccountId = acc.getAccountId();
+                    return;
+                }
+            }
+            selectedAccountId = allAccounts.get(0).getAccountId();
+        } else {
+            selectedAccountId = 1; // Fallback
+        }
     }
 
     private void setupDefaultCategoryForType() {
@@ -383,7 +422,11 @@ public class AddRecurringFragment extends BottomSheetDialogFragment {
 
         RecurringTransaction item = editingItem != null ? editingItem : new RecurringTransaction();
         item.setUserId(currentUser.getUserId());
-        item.setAccountId(1); // Default Ví chính ID
+        if (editingItem != null && editingItem.getAccountId() != null) {
+            item.setAccountId(editingItem.getAccountId());
+        } else {
+            item.setAccountId(selectedAccountId > 0 ? selectedAccountId : 1);
+        }
         item.setCategoryId(selectedCategoryId);
         item.setCategoryName(selectedCategoryName);
         item.setCategoryColor(selectedCategoryColor);

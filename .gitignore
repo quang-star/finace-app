@@ -1,62 +1,43 @@
-# --- Android Patterns ---
-.gradle/
-build/
-app/build/
-local.properties
+# --- Android (PersonalFinanceApp) ---
+PersonalFinanceApp/.gradle/
+PersonalFinanceApp/build/
+PersonalFinanceApp/*/build/
+PersonalFinanceApp/local.properties
+PersonalFinanceApp/app/google-services.json
 PersonalFinanceApp/gradle/gradle-daemon-jvm.properties
-.idea/
-.idea/workspace.xml
-.idea/caches/
-.idea/libraries/
-.idea/modules.xml
-.idea/navEditor.xml
-.idea/assetWizardSettings.xml
-*.iml
-.DS_Store
-captures/
-.externalNativeBuild/
-.cxx/
-*~
-*.swp
+PersonalFinanceApp/gradle/wrapper/gradle-wrapper.jar
+PersonalFinanceApp/.idea/
+PersonalFinanceApp/*.iml
+PersonalFinanceApp/.cxx/
+PersonalFinanceApp/.externalNativeBuild/
+PersonalFinanceApp/captures/
 
-# --- Backend (Spring Boot Maven) Patterns ---
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**
-!**/src/test/**
-*.class
-*.log
-*.jar
-*.war
-*.ear
-*.tar.gz
-*.zip
-finance-backend/.idea/
+# --- Backend (finance-backend) ---
 finance-backend/target/
+finance-backend/.idea/
 finance-backend/*.iml
 finance-backend/uploads/
+finance-backend/*.log
+finance-backend/target/
+finance-backend/!.mvn/wrapper/maven-wrapper.jar
+finance-backend/*.class
+finance-backend/*.jar
+finance-backend/*.war
+finance-backend/*.ear
+finance-backend/src/main/resources/firebase-service-account.json
+finance-backend/target/classes/firebase-service-account.json
+finance-backend/src/main/resources/application.properties
+finance-backend/src/main/resources/ai-settings.properties
+finance-backend/src/main/resources/ml/random_forest_model.ser
+finance-backend/logs/
 
-# --- Local agent/planning files ---
-.clinerules
-.cursorrules
-AGENT_RULES.md
-PROJECT_CONTEXT.md
-PROJECT_GRAPH.md
-TASKS.md
-implementation_plan*.md
-memory-bank/
-
-# --- Python & ML Patterns ---
+# --- Python & ML local files ---
 venv/
 .venv/
 env/
 .env
-firebase-service-account.json
-finance-backend/src/main/resources/firebase-service-account.json
-finance-backend/target/classes/firebase-service-account.json
-PersonalFinanceApp/app/google-services.json
-finance-backend/src/main/resources/application.properties
-finance-backend/src/main/resources/ai-settings.properties
+.env.*
+!.env.example
 __pycache__/
 *.pyc
 *.pyo
@@ -69,7 +50,25 @@ tools/*.xlsx
 dataset/raw/
 logs/
 .ipynb_checkpoints/
-finance-backend/src/main/resources/ml/random_forest_model.ser
+
+# --- Local agent/planning files ---
+.clinerules
+.cursorrules
+AGENT_RULES.md
+PROJECT_CONTEXT.md
+PROJECT_GRAPH.md
+TASKS.md
+implementation_plan*.md
+memory-bank/
+defense_questions_by_assignment.md
+Tai_lieu_on_tap_*.docx
+Tai_lieu_on_tap_*.md
+~$*.docx
+
+# --- Non-deliverable project references ---
+docs/
+tools/
+ui_references/
 
 # --- General System Files ---
 .DS_Store

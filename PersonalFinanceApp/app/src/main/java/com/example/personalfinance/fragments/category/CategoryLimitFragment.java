@@ -93,9 +93,6 @@ public class CategoryLimitFragment extends Fragment {
     }
 
     private void setupClickListeners() {
-        binding.btnSettings.setOnClickListener(v ->
-                Toast.makeText(requireContext(), "Bộ lọc ngân sách đang hiển thị theo thời gian đã chọn", Toast.LENGTH_SHORT).show());
-
         binding.btnAddCategory.setOnClickListener(v -> {
             AddBudgetFragment addFragment = new AddBudgetFragment();
             addFragment.configureBudgetPeriod(selectedYear, selectedMonth, getBudgetsForSelectedMonth());

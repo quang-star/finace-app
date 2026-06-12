@@ -171,6 +171,7 @@ public class ScanBillActivity extends AppCompatActivity {
         recognizer.process(image)
                 .addOnSuccessListener(visionText -> {
                     String rawText = visionText.getText();
+
                     if (rawText.trim().isEmpty()) {
                         binding.progressBar.setVisibility(View.GONE);
                         binding.btnCapture.setEnabled(true);
@@ -201,6 +202,7 @@ public class ScanBillActivity extends AppCompatActivity {
 
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     scanResult = response.body().getData();
+
                     if (scanResult != null) {
                         Log.d(TAG, "OCR classify result: merchant=" + scanResult.getDetectedMerchant()
                                 + ", amount=" + scanResult.getDetectedAmount()

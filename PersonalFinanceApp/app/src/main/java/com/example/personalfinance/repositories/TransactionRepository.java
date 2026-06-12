@@ -5,6 +5,7 @@ import com.example.personalfinance.models.ApiResponse;
 import com.example.personalfinance.models.ReportDTO;
 import com.example.personalfinance.models.ScanFeedbackRequest;
 import com.example.personalfinance.models.Transaction;
+import com.google.android.gms.common.api.Api;
 
 import java.util.List;
 
@@ -39,6 +40,7 @@ public class TransactionRepository {
     }
 
     public void createTransaction(Transaction transaction, ApiCallback<Transaction> callback) {
+
         RetrofitClient.getApiService().createTransaction(transaction)
                 .enqueue(new Callback<ApiResponse<Transaction>>() {
                     @Override

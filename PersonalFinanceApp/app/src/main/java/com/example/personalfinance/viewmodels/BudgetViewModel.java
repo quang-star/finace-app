@@ -10,6 +10,8 @@ import com.example.personalfinance.repositories.AccountRepository;
 import com.example.personalfinance.repositories.BudgetRepository;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class BudgetViewModel extends ViewModel {
 
@@ -82,62 +84,57 @@ public class BudgetViewModel extends ViewModel {
     }
 
     public void saveBudgets(List<Budget> budgetsToCreate, List<Budget> budgetsToUpdate) {
-        int createCount = budgetsToCreate != null ? budgetsToCreate.size() : 0;
-        int updateCount = budgetsToUpdate != null ? budgetsToUpdate.size() : 0;
+        List<Budget> creates = budgetsToCreate != null ? budgetsToCreate : java.util.Collections.emptyList();
+        List<Budget> validUpdates = new java.util.ArrayList<>();
+        if (budgetsToUpdate != null) {
+            for (Budget budget : budgetsToUpdate) {
+                if (budget.getBudgetId() != null) {
+                    validUpdates.add(budget);
+                }
+            }
+        }
 
-        if (createCount + updateCount == 0) {
+        int totalRequestCount = creates.size() + validUpdates.size();
+        if (totalRequestCount == 0) {
             errorMessage.setValue("Vui lòng nhập ngân sách cho ít nhất một danh mục");
             return;
         }
 
         isLoading.setValue(true);
-        saveBudgetAtIndex(budgetsToCreate, budgetsToUpdate, 0, 0);
-    }
+        AtomicInteger remainingRequests = new AtomicInteger(totalRequestCount);
+        AtomicBoolean hasError = new AtomicBoolean(false);
 
-    private void saveBudgetAtIndex(List<Budget> budgetsToCreate, List<Budget> budgetsToUpdate, int createIndex, int updateIndex) {
-        int createCount = budgetsToCreate != null ? budgetsToCreate.size() : 0;
-        int updateCount = budgetsToUpdate != null ? budgetsToUpdate.size() : 0;
-
-        if (createIndex < createCount) {
-            budgetRepository.createBudget(budgetsToCreate.get(createIndex), new BudgetRepository.ApiCallback<Budget>() {
-                @Override
-                public void onSuccess(Budget result) {
-                    saveBudgetAtIndex(budgetsToCreate, budgetsToUpdate, createIndex + 1, updateIndex);
-                }
-
-                @Override
-                public void onError(String error) {
-                    errorMessage.postValue("Lỗi thêm ngân sách: " + error);
-                    isLoading.postValue(false);
-                }
-            });
-            return;
-        }
-
-        if (updateIndex < updateCount) {
-            Budget budget = budgetsToUpdate.get(updateIndex);
-            if (budget.getBudgetId() == null) {
-                saveBudgetAtIndex(budgetsToCreate, budgetsToUpdate, createIndex, updateIndex + 1);
-                return;
+        BudgetRepository.ApiCallback<Budget> callback = new BudgetRepository.ApiCallback<Budget>() {
+            @Override
+            public void onSuccess(Budget result) {
+                finishRequest();
             }
 
-            budgetRepository.updateBudget(budget.getBudgetId(), budget, new BudgetRepository.ApiCallback<Budget>() {
-                @Override
-                public void onSuccess(Budget result) {
-                    saveBudgetAtIndex(budgetsToCreate, budgetsToUpdate, createIndex, updateIndex + 1);
+            @Override
+            public void onError(String error) {
+                if (hasError.compareAndSet(false, true)) {
+                    errorMessage.postValue("Lỗi lưu ngân sách: " + error);
                 }
+                finishRequest();
+            }
 
-                @Override
-                public void onError(String error) {
-                    errorMessage.postValue("Lỗi sửa ngân sách: " + error);
+            private void finishRequest() {
+                if (remainingRequests.decrementAndGet() == 0) {
+                    if (!hasError.get()) {
+                        budgetsCreated.postValue(totalRequestCount);
+                    }
                     isLoading.postValue(false);
                 }
-            });
-            return;
+            }
+        };
+
+        for (Budget budget : creates) {
+            budgetRepository.createBudget(budget, callback);
         }
 
-        budgetsCreated.postValue(createCount + updateCount);
-        isLoading.postValue(false);
+        for (Budget budget : validUpdates) {
+            budgetRepository.updateBudget(budget.getBudgetId(), budget, callback);
+        }
     }
 
 }

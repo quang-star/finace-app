@@ -205,105 +205,17 @@ public class AddBudgetFragment extends BottomSheetDialogFragment {
     }
 
     private void addCategoryRow(Category category, Budget existingBudget) {
-        LinearLayout row = new LinearLayout(requireContext());
-        row.setOrientation(LinearLayout.HORIZONTAL);
-        row.setGravity(Gravity.CENTER_VERTICAL);
-        row.setPadding(dp(14), dp(12), dp(14), dp(12));
-        row.setBackgroundResource(R.drawable.bg_rounded_card);
+        View row = getLayoutInflater().inflate(R.layout.item_add_budget_row, binding.categoryContainer, false);
+        binding.categoryContainer.addView(row);
 
-        LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
-        rowParams.setMargins(0, 0, 0, dp(8));
-        binding.categoryContainer.addView(row, rowParams);
+        TextView badge = row.findViewById(R.id.tvCategoryBadge);
+        TextView nameView = row.findViewById(R.id.tvCategoryName);
+        EditText amountInput = row.findViewById(R.id.edtAmountInput);
+        EditText dailyLimitInput = row.findViewById(R.id.edtDailyLimitInput);
 
-        TextView badge = new TextView(requireContext());
-        badge.setGravity(Gravity.CENTER);
         badge.setText(getCategoryInitial(category));
-        badge.setTextColor(Color.WHITE);
-        badge.setTextSize(14);
-        badge.setTypeface(Typeface.DEFAULT_BOLD);
         badge.setBackground(makeCircleDrawable(category.getColor()));
-        row.addView(badge, new LinearLayout.LayoutParams(dp(48), dp(48)));
-
-        TextView nameView = new TextView(requireContext());
         nameView.setText(category.getCategoryName());
-        nameView.setTextColor(getColor(R.color.text_primary));
-        nameView.setTextSize(13);
-        nameView.setTypeface(Typeface.DEFAULT_BOLD);
-        LinearLayout.LayoutParams nameParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
-        nameParams.setMargins(dp(12), 0, dp(10), 0);
-        row.addView(nameView, nameParams);
-
-        LinearLayout limitsStack = new LinearLayout(requireContext());
-        limitsStack.setOrientation(LinearLayout.VERTICAL);
-        row.addView(limitsStack, new LinearLayout.LayoutParams(dp(150), ViewGroup.LayoutParams.WRAP_CONTENT));
-
-        TextView monthLabel = new TextView(requireContext());
-        monthLabel.setText(R.string.label_budget_month);
-        monthLabel.setTextColor(getColor(R.color.text_secondary));
-        monthLabel.setTextSize(11);
-        limitsStack.addView(monthLabel);
-
-        LinearLayout amountBox = new LinearLayout(requireContext());
-        amountBox.setOrientation(LinearLayout.HORIZONTAL);
-        amountBox.setGravity(Gravity.CENTER_VERTICAL);
-        amountBox.setPadding(dp(10), 0, dp(10), 0);
-        amountBox.setBackgroundResource(R.drawable.bg_input_field);
-        limitsStack.addView(amountBox, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(44)));
-
-        EditText amountInput = new EditText(requireContext());
-        amountInput.setBackgroundColor(Color.TRANSPARENT);
-        amountInput.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
-        amountInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
-        amountInput.setSelectAllOnFocus(true);
-        amountInput.setSingleLine(true);
-        amountInput.setTextColor(getColor(R.color.text_primary));
-        amountInput.setTextSize(13);
-        amountInput.setTypeface(Typeface.DEFAULT_BOLD);
-        amountBox.addView(amountInput, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1));
-
-        TextView currency = new TextView(requireContext());
-        currency.setText(" đ");
-        currency.setTextColor(getColor(R.color.text_primary));
-        currency.setTextSize(13);
-        amountBox.addView(currency);
-
-        TextView dailyLabel = new TextView(requireContext());
-        dailyLabel.setText(R.string.label_daily_max);
-        dailyLabel.setTextColor(getColor(R.color.text_secondary));
-        dailyLabel.setTextSize(11);
-        LinearLayout.LayoutParams dailyLabelParams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
-        dailyLabelParams.setMargins(0, dp(6), 0, 0);
-        limitsStack.addView(dailyLabel, dailyLabelParams);
-
-        LinearLayout dailyBox = new LinearLayout(requireContext());
-        dailyBox.setOrientation(LinearLayout.HORIZONTAL);
-        dailyBox.setGravity(Gravity.CENTER_VERTICAL);
-        dailyBox.setPadding(dp(10), 0, dp(10), 0);
-        dailyBox.setBackgroundResource(R.drawable.bg_input_field);
-        limitsStack.addView(dailyBox, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(44)));
-
-        EditText dailyLimitInput = new EditText(requireContext());
-        dailyLimitInput.setBackgroundColor(Color.TRANSPARENT);
-        dailyLimitInput.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
-        dailyLimitInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
-        dailyLimitInput.setSelectAllOnFocus(true);
-        dailyLimitInput.setSingleLine(true);
-        dailyLimitInput.setTextColor(getColor(R.color.text_primary));
-        dailyLimitInput.setTextSize(13);
-        dailyLimitInput.setTypeface(Typeface.DEFAULT_BOLD);
-        dailyBox.addView(dailyLimitInput, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1));
-
-        TextView dailyCurrency = new TextView(requireContext());
-        dailyCurrency.setText(" đ");
-        dailyCurrency.setTextColor(getColor(R.color.text_primary));
-        dailyCurrency.setTextSize(13);
-        dailyBox.addView(dailyCurrency);
 
         if (existingBudget != null && existingBudget.getAmountLimit() > 0) {
             setFormattedText(amountInput, existingBudget.getAmountLimit());
